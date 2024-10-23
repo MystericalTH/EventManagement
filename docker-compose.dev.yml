@@ -1,0 +1,48 @@
+services:
+  server:
+    container_name: server
+    image: cosmtrek/air
+    # working_dir value has to be the same of mapped volume
+    working_dir: /usr/app/
+    ports:
+      - 8081:8081
+    environment:
+      - LISTEN_PORT=8081
+    env_file: ".env"
+    volumes:
+      - ./src/server/:/usr/app/
+  frontend:
+    container_name: frontend
+    environment:
+      VITE_API_DOMAIN: "server:8081"
+    volumes:
+      - ./src/frontend/:/usr/src/app/
+      - /usr/src/app/node_modules
+    build:
+      target: dev
+      context: .
+      dockerfile: ./Dockerfile.frontend
+    develop:
+      watch:
+        - action: sync
+          path: ./src/frontend/
+          target: /usr/src/app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+    ports:
+      - 5173:5173
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./config/nginx:/etc/nginx/conf.d/
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./config/nginx/nginx.conf
+          target: /etc/nginx/conf.d/nginx.conf

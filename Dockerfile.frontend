@@ -1,0 +1,17 @@
+FROM node:latest AS base
+
+WORKDIR /usr/src/app
+
+FROM base AS dev
+COPY ./src/frontend/package.json src/frontend/package-lock.json ./
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --include=dev
+EXPOSE 5173
+CMD npm run dev-docker
+
+FROM base AS prod
+COPY ./src/frontend/package.json src/frontend/package-lock.json ./
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --omit=dev
+CMD node src/index.js
+

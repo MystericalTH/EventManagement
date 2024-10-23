@@ -1,0 +1,6 @@
+[color]
+main = "magenta"
+watcher= "cyan"
+
+[log]
+time = true
