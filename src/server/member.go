@@ -1,5 +1,3 @@
-// get member function from src/server/test.go
-
 package main
 
 import (
