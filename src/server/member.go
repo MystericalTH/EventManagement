@@ -33,6 +33,10 @@ func memberHandler(w http.ResponseWriter, r *http.Request) {
         getMember(w, r)
     case "POST":
         postMember(w, r)
+    case "PATCH":
+        patchMember(w, r)
+    case "DELETE":
+        deleteMember(w, r)
     default:
         http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
     }
@@ -40,24 +44,10 @@ func memberHandler(w http.ResponseWriter, r *http.Request) {
 
 func getMember(w http.ResponseWriter, r *http.Request) {
     // Query the database for member information
-    var member UserInfo
-    err := db.QueryRow("SELECT id, name, email FROM members WHERE id = ?", userInfo.ID).Scan(&member.ID, &member.Name, &member.Email)
+    var member Member
+    err := db.QueryRow("SELECT id, fName, lName, email, phone, githubUrl, status, reason FROM members WHERE id = ?", memberID).Scan(&member.memberID, &member.fName, &member.lName, &member.email, &member.phone, &member.githubUrl, &member.status, &member.reason)
     if err != nil {
         http.Error(w, "Failed to fetch member information: "+err.Error(), http.StatusInternalServerError)
-        return
-    }
-
-    // Load profile template
-    tmpl, err := template.ParseFiles("templates/profile.html")
-    if err != nil {
-        http.Error(w, "Failed to load profile template: "+err.Error(), http.StatusInternalServerError)
-        return
-    }
-
-    // Render template with user data
-    err = tmpl.Execute(w, member)
-    if err != nil {
-        http.Error(w, "Failed to render profile template: "+err.Error(), http.StatusInternalServerError)
         return
     }
 }
