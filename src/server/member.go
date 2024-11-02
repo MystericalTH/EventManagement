@@ -75,6 +75,7 @@ func postMember(w http.ResponseWriter, r *http.Request) {
 
 func patchMember(w http.ResponseWriter, r *http.Request) {
     // Get form values
+    memberID := r.FormValue("memberID")
     fName := r.FormValue("fName")
     lName := r.FormValue("lName")
     email := r.FormValue("email")
@@ -83,8 +84,46 @@ func patchMember(w http.ResponseWriter, r *http.Request) {
     status := r.FormValue("status")
     reason := r.FormValue("reason")
 
+    // Build the SQL query dynamically based on provided fields
+    query := "UPDATE members SET "
+    params := []interface{}{}
+    
+    if fName != "" {
+        query += "fName = ?, "
+        params = append(params, fName)
+    }
+    if lName != "" {
+        query += "lName = ?, "
+        params = append(params, lName)
+    }
+    if email != "" {
+        query += "email = ?, "
+        params = append(params, email)
+    }
+    if phone != "" {
+        query += "phone = ?, "
+        params = append(params, phone)
+    }
+    if githubUrl != "" {
+        query += "githubUrl = ?, "
+        params = append(params, githubUrl)
+    }
+    if status != "" {
+        query += "status = ?, "
+        params = append(params, status)
+    }
+    if reason != "" {
+        query += "reason = ?, "
+        params = append(params, reason)
+    }
+
+    // Remove the trailing comma and space
+    query = query[:len(query)-2]
+    query += " WHERE id = ?"
+    params = append(params, memberID)
+
     // Update member in database
-    _, err = db.Exec("UPDATE members SET fName = ?, lName = ?, email = ?, phone = ?, githubUrl = ?, status = ?, reason = ? WHERE id = ?", fName, lName, email, phone, githubUrl, status, reason, memberID)
+    _, err := db.Exec(query, params...)
     if err != nil {
         http.Error(w, "Failed to update member: "+err.Error(), http.StatusInternalServerError)
         return
