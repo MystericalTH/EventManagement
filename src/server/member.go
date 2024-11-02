@@ -25,8 +25,6 @@ type Member struct {
 
 var (
 	db *sql.DB
-	sessionStore
-	sessionName
 )
 
 func main() {
@@ -43,16 +41,6 @@ func main() {
 }
 
 func getMember(w http.ResponseWriter, r *http.Request) {
-    // Get the session
-    session, _ := sessionStore.Get(r, sessionName)
-
-    // Check if user is authenticated
-    userInfo, ok := session.Values["user"].(UserInfo)
-    if !ok {
-        http.Redirect(w, r, "/", http.StatusFound)
-        return
-    }
-
     // Query the database for member information
     var member UserInfo
     err := db.QueryRow("SELECT id, name, email FROM members WHERE id = ?", userInfo.ID).Scan(&member.ID, &member.Name, &member.Email)
@@ -77,23 +65,6 @@ func getMember(w http.ResponseWriter, r *http.Request) {
 }
 
 func postMember(w http.ResponseWriter, r *http.Request) {
-    // Get the session
-    session, _ := sessionStore.Get(r, sessionName)
-
-    // Check if user is authenticated
-    userInfo, ok := session.Values["user"].(UserInfo)
-    if !ok {
-        http.Redirect(w, r, "/", http.StatusFound)
-        return
-    }
-
-    // Parse form data
-    err := r.ParseForm()
-    if err != nil {
-        http.Error(w, "Failed to parse form data: "+err.Error(), http.StatusInternalServerError)
-        return
-    }
-
     // Get form values
     fName := r.FormValue("fName")
     lName := r.FormValue("lName")
@@ -112,15 +83,4 @@ func postMember(w http.ResponseWriter, r *http.Request) {
 
     // Redirect to profile
     http.Redirect(w, r, "/profile", http.StatusFound)
-}
-
-func handleLogout(w http.ResponseWriter, r *http.Request) {
-    // Clear the session
-
-    session, _ := sessionStore.Get(r, sessionName)
-    session.Options.MaxAge = -1
-    session.Save(r, w)
-
-    // Redirect to home
-    http.Redirect(w, r, "/", http.StatusFound)
 }
