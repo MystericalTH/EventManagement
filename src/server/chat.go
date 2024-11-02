@@ -27,6 +27,10 @@ type Admin struct {
 	email varchar(320)
 }
 
+var (
+	db *sql.DB
+)
+
 func chatHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
