@@ -46,6 +46,10 @@ func activityHandler(w http.ResponseWriter, r *http.Request) {
 		getActivity(w, r)
 	case "POST":
 		postActivity(w, r)
+	case "PATCH":
+		patchActivity(w, r)
+	case "DELETE":
+		deleteActivity(w, r)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
@@ -86,6 +90,51 @@ func postActivity(w http.ResponseWriter, r *http.Request) {
 			activity.startDate, activity.endDate, activity.maxNumber, activity.format, activity.description, activity.proposeDateTime, activity.acceptAdmin, activity.acceptDateTime, activity.applicationStatus)
 	if err != nil {
 		http.Error(w, "Failed to insert activity information: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Redirect to the activity page
+	http.Redirect(w, r, "/activity", http.StatusFound)
+}
+
+func patchActivity(w http.ResponseWriter, r *http.Request) {
+	// Get activity information from the request
+	activity := Activity{
+		activityID: r.FormValue("activityID"),
+		title: r.FormValue("title"),
+		proposer: r.FormValue("proposer"),
+		startDate: r.FormValue("startDate"),
+		endDate: r.FormValue("endDate"),
+		maxNumber: r.FormValue("maxNumber"),
+		format: r.FormValue("format"),
+		description: r.FormValue("description"),
+		proposeDateTime: r.FormValue("proposeDateTime"),
+		acceptAdmin: r.FormValue("acceptAdmin"),
+		acceptDateTime: r.FormValue("acceptDateTime"),
+		applicationStatus: r.FormValue("applicationStatus")
+	}
+	
+	// Update activity information in the database
+	_, err := db.Exec("UPDATE activities SET title = ?, proposer = ?, startDate = ?, endDate = ?, maxNumber = ?, format = ?, description = ?, proposeDateTime = ?, 
+			acceptAdmin = ?, acceptDateTime = ?, applicationStatus = ? WHERE id = ?", activity.title, activity.proposer, activity.startDate, activity.endDate, activity.maxNumber, 
+			activity.format, activity.description, activity.proposeDateTime, activity.acceptAdmin, activity.acceptDateTime, activity.applicationStatus, activity.activityID)
+	if err != nil {
+		http.Error(w, "Failed to update activity information: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Redirect to the activity page
+	http.Redirect(w, r, "/activity", http.StatusFound)
+}
+
+func deleteActivity(w http.ResponseWriter, r *http.Request) {
+	// Get activity ID from the request
+	activityID := r.FormValue("activityID")
+	
+	// Delete activity from the database
+	_, err := db.Exec("DELETE FROM activities WHERE id = ?", activityID)
+	if err != nil {
+		http.Error(w, "Failed to delete activity: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
