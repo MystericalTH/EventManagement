@@ -27,17 +27,15 @@ var (
 	db *sql.DB
 )
 
-func main() {
-	db, err := sql.Open("mysql", "root:root@tcp(localhost:8080)/members")
-
-	if err != nil {
-		panic(err.Error())
-	}
-
-	defer db.Close()
-
-	http.HandleFunc("/member", getMember)
-    log.Fatal(http.ListenAndServe(":8080", nil))
+func memberHandler(w http.ResponseWriter, r *http.Request) {
+    switch r.Method {
+    case "GET":
+        getMember(w, r)
+    case "POST":
+        postMember(w, r)
+    default:
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+    }
 }
 
 func getMember(w http.ResponseWriter, r *http.Request) {
@@ -78,6 +76,42 @@ func postMember(w http.ResponseWriter, r *http.Request) {
     _, err = db.Exec("INSERT INTO members (fName, lName, email, phone, githubUrl, status, reason) VALUES (?, ?, ?, ?, ?, ?, ?)", fName, lName, email, phone, githubUrl, status, reason)
     if err != nil {
         http.Error(w, "Failed to insert member: "+err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    // Redirect to profile
+    http.Redirect(w, r, "/profile", http.StatusFound)
+}
+
+func patchMember(w http.ResponseWriter, r *http.Request) {
+    // Get form values
+    fName := r.FormValue("fName")
+    lName := r.FormValue("lName")
+    email := r.FormValue("email")
+    phone := r.FormValue("phone")
+    githubUrl := r.FormValue("githubUrl")
+    status := r.FormValue("status")
+    reason := r.FormValue("reason")
+
+    // Update member in database
+    _, err = db.Exec("UPDATE members SET fName = ?, lName = ?, email = ?, phone = ?, githubUrl = ?, status = ?, reason = ? WHERE id = ?", fName, lName, email, phone, githubUrl, status, reason, memberID)
+    if err != nil {
+        http.Error(w, "Failed to update member: "+err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    // Redirect to profile
+    http.Redirect(w, r, "/profile", http.StatusFound)
+}
+
+func deleteMember(w http.ResponseWriter, r *http.Request) {
+    // Get form values
+    memberID := r.FormValue("memberID")
+
+    // Delete member from database
+    _, err = db.Exec("DELETE FROM members WHERE id = ?", memberID)
+    if err != nil {
+        http.Error(w, "Failed to delete member: "+err.Error(), http.StatusInternalServerError)
         return
     }
 
