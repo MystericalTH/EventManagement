@@ -20,7 +20,9 @@ type Member struct {
 	phone varchar(20),
 	githubUrl varchar(320),
 	status varchar(10),
-	reason text
+	reason text,
+    acceptDateTime datetime,
+    acceptAdmin int(11)
 }
 
 var (
@@ -45,7 +47,9 @@ func memberHandler(w http.ResponseWriter, r *http.Request) {
 func getMember(w http.ResponseWriter, r *http.Request) {
     // Query the database for member information
     var member Member
-    err := db.QueryRow("SELECT id, fName, lName, email, phone, githubUrl, status, reason FROM members WHERE id = ?", memberID).Scan(&member.memberID, &member.fName, &member.lName, &member.email, &member.phone, &member.githubUrl, &member.status, &member.reason)
+    err := db.QueryRow("SELECT id, fName, lName, email, phone, githubUrl, status, reason, acceptDateTime, 
+        acceptAdmin FROM members WHERE id = ?", memberID).Scan(&member.memberID, &member.fName, &member.lName, &member.email, 
+        &member.phone, &member.githubUrl, &member.status, &member.reason, &member.acceptDateTime, &member.acceptAdmin)
     if err != nil {
         http.Error(w, "Failed to fetch member information: "+err.Error(), http.StatusInternalServerError)
         return
@@ -61,9 +65,11 @@ func postMember(w http.ResponseWriter, r *http.Request) {
     githubUrl := r.FormValue("githubUrl")
     status := r.FormValue("status")
     reason := r.FormValue("reason")
+    acceptDateTime := r.FormValue("acceptDateTime")
+    acceptAdmin := r.FormValue("acceptAdmin")
 
     // Insert member into database
-    _, err = db.Exec("INSERT INTO members (fName, lName, email, phone, githubUrl, status, reason) VALUES (?, ?, ?, ?, ?, ?, ?)", fName, lName, email, phone, githubUrl, status, reason)
+    _, err = db.Exec("INSERT INTO members (fName, lName, email, phone, githubUrl, status, reason, acceptDateTime, acceptAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", fName, lName, email, phone, githubUrl, status, reason, acceptDateTime, acceptAdmin)
     if err != nil {
         http.Error(w, "Failed to insert member: "+err.Error(), http.StatusInternalServerError)
         return
