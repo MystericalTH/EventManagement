@@ -78,8 +78,7 @@ func postActivity(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	// Insert activity information into the database
-	_, err := db.Exec("INSERT INTO activities (id, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime,
-			acceptAdmin, acceptDateTime, applicationStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", activity.activityID, activity.title, activity.proposer, 
+	_, err := db.Exec("INSERT INTO activities (id, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime,acceptAdmin, acceptDateTime, applicationStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", activity.activityID, activity.title, activity.proposer, 
 			activity.startDate, activity.endDate, activity.maxNumber, activity.format, activity.description, activity.proposeDateTime, activity.acceptAdmin, activity.acceptDateTime, activity.applicationStatus)
 	if err != nil {
 		http.Error(w, "Failed to insert activity information: "+err.Error(), http.StatusInternalServerError)
