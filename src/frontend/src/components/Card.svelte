@@ -10,8 +10,9 @@
 <a href="{href}" class="card">
   <div class="title">{title}</div>
   <div class="bottom-row">
-    <img src="https://img.icons8.com/ios-filled/50/000000/calendar--v1.png" alt="Calendar Icon" class="icon">
+    <!-- <img src="https://img.icons8.com/ios-filled/50/000000/calendar--v1.png" alt="Calendar Icon" class="icon"> -->
     <span class="format">{startDate}</span>
+    <span class="format">{endDate}</span>
     <span class="format">{format}</span>
   </div>
 </a>
@@ -43,11 +44,11 @@
       align-items: center;
     }
 
-    .icon {
+    /* .icon {
       width: 24px;
       height: 24px;
-      /* margin-right: 8px; */
-    }
+      margin-right: 8px;
+    } */
 
     .format {
       font-size: 14px;
