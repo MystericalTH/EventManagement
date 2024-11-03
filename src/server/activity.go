@@ -11,23 +11,23 @@ import (
 )
 
 type Activity struct {
-	activityID int(11),
-	title varchar(255),
-	proposer int(11),
-	startDate date,
-	endDate date,
-	maxNumber int(11),
-	format varchar(10),
-	description text,
-	proposeDateTime datetime,
-	acceptAdmin int(11),
-	acceptDateTime datetime,
-	applicationStatus varchar(20)
+	activityID        int
+	title             string
+	proposer          int
+	startDate         time.Time
+	endDate           time.Time
+	maxNumber         int
+	format            string
+	description       string
+	proposeDateTime   time.Time
+	acceptAdmin       int
+	acceptDateTime    time.Time
+	applicationStatus string
 }
 
 type ActivityRoles struct {
-	activityID int(11),
-	activityRole varchar(30)
+	activityID		  int
+	activityRole 	  string
 }
 
 var (
