@@ -1,11 +1,11 @@
 package main
 //import essentials libraries
 import (
-	"fmt",
-	"database/sql",
-	"net/http",
-	"html/template",
-	"log",
+	"fmt"
+	"database/sql"
+	"net/http"
+	"html/template"
+	"log"
 
 	_ "github.com/go-sql-driver/mysql"
 }

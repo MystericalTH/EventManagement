@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt",
-	"database/sql",
-	"net/http",
-	"html/template",
+	"fmt"
+	"database/sql"
+	"net/http"
+	"html/template"
 
 	_ "github.com/go-sql-driver/mysql"
 )
