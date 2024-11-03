@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"net/http"
 	"time"
 )
@@ -24,10 +23,6 @@ type ActivityRoles struct {
 	activityID   int
 	activityRole string
 }
-
-var (
-	db *sql.DB
-)
 
 func activityHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
