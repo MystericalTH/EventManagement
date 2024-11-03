@@ -1,26 +1,27 @@
 package main
 
 import (
-	"fmt"
 	"database/sql"
-	"net/http"
+	"fmt"
 	"html/template"
 	"log"
+	"net/http"
+    "time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"golang.org/x/text"
 )
 
 type Member struct {
-	memberID int(11),
-	fName varchar(255),
-	lName varchar(255),
-	email varchar(320),
-	phone varchar(20),
-	githubUrl varchar(320),
-	status varchar(10),
-	reason text,
-    acceptDateTime datetime,
-    acceptAdmin int(11)
+	fName   string
+	lName   string
+	email   string
+	phone   string
+	githubUrl string
+	interest text
+    reason text
+    acceptDateTime time.Time
+    acceptAdmin int
 }
 
 func memberHandler(w http.ResponseWriter, r *http.Request) {
