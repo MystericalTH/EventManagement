@@ -107,8 +107,7 @@ func patchActivity(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	// Update activity information in the database
-	_, err := db.Exec("UPDATE activities SET title = ?, proposer = ?, startDate = ?, endDate = ?, maxNumber = ?, format = ?, description = ?, proposeDateTime = ?, 
-			acceptAdmin = ?, acceptDateTime = ?, applicationStatus = ? WHERE id = ?", activity.title, activity.proposer, activity.startDate, activity.endDate, activity.maxNumber, 
+	_, err := db.Exec("UPDATE activities SET title = ?, proposer = ?, startDate = ?, endDate = ?, maxNumber = ?, format = ?, description = ?, proposeDateTime = ?, acceptAdmin = ?, acceptDateTime = ?, applicationStatus = ? WHERE id = ?", activity.title, activity.proposer, activity.startDate, activity.endDate, activity.maxNumber, 
 			activity.format, activity.description, activity.proposeDateTime, activity.acceptAdmin, activity.acceptDateTime, activity.applicationStatus, activity.activityID)
 	if err != nil {
 		http.Error(w, "Failed to update activity information: "+err.Error(), http.StatusInternalServerError)
