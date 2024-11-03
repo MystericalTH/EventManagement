@@ -1,11 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"database/sql"
 	"net/http"
-	"html/template"
-	"log"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -26,8 +24,8 @@ type Activity struct {
 }
 
 type ActivityRoles struct {
-	activityID		  int
-	activityRole 	  string
+	activityID   int
+	activityRole string
 }
 
 var (
@@ -53,7 +51,7 @@ func getActivity(w http.ResponseWriter, r *http.Request) {
 	// Query the database for activity information
 	var activity Activity
 	err := db.QueryRow("SELECT id, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus FROM activities WHERE id = ?", activity.activityID).Scan(&activity.activityID, &activity.title, &activity.proposer, &activity.startDate,
-			&activity.endDate, &activity.maxNumber, &activity.format, &activity.description, &activity.proposeDateTime, &activity.acceptAdmin, &activity.acceptDateTime, &activity.applicationStatus)
+		&activity.endDate, &activity.maxNumber, &activity.format, &activity.description, &activity.proposeDateTime, &activity.acceptAdmin, &activity.acceptDateTime, &activity.applicationStatus)
 	if err != nil {
 		http.Error(w, "Failed to fetch activity information: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -63,23 +61,23 @@ func getActivity(w http.ResponseWriter, r *http.Request) {
 func postActivity(w http.ResponseWriter, r *http.Request) {
 	// Get activity information from the request
 	activity := Activity{
-		activityID: r.FormValue("activityID"),
-		title: r.FormValue("title"),
-		proposer: r.FormValue("proposer"),
-		startDate: r.FormValue("startDate"),
-		endDate: r.FormValue("endDate"),
-		maxNumber: r.FormValue("maxNumber"),
-		format: r.FormValue("format"),
-		description: r.FormValue("description"),
-		proposeDateTime: r.FormValue("proposeDateTime"),
-		acceptAdmin: r.FormValue("acceptAdmin"),
-		acceptDateTime: r.FormValue("acceptDateTime"),
+		activityID:        r.FormValue("activityID"),
+		title:             r.FormValue("title"),
+		proposer:          r.FormValue("proposer"),
+		startDate:         r.FormValue("startDate"),
+		endDate:           r.FormValue("endDate"),
+		maxNumber:         r.FormValue("maxNumber"),
+		format:            r.FormValue("format"),
+		description:       r.FormValue("description"),
+		proposeDateTime:   r.FormValue("proposeDateTime"),
+		acceptAdmin:       r.FormValue("acceptAdmin"),
+		acceptDateTime:    r.FormValue("acceptDateTime"),
 		applicationStatus: r.FormValue("applicationStatus"),
 	}
-	
+
 	// Insert activity information into the database
-	_, err := db.Exec("INSERT INTO activities (id, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime,acceptAdmin, acceptDateTime, applicationStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", activity.activityID, activity.title, activity.proposer, 
-			activity.startDate, activity.endDate, activity.maxNumber, activity.format, activity.description, activity.proposeDateTime, activity.acceptAdmin, activity.acceptDateTime, activity.applicationStatus)
+	_, err := db.Exec("INSERT INTO activities (id, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime,acceptAdmin, acceptDateTime, applicationStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", activity.activityID, activity.title, activity.proposer,
+		activity.startDate, activity.endDate, activity.maxNumber, activity.format, activity.description, activity.proposeDateTime, activity.acceptAdmin, activity.acceptDateTime, activity.applicationStatus)
 	if err != nil {
 		http.Error(w, "Failed to insert activity information: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -92,23 +90,23 @@ func postActivity(w http.ResponseWriter, r *http.Request) {
 func patchActivity(w http.ResponseWriter, r *http.Request) {
 	// Get activity information from the request
 	activity := Activity{
-		activityID: r.FormValue("activityID"),
-		title: r.FormValue("title"),
-		proposer: r.FormValue("proposer"),
-		startDate: r.FormValue("startDate"),
-		endDate: r.FormValue("endDate"),
-		maxNumber: r.FormValue("maxNumber"),
-		format: r.FormValue("format"),
-		description: r.FormValue("description"),
-		proposeDateTime: r.FormValue("proposeDateTime"),
-		acceptAdmin: r.FormValue("acceptAdmin"),
-		acceptDateTime: r.FormValue("acceptDateTime"),
+		activityID:        r.FormValue("activityID"),
+		title:             r.FormValue("title"),
+		proposer:          r.FormValue("proposer"),
+		startDate:         r.FormValue("startDate"),
+		endDate:           r.FormValue("endDate"),
+		maxNumber:         r.FormValue("maxNumber"),
+		format:            r.FormValue("format"),
+		description:       r.FormValue("description"),
+		proposeDateTime:   r.FormValue("proposeDateTime"),
+		acceptAdmin:       r.FormValue("acceptAdmin"),
+		acceptDateTime:    r.FormValue("acceptDateTime"),
 		applicationStatus: r.FormValue("applicationStatus"),
 	}
-	
+
 	// Update activity information in the database
-	_, err := db.Exec("UPDATE activities SET title = ?, proposer = ?, startDate = ?, endDate = ?, maxNumber = ?, format = ?, description = ?, proposeDateTime = ?, acceptAdmin = ?, acceptDateTime = ?, applicationStatus = ? WHERE id = ?", activity.title, activity.proposer, activity.startDate, activity.endDate, activity.maxNumber, 
-			activity.format, activity.description, activity.proposeDateTime, activity.acceptAdmin, activity.acceptDateTime, activity.applicationStatus, activity.activityID)
+	_, err := db.Exec("UPDATE activities SET title = ?, proposer = ?, startDate = ?, endDate = ?, maxNumber = ?, format = ?, description = ?, proposeDateTime = ?, acceptAdmin = ?, acceptDateTime = ?, applicationStatus = ? WHERE id = ?", activity.title, activity.proposer, activity.startDate, activity.endDate, activity.maxNumber,
+		activity.format, activity.description, activity.proposeDateTime, activity.acceptAdmin, activity.acceptDateTime, activity.applicationStatus, activity.activityID)
 	if err != nil {
 		http.Error(w, "Failed to update activity information: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -121,7 +119,7 @@ func patchActivity(w http.ResponseWriter, r *http.Request) {
 func deleteActivity(w http.ResponseWriter, r *http.Request) {
 	// Get activity ID from the request
 	activityID := r.FormValue("activityID")
-	
+
 	// Delete activity from the database
 	_, err := db.Exec("DELETE FROM activities WHERE id = ?", activityID)
 	if err != nil {
@@ -146,10 +144,10 @@ func getActivityRoles(w http.ResponseWriter, r *http.Request) {
 func postActivityRoles(w http.ResponseWriter, r *http.Request) {
 	// Get activity roles from the request
 	activityRoles := ActivityRoles{
-		activityID: r.FormValue("activityID"),
-		activityRole: r.FormValue("activityRole")
+		activityID:   r.FormValue("activityID"),
+		activityRole: r.FormValue("activityRole"),
 	}
-	
+
 	// Insert activity roles into the database
 	_, err := db.Exec("INSERT INTO activity_roles (id, role) VALUES (?, ?)", activityRoles.activityID, activityRoles.activityRole)
 	if err != nil {
@@ -164,10 +162,10 @@ func postActivityRoles(w http.ResponseWriter, r *http.Request) {
 func patchActivityRoles(w http.ResponseWriter, r *http.Request) {
 	// Get activity roles from the request
 	activityRoles := ActivityRoles{
-		activityID: r.FormValue("activityID"),
-		activityRole: r.FormValue("activityRole")
+		activityID:   r.FormValue("activityID"),
+		activityRole: r.FormValue("activityRole"),
 	}
-	
+
 	// Update activity roles in the database
 	_, err := db.Exec("UPDATE activity_roles SET role = ? WHERE id = ?", activityRoles.activityRole, activityRoles.activityID)
 	if err != nil {
@@ -182,7 +180,7 @@ func patchActivityRoles(w http.ResponseWriter, r *http.Request) {
 func deleteActivityRoles(w http.ResponseWriter, r *http.Request) {
 	// Get activity ID from the request
 	activityID := r.FormValue("activityID")
-	
+
 	// Delete activity roles from the database
 	_, err := db.Exec("DELETE FROM activity_roles WHERE id = ?", activityID)
 	if err != nil {
@@ -222,10 +220,10 @@ func getActivityRoles(w http.ResponseWriter, r *http.Request) {
 func postActivityRoles(w http.ResponseWriter, r *http.Request) {
 	// Get activity roles from the request
 	activityRoles := ActivityRoles{
-		activityID: r.FormValue("activityID"),
-		activityRole: r.FormValue("activityRole")
+		activityID:   r.FormValue("activityID"),
+		activityRole: r.FormValue("activityRole"),
 	}
-	
+
 	// Insert activity roles into the database
 	_, err := db.Exec("INSERT INTO activity_roles (id, role) VALUES (?, ?)", activityRoles.activityID, activityRoles.activityRole)
 	if err != nil {
@@ -240,10 +238,10 @@ func postActivityRoles(w http.ResponseWriter, r *http.Request) {
 func patchActivityRoles(w http.ResponseWriter, r *http.Request) {
 	// Get activity roles from the request
 	activityRoles := ActivityRoles{
-		activityID: r.FormValue("activityID"),
-		activityRole: r.FormValue("activityRole")
+		activityID:   r.FormValue("activityID"),
+		activityRole: r.FormValue("activityRole"),
 	}
-	
+
 	// Update activity roles in the database
 	_, err := db.Exec("UPDATE activity_roles SET role = ? WHERE id = ?", activityRoles.activityRole, activityRoles.activityID)
 	if err != nil {
@@ -258,7 +256,7 @@ func patchActivityRoles(w http.ResponseWriter, r *http.Request) {
 func deleteActivityRoles(w http.ResponseWriter, r *http.Request) {
 	// Get activity ID from the request
 	activityID := r.FormValue("activityID")
-	
+
 	// Delete activity roles from the database
 	_, err := db.Exec("DELETE FROM activity_roles WHERE id = ?", activityID)
 	if err != nil {
