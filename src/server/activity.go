@@ -74,7 +74,7 @@ func postActivity(w http.ResponseWriter, r *http.Request) {
 		proposeDateTime: r.FormValue("proposeDateTime"),
 		acceptAdmin: r.FormValue("acceptAdmin"),
 		acceptDateTime: r.FormValue("acceptDateTime"),
-		applicationStatus: r.FormValue("applicationStatus")
+		applicationStatus: r.FormValue("applicationStatus"),
 	}
 	
 	// Insert activity information into the database
