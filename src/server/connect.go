@@ -19,7 +19,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-
+	// the upper code is to connect to the database and error handling
 	// Ensure the connection is valid
     err = db.Ping()
     if err != nil {
