@@ -7,7 +7,6 @@ import (
 )
 
 type Activity struct {
-	activityID        int
 	title             string
 	proposer          int
 	startDate         time.Time
