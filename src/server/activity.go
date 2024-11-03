@@ -4,8 +4,6 @@ import (
 	"database/sql"
 	"net/http"
 	"time"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 type Activity struct {
