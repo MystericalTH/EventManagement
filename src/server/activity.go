@@ -52,8 +52,7 @@ func activityHandler(w http.ResponseWriter, r *http.Request) {
 func getActivity(w http.ResponseWriter, r *http.Request) {
 	// Query the database for activity information
 	var activity Activity
-	err := db.QueryRow("SELECT id, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, 
-			acceptAdmin, acceptDateTime, applicationStatus FROM activities WHERE id = ?", activity.activityID).Scan(&activity.activityID, &activity.title, &activity.proposer, &activity.startDate,
+	err := db.QueryRow("SELECT id, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus FROM activities WHERE id = ?", activity.activityID).Scan(&activity.activityID, &activity.title, &activity.proposer, &activity.startDate,
 			&activity.endDate, &activity.maxNumber, &activity.format, &activity.description, &activity.proposeDateTime, &activity.acceptAdmin, &activity.acceptDateTime, &activity.applicationStatus)
 	if err != nil {
 		http.Error(w, "Failed to fetch activity information: "+err.Error(), http.StatusInternalServerError)
