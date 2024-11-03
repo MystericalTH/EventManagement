@@ -6,7 +6,7 @@
     let interest = '';
     let reason = '';
   
-    const handleSubmit = async (event: Event) => {
+    const handleMemberSubmit = async (event: Event) => {
       event.preventDefault();
   
       const formData = {
@@ -39,7 +39,7 @@
 </script>
   
   <h1>Sign Up</h1>
-  <form on:submit={handleSubmit}>
+  <form on:submit={handleMemberSubmit}>
     <div>
       <label for="name">Name:</label>
       <input type="text" id="name" bind:value={name} required />
