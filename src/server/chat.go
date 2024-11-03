@@ -10,21 +10,21 @@ import (
 )
 
 type chatDevAd struct {
-	messageID int(11),
-	adminID int(11),
-	developerID int(11),
-	message text,
+	messageID int
+	adminID int
+	developerID int
+	message string
 	datetime datetime
 }
 
 type Developer struct {
-	developerID int(11),
-	email varchar(320)
+	developerID int
+	email string
 }
 
 type Admin struct {
-	adminID int(11),
-	email varchar(320)
+	adminID int
+	email string
 }
 
 func chatHandler(w http.ResponseWriter, r *http.Request) {
