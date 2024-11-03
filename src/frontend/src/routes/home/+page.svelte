@@ -10,7 +10,7 @@
 </script> -->
   
 <script lang="ts">
-    import Card from '../components/Card.svelte';
+    import Card from '../../components/Card.svelte';
     // export let data: { activities: Array<{ title: string; startDate: string; endDate: string; format: string }> };
 
     // Mock data
