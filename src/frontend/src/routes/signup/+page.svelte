@@ -9,30 +9,34 @@
     const handleSubmit = async (event: Event) => {
       event.preventDefault();
   
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('email', email);
-      formData.append('phone', phone);
-      formData.append('githubUrl', githubUrl);
-      formData.append('interest', interest);
-      formData.append('reason', reason);
-  
-      try {
-        const response = await fetch('/api/member/submit', {
-          method: 'POST',
-          body: formData
-        });
-  
-        if (response.ok) {
-          console.log('Form submitted successfully');
-        } else {
-          console.error('Form submission failed');
-        }
-      } catch (error) {
-        console.error('Error submitting form:', error);
-      }
+      const formData = {
+      name,
+      email,
+      phone,
+      githubUrl,
+      interest,
+      reason
     };
-  </script>
+
+    try {
+      const response = await fetch('/api/member/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        console.log('Form submitted successfully');
+      } else {
+        console.error('Form submission failed');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
+  };
+</script>
   
   <h1>Sign Up</h1>
   <form on:submit={handleSubmit}>
