@@ -18,10 +18,6 @@ type Feedback struct {
 	feedbackDateTime datetime
 }
 
-var (
-	db *sql.DB
-)
-
 func feedbackHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
