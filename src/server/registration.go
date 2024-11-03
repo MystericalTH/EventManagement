@@ -26,10 +26,6 @@ type wsRegist struct {
 	datetime datetime
 }
 
-var (
-	db *sql.DB
-)
-
 func registrationHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":

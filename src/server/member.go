@@ -23,10 +23,6 @@ type Member struct {
     acceptAdmin int(11)
 }
 
-var (
-	db *sql.DB
-)
-
 func memberHandler(w http.ResponseWriter, r *http.Request) {
     switch r.Method {
     case "GET":

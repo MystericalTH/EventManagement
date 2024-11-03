@@ -15,10 +15,6 @@ type Project struct {
 	advisor varchar(255)
 }
 
-var (
-	db *sql.DB
-)
-
 func projectHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":

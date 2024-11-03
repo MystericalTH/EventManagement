@@ -16,10 +16,6 @@ type Workshop struct {
 	endTime time
 }
 
-var (
-	db *sql.DB
-)
-
 func workshopHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
