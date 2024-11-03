@@ -1,5 +1,5 @@
 package main
-
+//import essentials libraries
 import (
 	"fmt",
 	"database/sql",
@@ -15,7 +15,7 @@ var (
 )
 
 func main() {
-	db, err := sql.Open("mysql", "root:root@tcp(localhost:8080)/dbname")
+	db, err := sql.Open("mysql", "root:root@tcp(localhost:3306)/activitymanagement")
 	if err != nil {
 		panic(err.Error())
 	}
