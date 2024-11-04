@@ -1,18 +1,7 @@
 <script lang="ts">
-    // import type { PageData } from './$types';
-    // let { data }: { data: PageData } = $props();
-    // export let data: { activities: Array<{ title: string; startDate: string; endDate: string; format: string }> };
+    export let data: { activities: Array<{ title: string; startDate: string; endDate: string; format: string; href: string }> };
 
     import Card from '../../components/Card.svelte';
-
-    // Mock data
-    const data = {
-        activities: [
-        { title: 'Activity 1', startDate: '2025-11-01', endDate: '2025-11-05', format: 'Project', href: '/activity/1' },
-        { title: 'Activity 2', startDate: '2024-11-01', endDate: '2024-11-30', format: 'Project', href: '/activity/2' },
-        { title: 'Activity 3', startDate: '2023-09-01', endDate: '2023-09-05', format: 'Workshop', href: '/activity/3' }
-        ]
-    };
 
     const currentDate = new Date();
 
