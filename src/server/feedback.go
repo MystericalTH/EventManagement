@@ -18,10 +18,7 @@ type Feedback struct {
 	FeedbackDateTime time.Time `json:"feedbackDateTime"`
 }
 
-// Database connection variable
-var db *sql.DB
-
-func main() {
+func feedback() {
 	var err error
 	// Initialize the database connection
 	db, err = sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/dbname")
