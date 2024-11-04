@@ -9,6 +9,15 @@
     let advisor = '';
     let startTime = '';
     let endTime = '';
+    let activityRole: string[] = [];
+    let newActivityRole = '';
+
+    const addActivityRole = () => {
+      if (newActivityRole.trim() !== '') {
+        activityRole = [...activityRole, newActivityRole.trim()];
+        newActivityRole = '';
+      }
+    };
 
     const formatDateTime = (date: Date): string => {
       const pad = (num: number) => String(num).padStart(2, '0');
@@ -37,7 +46,8 @@
       proposeDateTime,
       advisor,
       startTime,
-      endTime
+      endTime,
+      activityRole
     };
 
     try {
@@ -85,16 +95,8 @@
           <input type="text" id="endDate" bind:value={endDate} required />
       </div>
       <div>
-        <label for="maxNumber">Number of participant:</label>
-        <input type="number" id="maxNumber" bind:value={maxNumber} required />
-      </div>
-      <div>
         <label for="advisor">Advisor:</label>
         <input type="text" id="advisor" bind:value={advisor} required />
-      </div>
-      <div>
-        <label for="description">Description:</label>
-        <textarea id="description" bind:value={description} required></textarea>
       </div>
 
     {:else if format === 'workshop'}
@@ -114,18 +116,26 @@
         <label for="endTime">End Time:</label>
         <input type="text" id="endTime" bind:value={endTime} required />
       </div>
-      <div>
-        <label for="maxNumber">Number of participant:</label>
-        <input type="number" id="maxNumber" bind:value={maxNumber} required />
-      </div>
-      <div>
-        <label for="description">Description:</label>
-        <textarea id="description" bind:value={description} required></textarea>
-      </div>
-      <div>
-        <label for="activityRole">Activity Role:</label>
-      </div>
     {/if}
+    
+    <div>
+      <label for="maxNumber">Number of participant:</label>
+      <input type="number" id="maxNumber" bind:value={maxNumber} required />
+    </div>
+    <div>
+      <label for="description">Description:</label>
+      <textarea id="description" bind:value={description} required></textarea>
+    </div>
+    <div>
+      <label for="activityRole">Activity Role:</label>
+      <input type="text" id="newActivityRole" bind:value={newActivityRole} />
+      <button type="button" on:click={addActivityRole}>Add Role</button>
+      <ul>
+          {#each activityRole as role}
+              <li>{role}</li>
+          {/each}
+      </ul>
+    </div>
 
   <button type="submit">Submit</button>
 </form>
