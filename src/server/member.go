@@ -163,7 +163,7 @@ func deleteMember(w http.ResponseWriter, r *http.Request) {
 func member() {
 	// Initialize the database connection (replace with your DSN)
 	var err error
-	db, err = sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/dbname")
+	db, err = sql.Open("mysql", "root:root@tcp(localhost:3306)/activitymanagement")
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
 	}

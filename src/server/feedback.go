@@ -21,7 +21,7 @@ type Feedback struct {
 func feedback() {
 	var err error
 	// Initialize the database connection
-	db, err = sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/dbname")
+	db, err = sql.Open("mysql", "root:root@tcp(localhost:3306)/activitymanagement")
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
 	}

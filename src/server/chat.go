@@ -32,7 +32,7 @@ type Admin struct {
 func chat() {
 	var err error
 	// Initialize database connection
-	db, err = sql.Open("mysql", "username:password@tcp(127.0.0.1:3306)/database_name")
+	db, err = sql.Open("mysql", "root:root@tcp(localhost:3306)/activitymanagement")
 	if err != nil {
 		fmt.Println("Error connecting to the database:", err)
 		return
