@@ -1,17 +1,9 @@
-<!-- +page.svelte -->
-<!-- <script context="module" lang="ts">
-    import type { PageLoad } from './$types';
-  
-    export const load: PageLoad = async ({ fetch }) => {
-      const response = await fetch('/api/activities');
-      const activities = await response.json();
-      return { activities };
-    };
-</script> -->
-  
 <script lang="ts">
-    import Card from '../../components/Card.svelte';
+    // import type { PageData } from './$types';
+    // let { data }: { data: PageData } = $props();
     // export let data: { activities: Array<{ title: string; startDate: string; endDate: string; format: string }> };
+
+    import Card from '../../components/Card.svelte';
 
     // Mock data
     const data = {
