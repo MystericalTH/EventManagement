@@ -26,15 +26,15 @@
   
 <h1>Up Coming</h1>
 {#each upcomingActivities as activity}
-  <Card title={activity.title} startDate={activity.startDate} endDate={activity.endDate} format={activity.format} href={`/${activity.id.toString()}`} />
+  <Card title={activity.title} startDate={activity.startDate} endDate={activity.endDate} format={activity.format} href={`activity/${activity.id.toString()}`} />
 {/each}
   
 <h1>On Going</h1>
 {#each ongoingActivities as activity}
-  <Card title={activity.title} startDate={activity.startDate} endDate={activity.endDate} format={activity.format} href={`/${activity.id.toString()}`} />
+  <Card title={activity.title} startDate={activity.startDate} endDate={activity.endDate} format={activity.format} href={`activity/${activity.id.toString()}`} />
 {/each}
 
 <h1>Completed</h1>
 {#each completedActivities as activity}
-  <Card title={activity.title} startDate={activity.startDate} endDate={activity.endDate} format={activity.format} href={`/${activity.id.toString()}`} />
+  <Card title={activity.title} startDate={activity.startDate} endDate={activity.endDate} format={activity.format} href={`activity/${activity.id.toString()}`} />
 {/each}
