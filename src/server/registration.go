@@ -2,38 +2,49 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	"encoding/json"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 // Project Registration struct
 type PjRegist struct {
-	ProjectID   int
-	MemberID    int
-	Role        string
-	Expectation string
-	Datetime    string
+	ProjectID   int    `json:"projectID"`
+	MemberID    int    `json:"memberID"`
+	Role        string `json:"role"`
+	Expectation string `json:"expectation"`
+	Datetime    string `json:"datetime"`
 }
 
 // Workshop Registration struct
 type WsRegist struct {
-	WorkshopID  int
-	MemberID    int
-	Role        string
-	Expectation string
-	Datetime    string
+	WorkshopID  int    `json:"workshopID"`
+	MemberID    int    `json:"memberID"`
+	Role        string `json:"role"`
+	Expectation string `json:"expectation"`
+	Datetime    string `json:"datetime"`
+}
+
+func registration() {
+	// Initialize the database connection (replace with your DSN)
+	var err error
+	db, err = sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/dbname")
+	if err != nil {
+		log.Fatal("Failed to connect to database:", err)
+	}
+	defer db.Close()
+
+	http.HandleFunc("/registration", registrationHandler)
+	log.Println("Server starting on :8080...")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func registrationHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		getPjRegist(w, r)
-		getWsRegist(w, r)
 	case "POST":
 		postPjRegist(w, r)
-		postWsRegist(w, r)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
@@ -54,8 +65,9 @@ func getPjRegist(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Output fetched data, e.g., in JSON format or render with a template
-	fmt.Fprintf(w, "Project Registration: %+v", pjRegist)
+	// Return the data as JSON
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(pjRegist)
 }
 
 func getWsRegist(w http.ResponseWriter, r *http.Request) {
@@ -73,84 +85,43 @@ func getWsRegist(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Output fetched data, e.g., in JSON format or render with a template
-	fmt.Fprintf(w, "Workshop Registration: %+v", wsRegist)
+	// Return the data as JSON
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(wsRegist)
 }
 
 func postPjRegist(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, "Failed to parse form data: "+err.Error(), http.StatusBadRequest)
+	var pjRegist PjRegist
+	if err := json.NewDecoder(r.Body).Decode(&pjRegist); err != nil {
+		http.Error(w, "Invalid JSON payload: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	projectID, err := strconv.Atoi(r.FormValue("projectID"))
-	if err != nil {
-		http.Error(w, "Invalid projectID", http.StatusBadRequest)
-		return
-	}
-
-	memberID, err := strconv.Atoi(r.FormValue("memberID"))
-	if err != nil {
-		http.Error(w, "Invalid memberID", http.StatusBadRequest)
-		return
-	}
-
-	role := r.FormValue("role")
-	expectation := r.FormValue("expectation")
-	datetime := r.FormValue("datetime")
-
-	_, err = db.Exec("INSERT INTO projectRegistration (projectID, memberID, role, expectation, datetime) VALUES (?, ?, ?, ?, ?)",
-		projectID, memberID, role, expectation, datetime)
+	_, err := db.Exec("INSERT INTO projectRegistration (projectID, memberID, role, expectation, datetime) VALUES (?, ?, ?, ?, ?)",
+		pjRegist.ProjectID, pjRegist.MemberID, pjRegist.Role, pjRegist.Expectation, pjRegist.Datetime)
 	if err != nil {
 		http.Error(w, "Failed to insert project registration: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("Project registration created successfully"))
 }
 
 func postWsRegist(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, "Failed to parse form data: "+err.Error(), http.StatusBadRequest)
+	var wsRegist WsRegist
+	if err := json.NewDecoder(r.Body).Decode(&wsRegist); err != nil {
+		http.Error(w, "Invalid JSON payload: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	workshopID, err := strconv.Atoi(r.FormValue("workshopID"))
-	if err != nil {
-		http.Error(w, "Invalid workshopID", http.StatusBadRequest)
-		return
-	}
-
-	memberID, err := strconv.Atoi(r.FormValue("memberID"))
-	if err != nil {
-		http.Error(w, "Invalid memberID", http.StatusBadRequest)
-		return
-	}
-
-	role := r.FormValue("role")
-	expectation := r.FormValue("expectation")
-	datetime := r.FormValue("datetime")
-
-	_, err = db.Exec("INSERT INTO workshopRegistration (workshopID, memberID, role, expectation, datetime) VALUES (?, ?, ?, ?, ?)",
-		workshopID, memberID, role, expectation, datetime)
+	_, err := db.Exec("INSERT INTO workshopRegistration (workshopID, memberID, role, expectation, datetime) VALUES (?, ?, ?, ?, ?)",
+		wsRegist.WorkshopID, wsRegist.MemberID, wsRegist.Role, wsRegist.Expectation, wsRegist.Datetime)
 	if err != nil {
 		http.Error(w, "Failed to insert workshop registration: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("Workshop registration created successfully"))
-}
-
-func registration() {
-	// Initialize the database connection (replace with your DSN)
-	var err error
-	db, err = sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/dbname")
-	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
-	}
-	defer db.Close()
-
-	http.HandleFunc("/registration", registrationHandler)
-	log.Println("Server starting on :8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
 }
