@@ -6,10 +6,25 @@
     let maxNumber = 0;
     let format = '';
     let description = '';
-    let proposeDateTime = '';
+    let advisor = '';
+    let startTime = '';
+    let endTime = '';
+
+    const formatDateTime = (date: Date): string => {
+      const pad = (num: number) => String(num).padStart(2, '0');
+      const year = date.getFullYear();
+      const month = pad(date.getMonth() + 1);
+      const day = pad(date.getDate());
+      const hours = pad(date.getHours());
+      const minutes = pad(date.getMinutes());
+      const seconds = pad(date.getSeconds());
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    };
 
     const handleProposalSubmit = async (event: Event) => {
       event.preventDefault();
+
+      const proposeDateTime = formatDateTime(new Date());
   
       const formData = {
       title,
@@ -19,7 +34,10 @@
       maxNumber,
       format,
       description,
-      proposeDateTime
+      proposeDateTime,
+      advisor,
+      startTime,
+      endTime
     };
 
     try {
@@ -40,7 +58,6 @@
       console.error('Error submitting form:', error);
     }
   };
-
 </script>
 
 <h1>Activity Proposal</h1>
@@ -51,75 +68,68 @@
     </div>
     <div>
         <label for="format">Format:</label>
-        <input type="text" id="format" bind:value={format} required />
-    </div>
-    <div>
-        <label for="startDate">Start Date:</label>
-        <input type="text" id="startDate" bind:value={startDate} required />
-    </div>
-    <div>
-        <label for="endDate">End Date:</label>
-        <input type="text" id="endDate" bind:value={endDate} required />
+        <select id="format" bind:value={format} required>
+          <option value="" disabled selected>Select format</option>
+          <option value="project">Project</option>
+          <option value="workshop">Workshop</option>
+        </select>
     </div>
 
     {#if format === 'project'}
-
+      <div>
+        <label for="startDate">Start Date:</label>
+        <input type="text" id="startDate" bind:value={startDate} required />
+      </div>
+      <div>
+          <label for="endDate">End Date:</label>
+          <input type="text" id="endDate" bind:value={endDate} required />
+      </div>
+      <div>
+        <label for="maxNumber">Number of participant:</label>
+        <input type="number" id="maxNumber" bind:value={maxNumber} required />
+      </div>
+      <div>
+        <label for="advisor">Advisor:</label>
+        <input type="text" id="advisor" bind:value={advisor} required />
+      </div>
+      <div>
+        <label for="description">Description:</label>
+        <textarea id="description" bind:value={description} required></textarea>
+      </div>
 
     {:else if format === 'workshop'}
+      <div>
+        <label for="startDate">Start Date:</label>
+        <input type="text" id="startDate" bind:value={startDate} required />
+      </div>
+      <div>
+        <label for="startDate">Start Time:</label>
+        <input type="text" id="startDate" bind:value={startDate} required />
+      </div>
+      <div>
+        <label for="endDate">End Date:</label>
+        <input type="text" id="endDate" bind:value={endDate} required />
+      </div>
+      <div>
+        <label for="endTime">End Time:</label>
+        <input type="text" id="endTime" bind:value={endTime} required />
+      </div>
+      <div>
+        <label for="maxNumber">Number of participant:</label>
+        <input type="number" id="maxNumber" bind:value={maxNumber} required />
+      </div>
+      <div>
+        <label for="description">Description:</label>
+        <textarea id="description" bind:value={description} required></textarea>
+      </div>
+      <div>
+        <label for="activityRole">Activity Role:</label>
+      </div>
+    {/if}
 
-
-
-    <button type="submit">Submit</button>
+  <button type="submit">Submit</button>
 </form>
 
 <style>
-    h1 {
-      text-align: center;
-      font-weight: bold;
-      font-size: xx-large;
-      margin: 20px 0;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      width: 300px;
-      margin: 0 auto;
-    }
-  
-    div {
-      margin-bottom: 16px;
-    }
-  
-    label {
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
-  
-    input {
-      padding: 8px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    textarea {
-      padding: 8px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-  
-    button {
-      padding: 10px;
-      font-size: 16px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-  
-    button:hover {
-      background-color: #0056b3;
-    }
-  </style>
+  @import '../../styles.css';
+</style>
