@@ -1,30 +1,48 @@
 package main
 
 import (
-	"fmt"
 	"database/sql"
+	"fmt"
 	"net/http"
-	"html/template"
-
-	_ "github.com/go-sql-driver/mysql"
+	"strconv"
+	"time"
 )
 
+// Define chatDevAd struct
 type chatDevAd struct {
-	messageID int
-	adminID int
+	messageID   int
+	adminID     int
 	developerID int
-	message string
-	datetime datetime
+	message     string
+	datetime    time.Time
 }
 
+// Define Developer struct
 type Developer struct {
 	developerID int
-	email string
+	email       string
 }
 
+// Define Admin struct
 type Admin struct {
 	adminID int
-	email string
+	email   string
+}
+
+func chat() {
+	var err error
+	// Initialize database connection
+	db, err = sql.Open("mysql", "username:password@tcp(127.0.0.1:3306)/database_name")
+	if err != nil {
+		fmt.Println("Error connecting to the database:", err)
+		return
+	}
+	defer db.Close()
+
+	http.HandleFunc("/chat", chatHandler)
+	http.HandleFunc("/admin", adminHandler)
+	http.HandleFunc("/developer", developerHandler)
+	http.ListenAndServe(":8080", nil)
 }
 
 func chatHandler(w http.ResponseWriter, r *http.Request) {
@@ -39,21 +57,46 @@ func chatHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getChat(w http.ResponseWriter, r *http.Request) {
-	// Query the database for chat information
 	var chat chatDevAd
-	err := db.QueryRow("SELECT id, adminID, developerID, message, datetime FROM chat WHERE id = ?", chat.messageID).Scan(&chat.messageID, &chat.adminID, &chat.developerID, &chat.message, &chat.datetime)
+	err := db.QueryRow("SELECT messageID, adminID, developerID, message, datetime FROM chat WHERE messageID = ?", r.URL.Query().Get("messageID")).Scan(
+		&chat.messageID, &chat.adminID, &chat.developerID, &chat.message, &chat.datetime)
 	if err != nil {
 		http.Error(w, "Failed to fetch chat information: "+err.Error(), http.StatusInternalServerError)
 		return
+	}
+
+	// Display chat information as an example
+	fmt.Fprintf(w, "Chat message: %v", chat)
 }
 
 func postChat(w http.ResponseWriter, r *http.Request) {
-	// Insert chat information into the database
 	var chat chatDevAd
-	err := db.QueryRow("INSERT INTO chat (adminID, developerID, message, datetime) VALUES (?, ?, ?, ?)", chat.adminID, chat.developerID, chat.message, chat.datetime)
+
+	// Convert FormValue strings to integers
+	adminID, err := strconv.Atoi(r.FormValue("adminID"))
+	if err != nil {
+		http.Error(w, "Invalid adminID: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+	developerID, err := strconv.Atoi(r.FormValue("developerID"))
+	if err != nil {
+		http.Error(w, "Invalid developerID: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	chat.adminID = adminID
+	chat.developerID = developerID
+	chat.message = r.FormValue("message")
+	chat.datetime = time.Now()
+
+	// Insert chat information into the database
+	_, err = db.Exec("INSERT INTO chat (adminID, developerID, message, datetime) VALUES (?, ?, ?, ?)", chat.adminID, chat.developerID, chat.message, chat.datetime)
 	if err != nil {
 		http.Error(w, "Failed to insert chat information: "+err.Error(), http.StatusInternalServerError)
 		return
+	}
+
+	fmt.Fprintln(w, "Chat message inserted successfully")
 }
 
 func adminHandler(w http.ResponseWriter, r *http.Request) {
@@ -68,21 +111,26 @@ func adminHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getAdmin(w http.ResponseWriter, r *http.Request) {
-	// Query the database for admin information
 	var admin Admin
-	err := db.QueryRow("SELECT id, email FROM admin WHERE id = ?", admin.adminID).Scan(&admin.adminID, &admin.email)
+	err := db.QueryRow("SELECT adminID, email FROM admin WHERE adminID = ?", r.URL.Query().Get("adminID")).Scan(&admin.adminID, &admin.email)
 	if err != nil {
 		http.Error(w, "Failed to fetch admin information: "+err.Error(), http.StatusInternalServerError)
 		return
+	}
+
+	// Display admin information as an example
+	fmt.Fprintf(w, "Admin email: %v", admin.email)
 }
 
 func postAdmin(w http.ResponseWriter, r *http.Request) {
-	// Insert admin information into the database
-	var admin Admin
-	err := db.QueryRow("INSERT INTO admin (email) VALUES (?)", admin.email)
+	email := r.FormValue("email")
+	_, err := db.Exec("INSERT INTO admin (email) VALUES (?)", email)
 	if err != nil {
 		http.Error(w, "Failed to insert admin information: "+err.Error(), http.StatusInternalServerError)
 		return
+	}
+
+	fmt.Fprintln(w, "Admin inserted successfully")
 }
 
 func developerHandler(w http.ResponseWriter, r *http.Request) {
@@ -97,19 +145,24 @@ func developerHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getDeveloper(w http.ResponseWriter, r *http.Request) {
-	// Query the database for developer information
 	var developer Developer
-	err := db.QueryRow("SELECT id, email FROM developer WHERE id = ?", developer.developerID).Scan(&developer.developerID, &developer.email)
+	err := db.QueryRow("SELECT developerID, email FROM developer WHERE developerID = ?", r.URL.Query().Get("developerID")).Scan(&developer.developerID, &developer.email)
 	if err != nil {
 		http.Error(w, "Failed to fetch developer information: "+err.Error(), http.StatusInternalServerError)
 		return
+	}
+
+	// Display developer information as an example
+	fmt.Fprintf(w, "Developer email: %v", developer.email)
 }
 
 func postDeveloper(w http.ResponseWriter, r *http.Request) {
-	// Insert developer information into the database
-	var developer Developer
-	err := db.QueryRow("INSERT INTO developer (email) VALUES (?)", developer.email)
+	email := r.FormValue("email")
+	_, err := db.Exec("INSERT INTO developer (email) VALUES (?)", email)
 	if err != nil {
 		http.Error(w, "Failed to insert developer information: "+err.Error(), http.StatusInternalServerError)
 		return
+	}
+
+	fmt.Fprintln(w, "Developer inserted successfully")
 }
