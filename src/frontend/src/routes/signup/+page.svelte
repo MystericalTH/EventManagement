@@ -58,63 +58,11 @@
     </div>
     <div>
         <label for="interest">What is your interest:</label>
-        <textarea type="url" id="interest" bind:value={interest} required />
+        <textarea id="interest" bind:value={interest} required></textarea>
     </div>
     <div>
         <label for="reason">Why do you want to join the club:</label>
-        <textarea type="url" id="reason" bind:value={reason} required />
+        <textarea id="reason" bind:value={reason} required></textarea>
     </div>
     <button type="submit">Submit</button>
   </form>
-  
-  <style>
-    h1 {
-      text-align: center;
-      font-weight: bold;
-      font-size: xx-large;
-      margin: 20px 0;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      width: 300px;
-      margin: 0 auto;
-    }
-  
-    div {
-      margin-bottom: 16px;
-    }
-  
-    label {
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
-  
-    input {
-      padding: 8px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    textarea {
-      padding: 8px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-  
-    button {
-      padding: 10px;
-      font-size: 16px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-  
-    button:hover {
-      background-color: #0056b3;
-    }
-  </style>
