@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"encoding/gob"
 	"encoding/json"
 	"fmt"
@@ -9,14 +10,11 @@ import (
 	"log"
 	"net/http"
 	"os"
-	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/gorilla/sessions"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
-
-
 
 var (
 	// Replace with your actual Google credentials
