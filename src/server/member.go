@@ -1,11 +1,11 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 type Member struct {
@@ -46,7 +46,7 @@ func getMember(w http.ResponseWriter, r *http.Request) {
 
 	// Query the database for member information
 	var member Member
-	err := db.QueryRow("SELECT id, fName, lName, email, phone, githubUrl, interest, reason, acceptDateTime, acceptAdmin FROM members WHERE id = ?", memberID).
+	err := db.QueryRow("SELECT memberID, fName, lName, email, phone, githubUrl, interest, reason, acceptDateTime, acceptAdmin FROM members WHERE memberID = ?", memberID).
 		Scan(&member.MemberID, &member.FName, &member.LName, &member.Email, &member.Phone, &member.GithubUrl, &member.Interest, &member.Reason, &member.AcceptDateTime, &member.AcceptAdmin)
 	if err != nil {
 		http.Error(w, "Failed to fetch member information: "+err.Error(), http.StatusInternalServerError)
@@ -127,7 +127,7 @@ func patchMember(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Remove the trailing comma and space, add WHERE clause
-	query = query[:len(query)-2] + " WHERE id = ?"
+	query = query[:len(query)-2] + " WHERE memberID = ?"
 	params = append(params, member.MemberID)
 
 	// Update member in the database
@@ -150,7 +150,7 @@ func deleteMember(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Delete member from the database
-	_, err := db.Exec("DELETE FROM members WHERE id = ?", memberID)
+	_, err := db.Exec("DELETE FROM members WHERE memberID = ?", memberID)
 	if err != nil {
 		http.Error(w, "Failed to delete member: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -158,4 +158,19 @@ func deleteMember(w http.ResponseWriter, r *http.Request) {
 
 	// Respond with success
 	w.Write([]byte("Member deleted successfully"))
+}
+
+func member() {
+	// Initialize the database connection (replace with your DSN)
+	var err error
+	db, err = sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/dbname")
+	if err != nil {
+		log.Fatal("Failed to connect to database:", err)
+	}
+
+	defer db.Close()
+
+	http.HandleFunc("/member", memberHandler)
+	log.Println("Server starting on :8080...")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
