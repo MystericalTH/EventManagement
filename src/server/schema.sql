@@ -1,7 +1,3 @@
-DROP DATABASE IF EXISTS activitymanagement;
-CREATE DATABASE activitymanagement;
-USE activitymanagement;
-
 CREATE TABLE Admin (
     adminID INT PRIMARY KEY,
     email VARCHAR(320) NOT NULL
