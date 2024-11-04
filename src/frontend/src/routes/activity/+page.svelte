@@ -1,7 +1,9 @@
 <script lang="ts">
-    export let data: { activities: Array<{ title: string; startDate: string; endDate: string; format: string; href: string }> };
+    import type { ActivityData } from '../../lib/types/activity.ts';
 
-    import Card from '../../components/Card.svelte';
+    export let data: { activities: Array<ActivityData> };
+
+    import Card from '../../lib/components/Card.svelte';
 
     const currentDate = new Date();
 
@@ -24,15 +26,15 @@
   
 <h1>Up Coming</h1>
 {#each upcomingActivities as activity}
-  <Card title={activity.title} startDate={activity.startDate} endDate={activity.endDate} format={activity.format} href={activity.href} />
+  <Card title={activity.title} startDate={activity.startDate} endDate={activity.endDate} format={activity.format} href={`/${activity.id.toString()}`} />
 {/each}
   
 <h1>On Going</h1>
 {#each ongoingActivities as activity}
-  <Card title={activity.title} startDate={activity.startDate} endDate={activity.endDate} format={activity.format} href={activity.href} />
+  <Card title={activity.title} startDate={activity.startDate} endDate={activity.endDate} format={activity.format} href={`/${activity.id.toString()}`} />
 {/each}
 
 <h1>Completed</h1>
 {#each completedActivities as activity}
-  <Card title={activity.title} startDate={activity.startDate} endDate={activity.endDate} format={activity.format} href={activity.href} />
+  <Card title={activity.title} startDate={activity.startDate} endDate={activity.endDate} format={activity.format} href={`/${activity.id.toString()}`} />
 {/each}
