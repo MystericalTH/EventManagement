@@ -9,11 +9,14 @@ import (
 	"log"
 	"net/http"
 	"os"
+	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/gorilla/sessions"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
+
+
 
 var (
 	// Replace with your actual Google credentials
@@ -27,6 +30,10 @@ var (
 	}
 	sessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 	sessionName  = "session-one"
+)
+
+var (
+	db *sql.DB
 )
 
 type UserInfo struct {

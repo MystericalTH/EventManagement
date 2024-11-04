@@ -9,10 +9,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var (
-	db *sql.DB
-)
-
 func connect() {
 	db, err := sql.Open("mysql", "root:root@tcp(localhost:3306)/activitymanagement")
 	if err != nil {
