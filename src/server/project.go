@@ -2,14 +2,30 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	"encoding/json"
 	"log"
 	"net/http"
 )
 
 type Project struct {
-	ProjectID int
-	Advisor   string
+	ProjectID int    `json:"projectID"`
+	Advisor   string `json:"advisor"`
+}
+
+// Global variable for the database connection
+
+func project() {
+	// Initialize the database connection (replace with your DSN)
+	var err error
+	db, err = sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/dbname")
+	if err != nil {
+		log.Fatal("Failed to connect to database:", err)
+	}
+	defer db.Close()
+
+	http.HandleFunc("/project", projectHandler)
+	log.Println("Server starting on :8080...")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func projectHandler(w http.ResponseWriter, r *http.Request) {
@@ -39,48 +55,42 @@ func getProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Render project information as needed, e.g., to a template or JSON (assuming JSON here for simplicity)
+	// Return project information as JSON
 	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, `{"projectID": %d, "advisor": "%s"}`, project.ProjectID, project.Advisor)
+	json.NewEncoder(w).Encode(project)
 }
 
 func postProject(w http.ResponseWriter, r *http.Request) {
-	// Parse form data
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, "Failed to parse form data: "+err.Error(), http.StatusBadRequest)
+	// Decode the JSON request body into a Project struct
+	var project Project
+	if err := json.NewDecoder(r.Body).Decode(&project); err != nil {
+		http.Error(w, "Invalid JSON payload: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// Retrieve advisor value from form
-	advisor := r.FormValue("advisor")
-	if advisor == "" {
+	// Check that the advisor field is provided
+	if project.Advisor == "" {
 		http.Error(w, "Advisor field is required", http.StatusBadRequest)
 		return
 	}
 
 	// Insert project information into the database
-	_, err := db.Exec("INSERT INTO project (advisor) VALUES (?)", advisor)
+	result, err := db.Exec("INSERT INTO project (advisor) VALUES (?)", project.Advisor)
 	if err != nil {
 		http.Error(w, "Failed to insert project information: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Respond with success
-	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("Project created successfully"))
-}
-
-func project() {
-	// Initialize the database connection (replace with your DSN)
-	var err error
-	db, err = sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/dbname")
+	// Retrieve the inserted project's ID
+	projectID, err := result.LastInsertId()
 	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
+		http.Error(w, "Failed to retrieve last insert ID: "+err.Error(), http.StatusInternalServerError)
+		return
 	}
+	project.ProjectID = int(projectID)
 
-	defer db.Close()
-
-	http.HandleFunc("/project", projectHandler)
-	log.Println("Server starting on :8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	// Respond with the created project as JSON
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(project)
 }
