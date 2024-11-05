@@ -37,36 +37,32 @@
     }
   };
 </script>
-  
-<h1>Sign Up</h1>
-<form on:submit={handleMemberSubmit}>
-  <div>
-    <label for="name">Name:</label>
-    <input type="text" id="name" bind:value={name} required />
-  </div>
-  <div>
-    <label for="email">Email:</label>
-    <input type="email" id="email" bind:value={email} required />
-  </div>
-  <div>
-    <label for="phone">Phone:</label>
-    <input type="tel" id="phone" bind:value={phone} required />
-  </div>
-  <div>
-    <label for="githubUrl">GitHub:</label>
-    <input type="url" id="githubUrl" bind:value={githubUrl} required />
-  </div>
-  <div>
-      <label for="interest">What is your interest:</label>
-      <textarea id="interest" bind:value={interest} required></textarea>
-  </div>
-  <div>
-      <label for="reason">Why do you want to join the club:</label>
-      <textarea id="reason" bind:value={reason} required></textarea>
-  </div>
-  <button type="submit">Submit</button>
-</form>
 
-<style>
-  @import '../../styles.css';
-</style>
+<h1 class="text-center font-bold text-4xl my-5">Sign Up</h1>
+<form on:submit={handleMemberSubmit} class="flex flex-col w-72 mx-auto">
+  <div class="mb-4">
+    <label for="name" class="mb-2 font-bold">Name:</label>
+    <input type="text" id="name" bind:value={name} required class="p-2 text-lg border border-gray-300 rounded" />
+  </div>
+  <div class="mb-4">
+    <label for="email" class="mb-2 font-bold">Email:</label>
+    <input type="email" id="email" bind:value={email} required class="p-2 text-lg border border-gray-300 rounded" />
+  </div>
+  <div class="mb-4">
+    <label for="phone" class="mb-2 font-bold">Phone:</label>
+    <input type="tel" id="phone" bind:value={phone} required class="p-2 text-lg border border-gray-300 rounded" />
+  </div>
+  <div class="mb-4">
+    <label for="githubUrl" class="mb-2 font-bold">GitHub:</label>
+    <input type="url" id="githubUrl" bind:value={githubUrl} required class="p-2 text-lg border border-gray-300 rounded" />
+  </div>
+  <div class="mb-4">
+    <label for="interest" class="mb-2 font-bold">What is your interest:</label>
+    <textarea id="interest" bind:value={interest} required class="p-2 text-lg border border-gray-300 rounded"></textarea>
+  </div>
+  <div class="mb-4">
+    <label for="reason" class="mb-2 font-bold">Why do you want to join the club:</label>
+    <textarea id="reason" bind:value={reason} required class="p-2 text-lg border border-gray-300 rounded"></textarea>
+  </div>
+  <button type="submit" class="p-2 text-lg bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700 mt-4">Submit</button>
+</form>

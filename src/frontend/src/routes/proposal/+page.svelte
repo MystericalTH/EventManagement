@@ -70,76 +70,71 @@
   };
 </script>
 
-<h1>Activity Proposal</h1>
-<form on:submit={handleProposalSubmit}>
-    <div>
-        <label for="title">Title:</label>
-        <input type="text" id="title" bind:value={title} required />
-    </div>
-    <div>
-        <label for="format">Format:</label>
-        <select id="format" bind:value={format} required>
-          <option value="" disabled selected>Select format</option>
-          <option value="project">Project</option>
-          <option value="workshop">Workshop</option>
-        </select>
-    </div>
+<h1 class="text-center font-bold text-4xl my-5">Activity Proposal</h1>
+<form on:submit={handleProposalSubmit} class="flex flex-col w-72 mx-auto">
+  <div class="mb-4">
+    <label for="title" class="mb-2 font-bold">Title:</label>
+    <input type="text" id="title" bind:value={title} required class="p-2 text-lg border border-gray-300 rounded" />
+  </div>
+  <div class="mb-4">
+    <label for="format" class="mb-2 font-bold">Format:</label>
+    <select id="format" bind:value={format} required class="p-2 text-lg border border-gray-300 rounded">
+      <option value="" disabled selected>Select format</option>
+      <option value="project">Project</option>
+      <option value="workshop">Workshop</option>
+    </select>
+  </div>
 
-    {#if format === 'project'}
-      <div>
-        <label for="startDate">Start Date:</label>
-        <input type="text" id="startDate" bind:value={startDate} required />
-      </div>
-      <div>
-          <label for="endDate">End Date:</label>
-          <input type="text" id="endDate" bind:value={endDate} required />
-      </div>
-      <div>
-        <label for="advisor">Advisor:</label>
-        <input type="text" id="advisor" bind:value={advisor} required />
-      </div>
+  {#if format === 'project'}
+    <div class="mb-4">
+      <label for="startDate" class="mb-2 font-bold">Start Date:</label>
+      <input type="text" id="startDate" bind:value={startDate} required class="p-2 text-lg border border-gray-300 rounded" />
+    </div>
+    <div class="mb-4">
+      <label for="endDate" class="mb-2 font-bold">End Date:</label>
+      <input type="text" id="endDate" bind:value={endDate} required class="p-2 text-lg border border-gray-300 rounded" />
+    </div>
+    <div class="mb-4">
+      <label for="advisor" class="mb-2 font-bold">Advisor:</label>
+      <input type="text" id="advisor" bind:value={advisor} required class="p-2 text-lg border border-gray-300 rounded" />
+    </div>
+  {:else if format === 'workshop'}
+    <div class="mb-4">
+      <label for="startDate" class="mb-2 font-bold">Start Date:</label>
+      <input type="text" id="startDate" bind:value={startDate} required class="p-2 text-lg border border-gray-300 rounded" />
+    </div>
+    <div class="mb-4">
+      <label for="startTime" class="mb-2 font-bold">Start Time:</label>
+      <input type="text" id="startTime" bind:value={startTime} required class="p-2 text-lg border border-gray-300 rounded" />
+    </div>
+    <div class="mb-4">
+      <label for="endDate" class="mb-2 font-bold">End Date:</label>
+      <input type="text" id="endDate" bind:value={endDate} required class="p-2 text-lg border border-gray-300 rounded" />
+    </div>
+    <div class="mb-4">
+      <label for="endTime" class="mb-2 font-bold">End Time:</label>
+      <input type="text" id="endTime" bind:value={endTime} required class="p-2 text-lg border border-gray-300 rounded" />
+    </div>
+  {/if}
+  
+  <div class="mb-4">
+    <label for="maxNumber" class="mb-2 font-bold">Number of participant:</label>
+    <input type="number" id="maxNumber" bind:value={maxNumber} required class="p-2 text-lg border border-gray-300 rounded" />
+  </div>
+  <div class="mb-4">
+    <label for="description" class="mb-2 font-bold">Description:</label>
+    <textarea id="description" bind:value={description} required class="p-2 text-lg border border-gray-300 rounded"></textarea>
+  </div>
+  <div class="mb-4">
+    <label for="activityRole" class="mb-2 font-bold">Activity Role:</label>
+    <input type="text" id="newActivityRole" bind:value={newActivityRole} class="p-2 text-lg border border-gray-300 rounded" />
+    <button type="button" on:click={addActivityRole} class="p-2 text-lg bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700 mt-2">Add Role</button>
+    <ul class="mt-2">
+      {#each activityRole as role}
+        <li class="list-disc ml-5">{role}</li>
+      {/each}
+    </ul>
+  </div>
 
-    {:else if format === 'workshop'}
-      <div>
-        <label for="startDate">Start Date:</label>
-        <input type="text" id="startDate" bind:value={startDate} required />
-      </div>
-      <div>
-        <label for="startDate">Start Time:</label>
-        <input type="text" id="startDate" bind:value={startDate} required />
-      </div>
-      <div>
-        <label for="endDate">End Date:</label>
-        <input type="text" id="endDate" bind:value={endDate} required />
-      </div>
-      <div>
-        <label for="endTime">End Time:</label>
-        <input type="text" id="endTime" bind:value={endTime} required />
-      </div>
-    {/if}
-    
-    <div>
-      <label for="maxNumber">Number of participant:</label>
-      <input type="number" id="maxNumber" bind:value={maxNumber} required />
-    </div>
-    <div>
-      <label for="description">Description:</label>
-      <textarea id="description" bind:value={description} required></textarea>
-    </div>
-    <div>
-      <label for="activityRole">Activity Role:</label>
-      <input type="text" id="newActivityRole" bind:value={newActivityRole} />
-      <button type="button" on:click={addActivityRole}>Add Role</button>
-      <ul>
-          {#each activityRole as role}
-              <li>{role}</li>
-          {/each}
-      </ul>
-    </div>
-
-  <button type="submit">Submit</button>
+  <button type="submit" class="p-2 text-lg bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-700 mt-4">Submit</button>
 </form>
-
-<style>
-  @import '../../styles.css';
-</style>
