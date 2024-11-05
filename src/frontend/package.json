@@ -5,7 +5,6 @@
 	"scripts": {
 		"dev": "vite dev",
 		"dev-docker": "vite dev --host",
-		"dev:msw-server": "concurrently \"cd msw && ts-node server.ts\" \"npm run dev\"",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
