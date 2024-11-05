@@ -3,5 +3,7 @@ export interface ActivityData {
     title : string;
     startDate : string;
     endDate : string;
+    maxNumber : number;
     format : string; 
+    description : string;
 };

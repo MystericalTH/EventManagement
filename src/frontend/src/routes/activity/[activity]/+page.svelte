@@ -1,8 +1,16 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { ActivityData } from '../../../lib/types/activity.ts';
 
-	let { data }: { data: PageData } = $props();
+	export let data: { activity: ActivityData };
 </script>
 
-<h1>{data.post.title}</h1>
-<div>{@html data.post.content}</div>
+<div class="items-center text-center mx-auto max-w-md">
+	<h1 class="text-2xl font-semibold my-10">{data.activity.title}</h1>
+	<div class="flex items-center space-x-72">
+		<span class="material-icons text-gray-600 font-medium leading-none align-middle">{data.activity.startDate}</span>
+		<span class="font-medium leading-none align-middle">{data.activity.format}</span>
+	</div>
+	<div class="mt-10 text-lg">
+		<p>{data.activity.description}</p>
+	</div>
+</div>
