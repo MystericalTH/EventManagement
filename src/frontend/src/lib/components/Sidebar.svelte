@@ -1,110 +1,56 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
-	type SidebarItem = {
+	export let items: {
 		text: string;
 		href: string | null;
-		subitems: SidebarItem[] | null;
-	};
-	export let items: Array<SidebarItem> = [];
-
-	const openItems = writable(new Set<number>());
-
-	function toggleItem(index: number) {
+		subitems: { text: string; href: string | null; subitems: null }[] | null;
+	}[];
+	const openItems = writable(new Set<string>());
+	function toggleItem(item: string) {
 		openItems.update((set) => {
-			if (set.has(index)) {
-				set.delete(index);
+			if (set.has(item)) {
+				set.delete(item);
 			} else {
-				set.add(index);
+				set.add(item);
 			}
 			return set;
 		});
 	}
-
-	export let logout: boolean = false;
 </script>
 
-<aside>
-	<div class="sidebar-container">
-		<nav class="content">
-			<ul>
-				{#each items as item, index}
-					<li>
-						{#if item.subitems}
-							<div
-								on:click={() => toggleItem(index)}
-								class="collapsible"
-								role="button"
-								aria-expanded={$openItems.has(index)}
-								aria-controls={'submenu-' + index}
-							>
-								{item.text}
-								<span class="arrow">{$openItems.has(index) ? '▼' : '▶'}</span>
-							</div>
-							{#if $openItems.has(index)}
-								<ul class="subitems">
-									{#each item.subitems as subitem}
-										<li><a href={subitem.href}>{subitem.text}</a></li>
-									{/each}
-								</ul>
-							{/if}
-						{:else}
-							<a href={item.href}>{item.text}</a>
-						{/if}
-					</li>
-				{/each}
-			</ul>
+<div class="bg-gray-700">
+	<div
+		class="sidebar-container font-custom m-4 flex h-[calc(100vh-2rem)] w-36 flex-col justify-between text-base tracking-wider"
+	>
+		<nav>
+			{#each items as item}
+				<div
+					role="button"
+					class="collapsible mb-2 flex cursor-pointer items-center justify-between text-white hover:text-indigo-300 hover:drop-shadow-lg"
+					on:click={() => toggleItem(item.text)}
+				>
+					<span>{item.text}</span>
+
+					{#if item.subitems}
+						<span class="arrow ml-2 text-xs">{$openItems.has(item.text) ? '▲' : '▼'}</span>
+					{/if}
+				</div>
+				{#if $openItems.has(item.text) && item.subitems}
+					<ul class="subitems pl-2 text-sm">
+						{#each item.subitems as subitem}
+							<li class="my-2">
+								<a
+									class="text-white text-white no-underline hover:text-indigo-300 hover:drop-shadow-lg"
+									href={subitem.href}>{subitem.text}</a
+								>
+							</li>
+						{/each}
+					</ul>
+				{/if}
+			{/each}
 		</nav>
-
-		{#if logout}
-			<div class="logout-button">
-				<a href="/api/logout">Logout</a>
-			</div>
-		{/if}
+		<button class="my-2 flex items-center text-white hover:text-rose-300 hover:drop-shadow-lg">
+			Logout
+		</button>
 	</div>
-</aside>
-
-<style>
-	aside {
-		width: 200px;
-		background-color: #2c3e50;
-		color: white;
-		padding: 1rem;
-	}
-	nav ul {
-		list-style: none;
-		padding: 0px;
-	}
-	nav li {
-		margin: 0.5rem;
-	}
-	nav a {
-		color: white;
-		text-decoration: none;
-	}
-	.sidebar-container {
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		height: 95vh; /* Full viewport height */
-		color: #fff;
-	}
-	.collapsible {
-		cursor: pointer;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-	.arrow {
-		margin-left: 10px;
-	}
-	.subitems {
-		font-size: 80%;
-		padding-left: 0.5rem;
-	}
-	.logout-button {
-		margin: 0.5rem;
-		height: 5vh;
-		display: flex;
-		align-items: center;
-	}
-</style>
+</div>

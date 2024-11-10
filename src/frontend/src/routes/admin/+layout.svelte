@@ -1,9 +1,9 @@
-<script>
-	import Sidebar from '$lib/Sidebar.svelte';
+<script lang="ts">
+	import Sidebar from '$lib/components/Sidebar.svelte';
 
 	const sidebarItems = [
 		{
-			text: 'Activity',
+			text: 'Activities',
 			href: null,
 			subitems: [
 				{ text: 'Manage Activities', href: '/admin/activities', subitems: null },
@@ -22,21 +22,9 @@
 	];
 </script>
 
-<div class="layout">
+<div class="flex h-screen">
 	<Sidebar items={sidebarItems} />
-	<main>
+	<main class="flex-1 bg-gray-100 p-4">
 		<slot></slot>
 	</main>
 </div>
-
-<style>
-	.layout {
-		display: flex;
-		height: 100vh;
-	}
-	main {
-		flex: 1;
-		padding: 1rem;
-		background-color: #ecf0f1;
-	}
-</style>
