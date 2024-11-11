@@ -13,5 +13,8 @@ export const handlers = [
 				email: 'test2@email.com'
 			}
 		]);
+	}),
+	http.get('/api/verify', ({ params }) => {
+		return HttpResponse.json({ role: 'admin' });
 	})
 ];
