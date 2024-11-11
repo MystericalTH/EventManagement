@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../app.css';
-	import Sidebar from '$lib/Sidebar.svelte';
 	// Loaded from .env.local, guide covers this
 	// step in a moment.
 	const isMswEnabled = import.meta.env.VITE_MSW_ENABLED === 'true';
