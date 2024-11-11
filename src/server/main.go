@@ -5,10 +5,12 @@ import (
 	"encoding/gob"
 	"encoding/json"
 	"fmt"
-	"html/template"
+	"github.com/google/uuid"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
+	"strings"
 
 	"github.com/gorilla/sessions"
 	"golang.org/x/oauth2"
@@ -17,9 +19,10 @@ import (
 
 var (
 	// Replace with your actual Google credentials
-	port        = os.Getenv("LISTEN_PORT")
-	oauthConfig = &oauth2.Config{
-		RedirectURL:  fmt.Sprintf("http://localhost:%s/auth/google/callback", port),
+	port         = os.Getenv("LISTEN_PORT")
+	redirectPort = os.Getenv("REDIRECT_PORT")
+	oauthConfig  = &oauth2.Config{
+		RedirectURL:  fmt.Sprintf("http://localhost:%s/api/auth/google/callback", redirectPort),
 		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),     // Set in your environment
 		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"), // Set in your environment
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
@@ -40,32 +43,31 @@ func init() {
 }
 
 func main() {
-	http.HandleFunc("/", handleHome)
-	http.HandleFunc("/login", handleLogin)
-	http.HandleFunc("/auth/google/callback", handleCallback)
-
-	http.HandleFunc("/profile", handleProfile)
-	http.HandleFunc("/logout", handleLogout)
-
+	http.HandleFunc("/api/login", handleLogin)
+	http.HandleFunc("/api/auth/google/callback", handleCallback)
+	http.HandleFunc("/api/logout", handleLogout)
+	http.HandleFunc("/api/verify", handleVerifyRole)
 	log.Println("Server started at http://localhost:" + port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
-func handleHome(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprint(w, "Welcome! <a href='/api/login'>Login with Google</a>")
-}
-
 func handleLogin(w http.ResponseWriter, r *http.Request) {
 	// Redirect user to Google's OAuth consent page
-	url := oauthConfig.AuthCodeURL("state", oauth2.AccessTypeOffline)
-	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+	role := r.URL.Query().Get("role")
+	state := uuid.NewString() + "__" + role
+	stateUrl := oauthConfig.AuthCodeURL(url.QueryEscape(state), oauth2.AccessTypeOffline)
+	http.Redirect(w, r, stateUrl, http.StatusTemporaryRedirect)
 }
-
 func handleCallback(w http.ResponseWriter, r *http.Request) {
 	// Retrieve the authorization code from Google
 
 	code := r.URL.Query().Get("code")
+	state, err := url.QueryUnescape(r.URL.Query().Get("state"))
+	if err != nil {
+		http.Error(w, "Failed to unescape state: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	if code == "" {
 		http.Error(w, "Authorization code not found", http.StatusBadRequest)
 		return
@@ -94,39 +96,17 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	stateparts := strings.SplitN(state, "__", 2)
+	role := stateparts[1]
 	// Store user info in session
 	session, _ := sessionStore.Get(r, sessionName)
 	session.Values["user"] = userInfo
+	session.Values["role"] = role
+
 	session.Save(r, w)
 
 	// Redirect to profile
-	http.Redirect(w, r, "/profile", http.StatusFound)
-}
-
-func handleProfile(w http.ResponseWriter, r *http.Request) {
-	// Get the session
-	session, _ := sessionStore.Get(r, sessionName)
-
-	// Check if user is authenticated
-	userInfo, ok := session.Values["user"].(UserInfo)
-	if !ok {
-		http.Redirect(w, r, "/", http.StatusFound)
-		return
-	}
-
-	// Load profile template
-	tmpl, err := template.ParseFiles("templates/profile.html")
-	if err != nil {
-		http.Error(w, "Failed to load profile template: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Render template with user data
-	err = tmpl.Execute(w, userInfo)
-	if err != nil {
-		http.Error(w, "Failed to render profile template: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
+	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 func handleLogout(w http.ResponseWriter, r *http.Request) {
@@ -138,4 +118,14 @@ func handleLogout(w http.ResponseWriter, r *http.Request) {
 
 	// Redirect to home
 	http.Redirect(w, r, "/", http.StatusFound)
+}
+
+func handleVerifyRole(w http.ResponseWriter, r *http.Request) {
+	session, _ := sessionStore.Get(r, sessionName)
+	role, ok := session.Values["role"].(string)
+	if !ok {
+		role = "unknown"
+	}
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(w, "{\"role\":\"%s\"}", role)
 }

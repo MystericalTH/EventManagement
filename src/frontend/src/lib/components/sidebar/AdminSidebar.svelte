@@ -1,24 +1,23 @@
-<script>
-	import Sidebar from './BaseSidebar.svelte';
-	const sidebarItems = [
+<script lang="ts">
+	import type { SidebarItem } from '$lib/types/sidebar';
+	import BaseSidebar from './BaseSidebar.svelte';
+	const items: SidebarItem[] = [
 		{
 			text: 'Activity',
-			href: null,
 			subitems: [
-				{ text: 'Manage Activities', href: '/admin/activities', subitems: null },
-				{ text: 'Activity Requests', href: '/admin/activities/requests', subitems: null },
-				{ text: 'See Feedback', href: '/admin/activities/feedback', subitems: null }
+				{ text: 'Manage Activities', href: '/admin/activities' },
+				{ text: 'Activity Requests', href: '/admin/activities/requests' },
+				{ text: 'See Feedback', href: '/admin/activities/feedback' }
 			]
 		},
 		{
 			text: 'Members',
-			href: null,
 			subitems: [
-				{ text: 'Manage Members', href: '/admin/members', subitems: null },
-				{ text: 'Member Requests', href: '/admin/members/requests', subitems: null }
+				{ text: 'Manage Members', href: '/admin/members' },
+				{ text: 'Member Requests', href: '/admin/members/requests' }
 			]
 		}
 	];
 </script>
 
-<Sidebar items={sidebarItems} />
+<BaseSidebar {items} />
