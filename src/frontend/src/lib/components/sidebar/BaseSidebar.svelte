@@ -32,12 +32,12 @@
 					<span class="arrow ml-2 text-xs">{$openItems.has(item.text) ? '▲' : '▼'}</span>
 				{/if}
 			</div>
-			{#if $openItems.has(item.text)}
+			{#if item.subitems && $openItems.has(item.text)}
 				<ul class="subitems pl-2 text-sm">
 					{#each item.subitems as subitem}
 						<li class="my-2">
 							<a
-								class="text-white text-white no-underline hover:text-indigo-300 hover:drop-shadow-lg"
+								class="text-white no-underline hover:text-indigo-300 hover:drop-shadow-lg"
 								href={subitem.href}>{subitem.text}</a
 							>
 						</li>
