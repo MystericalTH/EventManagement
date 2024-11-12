@@ -3,8 +3,7 @@
 	import BaseSidebar from './BaseSidebar.svelte';
 	import { adminItems, memberItems, defaultItems } from './__items';
 	export let role: string;
-	let enumRole = getRole(role);
-	console.log(role);
+	let enumRole: Role = getRole(role);
 </script>
 
 {#if enumRole === Role.Admin}
