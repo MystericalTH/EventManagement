@@ -8,8 +8,8 @@
 	let itemClass: string = 'whitespace-nowrap px-3 py-3 text-xs';
 </script>
 
-<h1 class="font-custom mb-4 text-2xl">Manage Members</h1>
-<table class="font-custom min-w-full divide-y divide-gray-200">
+<h1 class="mb-4 font-custom text-2xl">Manage Members</h1>
+<table class="min-w-full divide-y divide-gray-200 font-custom">
 	<thead class="bg-gray-50">
 		<tr>
 			<th class={headerClass}>Name</th>
