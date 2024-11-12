@@ -1,20 +1,12 @@
-FROM golang:alpine AS air
-
-RUN go install github.com/air-verse/air@latest
-COPY ./config/.air.toml /etc/.air.toml
-
-FROM air
+FROM cosmtrek/air
 COPY ./src/server/ /usr/src/app
 WORKDIR /usr/src/app
 
 RUN go mod tidy
 
-ENV GOOGLE_CLIENT_ID="1047026038079-hkfrct2dii8vm3hb5qmnc0d9j9mn4gn5.apps.googleusercontent.com"
-ENV GOOGLE_CLIENT_SECRET="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"
-ENV SESSION_KEY="test1234"
 ENV LISTEN_PORT=8081
+ENV REDIRECT_PORT=8080
 
 EXPOSE 8081:$LISTEN_PORT
 
-CMD air --build.cmd "go build -o main.o main.go" --build.bin "./main.o" -c /etc/.air.toml
-
+CMD air --build.cmd "go build -o main.o main.go" --build.bin "./main.o"
