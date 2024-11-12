@@ -1,17 +1,15 @@
 <script lang="ts">
 	import { Role, getRole } from '$lib/types/role';
-	import AdminSidebar from './AdminSidebar.svelte';
-	import DefaultSidebar from './DefaultSidebar.svelte';
-	import MemberSidebar from './MemberSidebar.svelte';
+	import BaseSidebar from './BaseSidebar.svelte';
+	import { adminItems, memberItems, defaultItems } from './__items';
 	export let role: string;
-	let enumRole = getRole(role);
-	console.log(role);
+	let enumRole: Role = getRole(role);
 </script>
 
 {#if enumRole === Role.Admin}
-	<AdminSidebar />
+	<BaseSidebar items={adminItems} />
 {:else if enumRole === Role.Member}
-	<MemberSidebar />
+	<BaseSidebar items={memberItems} />
 {:else}
-	<DefaultSidebar />
+	<BaseSidebar items={defaultItems} />
 {/if}
