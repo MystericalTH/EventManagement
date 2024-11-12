@@ -31,15 +31,3 @@
 		</div>
 	{/if}
 </main>
-
-<style>
-	.layout {
-		display: flex;
-		height: 100vh;
-	}
-	main {
-		flex: 1;
-		padding: 1rem;
-		background-color: #ecf0f1;
-	}
-</style>
