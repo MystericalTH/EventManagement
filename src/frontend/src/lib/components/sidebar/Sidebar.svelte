@@ -11,5 +11,5 @@
 {:else if enumRole === Role.Member}
 	<BaseSidebar items={memberItems} />
 {:else}
-	<BaseSidebar items={defaultItems} />
+	<BaseSidebar items={defaultItems} hasLogout={false} />
 {/if}
