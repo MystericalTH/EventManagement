@@ -1,7 +1,7 @@
 <script lang="ts">
 	let { data } = $props();
 
-	import { createPagination } from '$lib/runes/pagination.svelte.ts';
+	import { createPagination } from '$lib/runes/pagination.svelte';
 	let pagination = createPagination(data.requestList, 10);
 	import { tableDataClass, tableHeaderClass } from '$lib/styles/table';
 	import eye from '$lib/assets/eye.svg';
