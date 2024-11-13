@@ -10,14 +10,14 @@
 
 <h1 class="mb-4 text-2xl">Member Requests</h1>
 <div class="text-sm">
-	<div class="max-w-144 overflow-scroll">
+	<div class="max-w-144 overflow-scroll border border-slate-200">
 		<table class="min-w-full table-fixed divide-y divide-gray-200 border border-slate-200">
 			<thead class="bg-gray-100">
 				<tr>
 					<th class={tableHeaderClass + ' w-36'}>Name</th>
 					<th class={tableHeaderClass}>Interest</th>
 					<th class={tableHeaderClass + ' w-36'}>Email</th>
-					<th class={tableHeaderClass + ' w-36'}>Phone Number</th>
+					<th class={tableHeaderClass + ' w-36 min-w-36'}>Phone Number</th>
 					<th class={tableHeaderClass + ' w-8'}>Action</th>
 				</tr>
 			</thead>

@@ -6,11 +6,13 @@
 	let { data, children } = $props();
 </script>
 
-<main>
-		<div class="flex h-screen">
-			<Sidebar role={data.role} />
-			<div class="flex-1">
+<main class="font-custom">
+	<div class="flex h-screen">
+		<Sidebar role={data.role} />
+		<div class="m-4 flex flex-1 justify-center">
+			<div class="flex w-5/6 max-w-[720px] flex-col">
 				{@render children()}
 			</div>
 		</div>
+	</div>
 </main>
