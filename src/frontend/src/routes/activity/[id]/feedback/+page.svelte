@@ -1,14 +1,15 @@
 <script lang="ts">
-    export let data: { id: string };
+    import type { ActivityData } from "$lib/types/activity";
+    export let data: { activity: ActivityData};
 
-    let id = data.id;
+    let { activity } = data;
     let feedback = '';
 
     const handleFeedbackSubmit = async (event: Event) => {
       event.preventDefault();
   
       const formData = {
-      id,
+      id: activity.id,
       feedback
     };
 
@@ -32,7 +33,7 @@
   };
 </script>
 
-<h1 class="text-2xl font-semibold my-10">Title</h1>
+<h1 class="text-2xl font-semibold my-10">{data.activity.title}</h1>
 
 <form on:submit={handleFeedbackSubmit} class="flex flex-col w-72 mx-auto">
     <label for="feedback" class="mb-2 mt-14 font-bold block">Feedback:</label>
