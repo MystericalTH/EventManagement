@@ -24,6 +24,7 @@ export const load: PageServerLoad = async ({ locals, params, request }) => {
     isEventPast,
     hasSubmittedFeedback,
     nextActivityId
+    };
   };
 
 // Function to check if the user has submitted feedback
@@ -48,43 +49,32 @@ async function userHasSubmittedFeedback(sessionId: string, activityId: number, r
 }
 
 // Function to check if the user is registered for the activity
-async function isUserRegistered(sessionId: string, activityId: number, request: Request): Promise<boolean> {
-  try {
-    const response = await fetch(`/api/activities/${activityId}/registration/status`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Cookie': request.headers.get('cookie') || ''
-      },
-      body: JSON.stringify({ activity_id: activityId })
-    });
-// =======
-// async function isUserRegistered(
-// 	sessionId: string,
-// 	activityId: number,
-// 	request: Request
-// ): Promise<boolean> {
-// 	try {
-// 		const response = await fetch(`/api/activities/${activityId}/registration`, {
-// 			method: 'POST',
-// 			headers: {
-// 				'Content-Type': 'application/json',
-// 				Cookie: request.headers.get('cookie') || ''
-// 			},
-// 			body: JSON.stringify({ activity_id: activityId })
-// 		});
+async function isUserRegistered(
+	sessionId: string,
+	activityId: number,
+	request: Request
+  ): Promise<boolean> {
+    try {
+      const response = await fetch(`/api/activities/${activityId}/registration/status`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: request.headers.get('cookie') || ''
+        },
+        body: JSON.stringify({ activity_id: activityId })
+      });
 
-		if (!response.ok) {
-			throw new Error('Failed to check registration status');
-		}
+      if (!response.ok) {
+        throw new Error('Failed to check registration status');
+      }
 
-		const result = await response.json();
-		return result.is_registered;
-	} catch (error) {
-		console.error('Error checking registration status:', error);
-		return false;
-	}
-}
+      const result = await response.json();
+      return result.is_registered;
+    } catch (error) {
+      console.error('Error checking registration status:', error);
+      return false;
+    }
+  }
 
 // Function to fetch activity data
 async function getActivityData(activityId: number) {
@@ -93,14 +83,15 @@ async function getActivityData(activityId: number) {
   //   throw new Error('Failed to fetch activity data');
   // }
   // return await response.json();
-  return {
-    id: activityId,
-    title: 'Sample Activity',
-    startDate: '2023-10-01',
-    endDate: '2023-10-31',
-    format: 'Online',
-    description: 'This is a sample activity description.'
-  };
+    return {
+      id: activityId,
+      title: 'Sample Activity',
+      startDate: '2023-10-01',
+      endDate: '2023-10-31',
+      format: 'Online',
+      description: 'This is a sample activity description.'
+    };
+  }
 
 // Function to fetch the next activity ID
 async function getNextActivityId(currentActivityId: number): Promise<number | null> {
@@ -113,5 +104,5 @@ async function getNextActivityId(currentActivityId: number): Promise<number | nu
 	if (currentActivityId >= 3) {
 		return null;
 	}
-	return currentActivityId + 1;
-}
+    return currentActivityId + 1;
+  };
