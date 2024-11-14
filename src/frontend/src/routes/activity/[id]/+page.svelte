@@ -4,11 +4,17 @@
 	export let data: {
 		activity: ActivityData;
 		isRegistered: boolean;
+		isEventPast: boolean;
+		hasSubmittedFeedback: boolean;	
 		nextActivityId: number | null;
 	};
 
 	const openRegisterPage = () => {
 		window.location.href = `/activity/${data.activity.id}/register`;
+	};
+
+	const openFeedbackPage = () => {
+		window.location.href = `/activity/${data.activity.id}/feedback`;
 	};
 
 	const navigateToActivity = (offset: number) => {
@@ -28,14 +34,22 @@
 	</div>
 	<div class="my-10 text-lg">
 		<p>{data.activity.description}</p>
-	</div>
-	{#if data.isRegistered}
-		<button class="rounded bg-gray-500 px-4 py-2 text-white" disabled>Registered</button>
+	</div>	
+	
+	{#if data.isEventPast && data.isRegistered}
+		{#if data.hasSubmittedFeedback}
+			<button class="bg-gray-500 text-white py-2 px-4 rounded" disabled>Feedback Submitted</button>
+		{:else}
+			<button class="bg-green-500 text-white py-2 px-4 rounded" on:click={openFeedbackPage}>Submit Feedback</button>
+		{/if}
 	{:else}
-		<button class="rounded bg-blue-500 px-4 py-2 text-white" on:click={openRegisterPage}
-			>Register</button
-		>
+		{#if data.isRegistered}
+			<button class="bg-gray-500 text-white py-2 px-4 rounded" disabled>Registered</button>
+		{:else}
+			<button class="bg-blue-500 text-white py-2 px-4 rounded" on:click={openRegisterPage}>Register</button>
+		{/if}
 	{/if}
+    
 	<div class="mt-10 flex justify-between">
 		<button
 			class="rounded bg-gray-300 px-4 py-2 text-black"
