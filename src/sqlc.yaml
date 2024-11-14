@@ -1,0 +1,7 @@
+version: "1"
+packages:
+  - name: "db"
+    path: "server/test/" # Directory for generated Go files
+    queries: "server/queries/" # Directory containing SQL query files
+    schema: "server/schema.sql" # Path to your schema file
+    engine: "mysql"
