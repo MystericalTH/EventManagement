@@ -5,7 +5,11 @@ export default {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 
 	theme: {
-		extend: {}
+		extend: {
+			fontFamily: {
+				custom: ['Ubuntu', 'sans-serif']
+			}
+		}
 	},
 
 	plugins: [typography]

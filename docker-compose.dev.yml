@@ -1,20 +1,22 @@
 services:
   server:
     container_name: server
-    image: cosmtrek/air
+    build:
+      context: .
+      dockerfile: Dockerfile.server
     # working_dir value has to be the same of mapped volume
     working_dir: /usr/app/
     ports:
       - 8081:8081
-    environment:
-      - LISTEN_PORT=8081
     env_file: ".env"
     volumes:
       - ./src/server/:/usr/app/
+      - /usr/app/tmp/
   frontend:
     container_name: frontend
     environment:
-      VITE_API_DOMAIN: "server:8081"
+      VITE_API_DOMAIN: "http://server:8081"
+      VITE_MSW_ENABLED: false
     volumes:
       - ./src/frontend/:/usr/src/app/
       - /usr/src/app/node_modules
