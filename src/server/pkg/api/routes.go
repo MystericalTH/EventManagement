@@ -7,6 +7,8 @@ import (
 
 func ActivitiesRoutes() {
 	http.HandleFunc("/api/activities", api.GetActivities)
+	http.HandleFunc("/api/activities/", api.GetActivityByID)
+	http.HandleFunc("/api/proposal/submit", api.PostActivity)
 }
 
 func LogRoutes() {

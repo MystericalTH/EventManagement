@@ -6,7 +6,7 @@ import (
 )
 
 type Activity struct {
-	ID                int32          `json:"id"`
+	ActivityID        int32          `json:"id"`
 	Title             string         `json:"title"`
 	Proposer          int32          `json:"proposer"`
 	StartDate         time.Time      `json:"startDate"`
@@ -18,4 +18,9 @@ type Activity struct {
 	AcceptAdmin       int32          `json:"acceptAdmin"`
 	AcceptDateTime    time.Time      `json:"acceptDateTime"`
 	ApplicationStatus string         `json:"applicationStatus"`
+}
+
+type ActivityRole struct {
+	ActivityID int64  `json:"activityId"`
+	Role       string `json:"role"`
 }
