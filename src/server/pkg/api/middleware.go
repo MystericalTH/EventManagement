@@ -1,4 +1,4 @@
-package handlers
+package api
 
 import (
 	"context"
@@ -12,14 +12,11 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/gorilla/sessions"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
 
 var (
-	// Replace with your actual Google credentials
-	port         = os.Getenv("LISTEN_PORT")
 	redirectPort = os.Getenv("REDIRECT_PORT")
 	oauthConfig  = &oauth2.Config{
 		RedirectURL:  fmt.Sprintf("http://localhost:%s/api/auth/google/callback", redirectPort),
@@ -28,8 +25,8 @@ var (
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
 		Endpoint:     google.Endpoint,
 	}
-	sessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
-	sessionName  = "session-one"
+	// sessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+	// sessionName  = "session-one"
 )
 
 type UserInfo struct {
@@ -42,15 +39,6 @@ func init() {
 	gob.Register(UserInfo{})
 }
 
-// func main() {
-// 	http.HandleFunc("/api/login", handleLogin)
-// 	http.HandleFunc("/api/auth/google/callback", handleCallback)
-// 	http.HandleFunc("/api/logout", handleLogout)
-// 	http.HandleFunc("/api/verify", handleVerifyRole)
-// 	log.Println("Server started at http://localhost:" + port)
-// 	log.Fatal(http.ListenAndServe(":"+port, nil))
-// }
-
 func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	// Redirect user to Google's OAuth consent page
 	role := r.URL.Query().Get("role")
@@ -58,9 +46,9 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	stateUrl := oauthConfig.AuthCodeURL(url.QueryEscape(state), oauth2.AccessTypeOffline)
 	http.Redirect(w, r, stateUrl, http.StatusTemporaryRedirect)
 }
+
 func HandleCallback(w http.ResponseWriter, r *http.Request) {
 	// Retrieve the authorization code from Google
-
 	code := r.URL.Query().Get("code")
 	state, err := url.QueryUnescape(r.URL.Query().Get("state"))
 	if err != nil {
@@ -84,7 +72,7 @@ func HandleCallback(w http.ResponseWriter, r *http.Request) {
 	client := oauthConfig.Client(context.Background(), token)
 	userInfoResp, err := client.Get("https://www.googleapis.com/oauth2/v3/userinfo")
 	if err != nil {
-		http.Error(w, "Failed tm get user info: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Failed to get user info: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer userInfoResp.Body.Close()
@@ -111,21 +99,10 @@ func HandleCallback(w http.ResponseWriter, r *http.Request) {
 
 func HandleLogout(w http.ResponseWriter, r *http.Request) {
 	// Clear the session
-
 	session, _ := sessionStore.Get(r, sessionName)
 	session.Options.MaxAge = -1
 	session.Save(r, w)
 
 	// Redirect to home
 	http.Redirect(w, r, "/", http.StatusFound)
-}
-
-func HandleVerifyRole(w http.ResponseWriter, r *http.Request) {
-	session, _ := sessionStore.Get(r, sessionName)
-	role, ok := session.Values["role"].(string)
-	if !ok {
-		role = "unknown"
-	}
-	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, "{\"role\":\"%s\"}", role)
 }

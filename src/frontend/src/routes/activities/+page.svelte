@@ -28,8 +28,8 @@
 {#each upcomingActivities as activity}
 	<Card
 		title={activity.title}
-		startDate={activity.startDate}
-		endDate={activity.endDate}
+		startDate={new Date(activity.startDate).toISOString().split('T')[0]}
+		endDate={new Date(activity.endDate).toISOString().split('T')[0]}
 		format={activity.format}
 		href={`activity/${activity.id.toString()}`}
 	/>
@@ -39,8 +39,8 @@
 {#each ongoingActivities as activity}
 	<Card
 		title={activity.title}
-		startDate={activity.startDate}
-		endDate={activity.endDate}
+		startDate={new Date(activity.startDate).toISOString().split('T')[0]}
+		endDate={new Date(activity.endDate).toISOString().split('T')[0]}
 		format={activity.format}
 		href={`activity/${activity.id.toString()}`}
 	/>
@@ -50,8 +50,8 @@
 {#each completedActivities as activity}
 	<Card
 		title={activity.title}
-		startDate={activity.startDate}
-		endDate={activity.endDate}
+		startDate={new Date(activity.startDate).toISOString().split('T')[0]}
+		endDate={new Date(activity.endDate).toISOString().split('T')[0]}
 		format={activity.format}
 		href={`activity/${activity.id.toString()}`}
 	/>

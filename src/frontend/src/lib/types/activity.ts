@@ -1,14 +1,14 @@
 export interface ActivityData {
 	id: number;
 	title: string;
-	proposer: string;
+	proposer: number;
 	startDate: string;
 	endDate: string;
 	maxNumber: number;
 	format: string;
 	description: string;
 	proposeDateTime: string;
-	acceptAdmin: string;
+	acceptAdmin: number;
 	acceptDateTime: string;
 	applicationStatus: string;
 }
