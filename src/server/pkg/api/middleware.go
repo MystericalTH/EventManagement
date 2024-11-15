@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/gorilla/sessions"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -25,8 +26,8 @@ var (
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
 		Endpoint:     google.Endpoint,
 	}
-	// sessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
-	// sessionName  = "session-one"
+	sessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+	sessionName  = "session-one"
 )
 
 type UserInfo struct {

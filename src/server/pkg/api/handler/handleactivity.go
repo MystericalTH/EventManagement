@@ -2,29 +2,10 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"os"
 	"sinno-server/pkg/db"
 	"sinno-server/pkg/models"
-
-	"github.com/gorilla/sessions"
 )
-
-var (
-	sessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
-	sessionName  = "session-one"
-)
-
-func HandleVerifyRole(w http.ResponseWriter, r *http.Request) {
-	session, _ := sessionStore.Get(r, sessionName)
-	role, ok := session.Values["role"].(string)
-	if !ok {
-		role = "unknown"
-	}
-	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, "{\"role\":\"%s\"}", role)
-}
 
 func GetActivities(w http.ResponseWriter, r *http.Request) {
 	rows, err := db.DB.Query("SELECT * FROM Activity")
