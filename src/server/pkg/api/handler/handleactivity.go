@@ -76,6 +76,44 @@ func GetActivityByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostActivity(w http.ResponseWriter, r *http.Request) {
+	// Retrieve user info from session
+	session, err := sessionStore.Get(r, sessionName)
+	if err != nil {
+		http.Error(w, "Failed to retrieve session", http.StatusInternalServerError)
+		return
+	}
+
+	// Get user information and role from session
+	userInfo, userOk := session.Values["user"].(models.UserInfo)
+	role, roleOk := session.Values["role"].(string)
+	if !userOk || !roleOk {
+		http.Error(w, "User not authenticated", http.StatusUnauthorized)
+		return
+	}
+
+	email := userInfo.Email
+
+	var proposerID int32
+
+	if role == "admin" {
+		// Look up in Admin table
+		err = db.DB.QueryRow("SELECT admin_id FROM Admin WHERE email = ?", email).Scan(&proposerID)
+		if err != nil {
+			http.Error(w, "Failed to get admin ID", http.StatusInternalServerError)
+			return
+		}
+	} else if role == "member" {
+		// Look up in Member table
+		err = db.DB.QueryRow("SELECT member_id FROM Member WHERE email = ?", email).Scan(&proposerID)
+		if err != nil {
+			http.Error(w, "Failed to get member ID", http.StatusInternalServerError)
+			return
+		}
+	} else {
+		http.Error(w, "Unknown user role", http.StatusUnauthorized)
+		return
+	}
+
 	var activity struct {
 		models.Activity
 		ActivityRoles []string `json:"activityRole"`
@@ -85,6 +123,8 @@ func PostActivity(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to decode activity", http.StatusInternalServerError)
 		return
 	}
+
+	activity.Proposer = proposerID
 
 	tx, err := db.DB.Begin()
 	if err != nil {
