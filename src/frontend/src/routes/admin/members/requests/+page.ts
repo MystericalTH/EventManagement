@@ -1,7 +1,8 @@
 import type { PageLoad } from './$types';
-
-export const load: PageLoad = async ({ fetch, params }) => {
+import { adminState } from '$lib/states/states.svelte';
+export const load: PageLoad = async ({ fetch }) => {
 	const res = await fetch(`/api/members/requests`);
-	const item = await res.json();
-	return { requestList: item };
+	adminState.memberRequestList = await res.json();
+
+	return { adminState: adminState };
 };
