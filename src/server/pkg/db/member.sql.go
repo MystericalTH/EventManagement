@@ -10,6 +10,45 @@ import (
 	"database/sql"
 )
 
+const acceptMember = `-- name: AcceptMember :exec
+UPDATE MEMBER 
+SET acceptDateTime = NOW() 
+WHERE memberID = ?
+`
+
+func (q *Queries) AcceptMember(ctx context.Context, memberid int32) error {
+	_, err := q.db.ExecContext(ctx, acceptMember, memberid)
+	return err
+}
+
+const insertMember = `-- name: InsertMember :exec
+INSERT INTO MEMBER (fName, lName, email, phone, githubUrl, interest, reason) 
+VALUES (?, ?, ?, ?, ?, ?, ?)
+`
+
+type InsertMemberParams struct {
+	Fname     string         `json:"fname"`
+	Lname     string         `json:"lname"`
+	Email     string         `json:"email"`
+	Phone     sql.NullString `json:"phone"`
+	Githuburl sql.NullString `json:"githuburl"`
+	Interest  string         `json:"interest"`
+	Reason    string         `json:"reason"`
+}
+
+func (q *Queries) InsertMember(ctx context.Context, arg InsertMemberParams) error {
+	_, err := q.db.ExecContext(ctx, insertMember,
+		arg.Fname,
+		arg.Lname,
+		arg.Email,
+		arg.Phone,
+		arg.Githuburl,
+		arg.Interest,
+		arg.Reason,
+	)
+	return err
+}
+
 const listAcceptedMembers = `-- name: ListAcceptedMembers :many
 SELECT memberID, fName, lName, email, phone, githubUrl, interest, reason 
 FROM MEMBER
@@ -172,43 +211,4 @@ func (q *Queries) ListRequestingMembers(ctx context.Context) ([]ListRequestingMe
 		return nil, err
 	}
 	return items, nil
-}
-
-const acceptMember = `-- name: acceptMember :exec
-UPDATE MEMBER 
-SET acceptDateTime = NOW() 
-WHERE memberID = ?
-`
-
-func (q *Queries) acceptMember(ctx context.Context, memberid int32) error {
-	_, err := q.db.ExecContext(ctx, acceptMember, memberid)
-	return err
-}
-
-const insertMember = `-- name: insertMember :exec
-INSERT INTO MEMBER (fName, lName, email, phone, githubUrl, interest, reason) 
-VALUES (?, ?, ?, ?, ?, ?, ?)
-`
-
-type insertMemberParams struct {
-	Fname     string         `json:"fname"`
-	Lname     string         `json:"lname"`
-	Email     string         `json:"email"`
-	Phone     sql.NullString `json:"phone"`
-	Githuburl sql.NullString `json:"githuburl"`
-	Interest  string         `json:"interest"`
-	Reason    string         `json:"reason"`
-}
-
-func (q *Queries) insertMember(ctx context.Context, arg insertMemberParams) error {
-	_, err := q.db.ExecContext(ctx, insertMember,
-		arg.Fname,
-		arg.Lname,
-		arg.Email,
-		arg.Phone,
-		arg.Githuburl,
-		arg.Interest,
-		arg.Reason,
-	)
-	return err
 }

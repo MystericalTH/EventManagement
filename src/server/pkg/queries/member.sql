@@ -18,11 +18,11 @@ SELECT memberID, fName, lName, email, phone, githubUrl, interest, reason
 FROM MEMBER
 WHERE email = ?;
 
--- name: insertMember :exec
+-- name: InsertMember :exec
 INSERT INTO MEMBER (fName, lName, email, phone, githubUrl, interest, reason) 
 VALUES (?, ?, ?, ?, ?, ?, ?);
 
--- name: acceptMember :exec
+-- name: AcceptMember :exec
 UPDATE MEMBER 
 SET acceptDateTime = NOW() 
 WHERE memberID = ?;

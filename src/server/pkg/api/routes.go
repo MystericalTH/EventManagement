@@ -1,19 +1,31 @@
 package api
 
 import (
-	"net/http"
-	api "sinno-server/pkg/api/handler"
+	"sinno-server/pkg/api/handler"
+	"sinno-server/pkg/api/handler/middleware"
+	"sinno-server/pkg/db"
+
+	"github.com/gin-gonic/gin"
 )
 
-func ActivitiesRoutes() {
-	http.HandleFunc("/api/activities", api.GetActivities)
-	http.HandleFunc("/api/activities/", api.GetActivityByID)
-	http.HandleFunc("/api/proposal/submit", api.PostActivity)
-}
+func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
+	// Apply middleware globally if necessary
+	router.Use(middleware.AuthMiddleware)
 
-func LogRoutes() {
-	http.HandleFunc("/api/login", HandleLogin)
-	http.HandleFunc("/api/auth/google/callback", HandleCallback)
-	http.HandleFunc("/api/logout", HandleLogout)
-	http.HandleFunc("/api/verify", api.HandleVerifyRole)
+	// Define API groups or routes
+	api := router.Group("/api")
+	{
+		api.GET("/members", func(c *gin.Context) {
+			handler.GetAllMembers(c, queries) // Pass queries to the handler
+		}) // List members
+		api.GET("/members/:id", func(c *gin.Context) {
+			handler.GetMemberByID(c, queries) // Pass queries to the handler
+		}) // Get member by ID
+		api.POST("/members", func(c *gin.Context) {
+			handler.CreateMember(c, queries) // Pass queries to the handler
+		}) // Create a new member
+		api.PUT("/members/:id/accept", func(c *gin.Context) {
+			handler.AcceptMember(c, queries) // Pass queries to the handler
+		}) // Accept a member
+	}
 }
