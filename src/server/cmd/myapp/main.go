@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"sinno-server/pkg/api/handler"
-	"sinno-server/pkg/db" // Import your db package
+	"sinno-server/pkg/api" // Import the api package
+	"sinno-server/pkg/db"  // Import your db package
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql" // MySQL driver
@@ -13,7 +13,7 @@ import (
 
 func main() {
 	// Initialize the MySQL database connection
-	conn, err := sql.Open("mysql", "username:password@tcp(127.0.0.1:3306)/mydb")
+	conn, err := sql.Open("mysql", "root:Palioandy38550@tcp(127.0.0.1:3306)/myActManage")
 	if err != nil {
 		log.Fatal("Error opening database connection: ", err)
 	}
@@ -30,19 +30,8 @@ func main() {
 	// Initialize your Gin router
 	r := gin.Default()
 
-	// Pass the queries to the handlers
-	r.GET("/members", func(c *gin.Context) {
-		handler.GetAllMembers(c, queries)
-	})
-	r.GET("/members/:id", func(c *gin.Context) {
-		handler.GetMemberByID(c, queries)
-	})
-	r.POST("/members", func(c *gin.Context) {
-		handler.CreateMember(c, queries)
-	})
-	r.PUT("/members/:id/accept", func(c *gin.Context) {
-		handler.AcceptMember(c, queries)
-	})
+	// Register routes using RegisterRoutes function
+	api.RegisterRoutes(r, queries)
 
 	// Run the server
 	r.Run(":8080")

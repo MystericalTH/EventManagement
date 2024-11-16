@@ -19,9 +19,9 @@ type Activity struct {
 	Format            sql.NullString `json:"format"`
 	Description       string         `json:"description"`
 	Proposedatetime   time.Time      `json:"proposedatetime"`
-	Acceptadmin       int32          `json:"acceptadmin"`
-	Acceptdatetime    time.Time      `json:"acceptdatetime"`
-	Applicationstatus string         `json:"applicationstatus"`
+	Acceptadmin       sql.NullInt32  `json:"acceptadmin"`
+	Acceptdatetime    sql.NullTime   `json:"acceptdatetime"`
+	Applicationstatus sql.NullString `json:"applicationstatus"`
 }
 
 type Activityrole struct {
@@ -56,16 +56,16 @@ type Feedback struct {
 }
 
 type Member struct {
-	Memberid       int32          `json:"memberid"`
-	Fname          string         `json:"fname"`
-	Lname          string         `json:"lname"`
-	Email          string         `json:"email"`
-	Phone          sql.NullString `json:"phone"`
-	Githuburl      sql.NullString `json:"githuburl"`
-	Interest       string         `json:"interest"`
-	Reason         string         `json:"reason"`
-	Acceptdatetime sql.NullTime   `json:"acceptdatetime"`
-	Acceptadmin    int32          `json:"acceptadmin"`
+	Memberid       int32         `json:"memberid"`
+	Fname          string        `json:"fname"`
+	Lname          string        `json:"lname"`
+	Email          string        `json:"email"`
+	Phone          string        `json:"phone"`
+	Githuburl      string        `json:"githuburl"`
+	Interest       string        `json:"interest"`
+	Reason         string        `json:"reason"`
+	Acceptdatetime sql.NullTime  `json:"acceptdatetime"`
+	Acceptadmin    sql.NullInt32 `json:"acceptadmin"`
 }
 
 type Pjregist struct {

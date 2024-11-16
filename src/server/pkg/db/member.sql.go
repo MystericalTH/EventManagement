@@ -7,7 +7,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const acceptMember = `-- name: AcceptMember :exec
@@ -27,13 +26,13 @@ VALUES (?, ?, ?, ?, ?, ?, ?)
 `
 
 type InsertMemberParams struct {
-	Fname     string         `json:"fname"`
-	Lname     string         `json:"lname"`
-	Email     string         `json:"email"`
-	Phone     sql.NullString `json:"phone"`
-	Githuburl sql.NullString `json:"githuburl"`
-	Interest  string         `json:"interest"`
-	Reason    string         `json:"reason"`
+	Fname     string `json:"fname"`
+	Lname     string `json:"lname"`
+	Email     string `json:"email"`
+	Phone     string `json:"phone"`
+	Githuburl string `json:"githuburl"`
+	Interest  string `json:"interest"`
+	Reason    string `json:"reason"`
 }
 
 func (q *Queries) InsertMember(ctx context.Context, arg InsertMemberParams) error {
@@ -56,14 +55,14 @@ WHERE acceptDateTime IS NOT NULL
 `
 
 type ListAcceptedMembersRow struct {
-	Memberid  int32          `json:"memberid"`
-	Fname     string         `json:"fname"`
-	Lname     string         `json:"lname"`
-	Email     string         `json:"email"`
-	Phone     sql.NullString `json:"phone"`
-	Githuburl sql.NullString `json:"githuburl"`
-	Interest  string         `json:"interest"`
-	Reason    string         `json:"reason"`
+	Memberid  int32  `json:"memberid"`
+	Fname     string `json:"fname"`
+	Lname     string `json:"lname"`
+	Email     string `json:"email"`
+	Phone     string `json:"phone"`
+	Githuburl string `json:"githuburl"`
+	Interest  string `json:"interest"`
+	Reason    string `json:"reason"`
 }
 
 func (q *Queries) ListAcceptedMembers(ctx context.Context) ([]ListAcceptedMembersRow, error) {
@@ -105,14 +104,14 @@ WHERE memberID = ?
 `
 
 type ListMemberRow struct {
-	Memberid  int32          `json:"memberid"`
-	Fname     string         `json:"fname"`
-	Lname     string         `json:"lname"`
-	Email     string         `json:"email"`
-	Phone     sql.NullString `json:"phone"`
-	Githuburl sql.NullString `json:"githuburl"`
-	Interest  string         `json:"interest"`
-	Reason    string         `json:"reason"`
+	Memberid  int32  `json:"memberid"`
+	Fname     string `json:"fname"`
+	Lname     string `json:"lname"`
+	Email     string `json:"email"`
+	Phone     string `json:"phone"`
+	Githuburl string `json:"githuburl"`
+	Interest  string `json:"interest"`
+	Reason    string `json:"reason"`
 }
 
 func (q *Queries) ListMember(ctx context.Context, memberid int32) (ListMemberRow, error) {
@@ -138,14 +137,14 @@ WHERE email = ?
 `
 
 type ListMemberByEmailRow struct {
-	Memberid  int32          `json:"memberid"`
-	Fname     string         `json:"fname"`
-	Lname     string         `json:"lname"`
-	Email     string         `json:"email"`
-	Phone     sql.NullString `json:"phone"`
-	Githuburl sql.NullString `json:"githuburl"`
-	Interest  string         `json:"interest"`
-	Reason    string         `json:"reason"`
+	Memberid  int32  `json:"memberid"`
+	Fname     string `json:"fname"`
+	Lname     string `json:"lname"`
+	Email     string `json:"email"`
+	Phone     string `json:"phone"`
+	Githuburl string `json:"githuburl"`
+	Interest  string `json:"interest"`
+	Reason    string `json:"reason"`
 }
 
 func (q *Queries) ListMemberByEmail(ctx context.Context, email string) (ListMemberByEmailRow, error) {
@@ -171,14 +170,14 @@ WHERE acceptDateTime IS NULL
 `
 
 type ListRequestingMembersRow struct {
-	Memberid  int32          `json:"memberid"`
-	Fname     string         `json:"fname"`
-	Lname     string         `json:"lname"`
-	Email     string         `json:"email"`
-	Phone     sql.NullString `json:"phone"`
-	Githuburl sql.NullString `json:"githuburl"`
-	Interest  string         `json:"interest"`
-	Reason    string         `json:"reason"`
+	Memberid  int32  `json:"memberid"`
+	Fname     string `json:"fname"`
+	Lname     string `json:"lname"`
+	Email     string `json:"email"`
+	Phone     string `json:"phone"`
+	Githuburl string `json:"githuburl"`
+	Interest  string `json:"interest"`
+	Reason    string `json:"reason"`
 }
 
 func (q *Queries) ListRequestingMembers(ctx context.Context) ([]ListRequestingMembersRow, error) {

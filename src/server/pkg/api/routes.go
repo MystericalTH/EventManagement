@@ -2,15 +2,14 @@ package api
 
 import (
 	"sinno-server/pkg/api/handler"
-	"sinno-server/pkg/api/handler/middleware"
 	"sinno-server/pkg/db"
 
 	"github.com/gin-gonic/gin"
 )
 
 func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
-	// Apply middleware globally if necessary
-	router.Use(middleware.AuthMiddleware)
+	// Comment out middleware temporarily for testing
+	// router.Use(middleware.AuthMiddleware)
 
 	// Define API groups or routes
 	api := router.Group("/api")
