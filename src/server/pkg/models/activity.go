@@ -21,6 +21,6 @@ type Activity struct {
 }
 
 type ActivityRole struct {
-	ActivityID int64  `json:"activityId"`
+	ActivityID int32  `json:"activityId"`
 	Role       string `json:"role"`
 }

@@ -22,4 +22,5 @@ func ActivitiesRoutes() {
 
 func FeedbackRoutes(router *mux.Router) {
 	router.HandleFunc("/api/activities/{activityId}/feedback/status", api.GetFeedbackStatus).Methods("GET")
+	router.HandleFunc("/api/feedback/submit", api.SubmitFeedback).Methods("POST")
 }
