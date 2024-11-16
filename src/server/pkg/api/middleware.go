@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"sinno-server/pkg/models"
 	"strings"
 
 	"github.com/google/uuid"
@@ -30,14 +31,9 @@ var (
 	sessionName  = "session-one"
 )
 
-type UserInfo struct {
-	Name  string
-	Email string
-}
-
 func init() {
 	// Register UserInfo type to store in session
-	gob.Register(UserInfo{})
+	gob.Register(models.UserInfo{})
 }
 
 func HandleLogin(w http.ResponseWriter, r *http.Request) {
@@ -79,7 +75,7 @@ func HandleCallback(w http.ResponseWriter, r *http.Request) {
 	defer userInfoResp.Body.Close()
 
 	// Parse the user info
-	var userInfo UserInfo
+	var userInfo models.UserInfo
 	if err := json.NewDecoder(userInfoResp.Body).Decode(&userInfo); err != nil {
 		http.Error(w, "Failed to decode user info: "+err.Error(), http.StatusInternalServerError)
 		return
