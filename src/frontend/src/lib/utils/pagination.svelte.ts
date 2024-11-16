@@ -1,6 +1,5 @@
-export function createPagination(data, maxItemsPerRow: number) {
-	let requestList = $state(data);
-	let count = $derived(requestList.length);
+export function createPagination(data: Array<any>, maxItemsPerRow: number) {
+	let count = $derived(data.length);
 	let currentPage = $state(1);
 	let rowsPerPage = $state(maxItemsPerRow);
 	let maxPage = $derived(Math.ceil(count / maxItemsPerRow));
@@ -30,9 +29,9 @@ export function createPagination(data, maxItemsPerRow: number) {
 	let displayPage = () => {
 		const start = (currentPage - 1) * rowsPerPage;
 		const end = start + rowsPerPage;
-		let data = requestList.slice(start, end);
+		let pageData = data.slice(start, end);
 
-		return data;
+		return pageData;
 	};
 
 	return {
@@ -41,9 +40,6 @@ export function createPagination(data, maxItemsPerRow: number) {
 		},
 		get rowsPerPage() {
 			return rowsPerPage;
-		},
-		get itemsInPage() {
-			return itemsInPage;
 		},
 		get currentPage() {
 			return currentPage;
@@ -60,6 +56,9 @@ export function createPagination(data, maxItemsPerRow: number) {
 
 		get maxPage() {
 			return maxPage;
+		},
+		get data() {
+			return data;
 		},
 		prevPage,
 		nextPage,
