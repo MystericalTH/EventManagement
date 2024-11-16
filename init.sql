@@ -1,6 +1,5 @@
-DROP DATABASE IF EXISTS ClubManagement;
-CREATE DATABASE IF NOT EXISTS ClubManagement;
-USE ClubManagement;
+CREATE DATABASE IF NOT EXISTS myActManage;
+USE myActManage;
 
 --
 -- Table structure for table `Activity`

@@ -1,0 +1,10 @@
+version: "2"
+sql:
+  - engine: "mysql"
+    queries: "sql/queries/"
+    schema: "init.sql"
+    gen:
+      go:
+        package: "db"
+        out: "sqlc"
+        emit_json_tags: true
