@@ -1,7 +1,7 @@
 version: "2"
 sql:
   - engine: "mysql"
-    queries: "sql/queries/"
+    queries: "src/server/pkg/queries/"
     schema: "init.sql"
     gen:
       go:
