@@ -20,9 +20,9 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		api.GET("/members/:id", func(c *gin.Context) {
 			handler.GetMemberByID(c, queries) // Pass queries to the handler
 		}) // Get member by ID
-		api.POST("/members", func(c *gin.Context) {
-			handler.CreateMember(c, queries) // Pass queries to the handler
-		}) // Create a new member
+		// api.POST("/members", func(c *gin.Context) {
+		// 	handler.CreateMember(c, queries) // Pass queries to the handler
+		// }) // Create a new member
 		api.PUT("/members/:id/accept", func(c *gin.Context) {
 			handler.AcceptMember(c, queries) // Pass queries to the handler
 		}) // Accept a member

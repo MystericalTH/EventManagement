@@ -19,7 +19,7 @@ CREATE TABLE `Activity` (
   `acceptDateTime` datetime,
   `applicationStatus` varchar(20),
   PRIMARY KEY (`activityID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 -- --------------------------------------------------------
 
@@ -32,7 +32,7 @@ CREATE TABLE `ActivityRoles` (
   `activityRole` varchar(50) NOT NULL,
   PRIMARY KEY (`activityID`, `activityRole`),
   CONSTRAINT `activityroles_ibfk_1` FOREIGN KEY (`activityID`) REFERENCES `Activity` (`activityID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 -- --------------------------------------------------------
 
@@ -44,7 +44,7 @@ CREATE TABLE `Admin` (
   `adminID` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(320) NOT NULL,
   PRIMARY KEY (`adminID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 -- --------------------------------------------------------
 
@@ -63,7 +63,7 @@ CREATE TABLE `chatDevAd` (
   KEY `developerID` (`developerID`),
   CONSTRAINT `chatdevad_ibfk_1` FOREIGN KEY (`adminID`) REFERENCES `Admin` (`adminID`),
   CONSTRAINT `chatdevad_ibfk_2` FOREIGN KEY (`developerID`) REFERENCES `Developer` (`developerID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 -- --------------------------------------------------------
 
@@ -75,7 +75,7 @@ CREATE TABLE `Developer` (
   `developerID` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(320) NOT NULL,
   PRIMARY KEY (`developerID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 -- --------------------------------------------------------
 
@@ -94,7 +94,7 @@ CREATE TABLE `Feedback` (
   KEY `memberID` (`memberID`),
   CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`activityID`) REFERENCES `Activity` (`activityID`),
   CONSTRAINT `feedback_ibfk_2` FOREIGN KEY (`memberID`) REFERENCES `Member` (`memberID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 -- --------------------------------------------------------
 
@@ -115,7 +115,7 @@ CREATE TABLE `Member` (
   `acceptAdmin` int(11),
   PRIMARY KEY (`memberID`),
   CONSTRAINT `member_ibfk_1` FOREIGN KEY (`acceptAdmin`) REFERENCES `Admin` (`adminID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 -- --------------------------------------------------------
 
@@ -133,7 +133,7 @@ CREATE TABLE `pjRegist` (
   KEY `projectID` (`projectID`),
   CONSTRAINT `pjregist_ibfk_1` FOREIGN KEY (`memberID`) REFERENCES `Member` (`memberID`),
   CONSTRAINT `pjregist_ibfk_2` FOREIGN KEY (`projectID`) REFERENCES `Project` (`projectID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 -- --------------------------------------------------------
 
@@ -146,7 +146,7 @@ CREATE TABLE `Project` (
   `advisor` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`projectID`),
   CONSTRAINT `project_ibfk_1` FOREIGN KEY (`projectID`) REFERENCES `Activity` (`activityID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 -- --------------------------------------------------------
 
@@ -159,7 +159,7 @@ CREATE TABLE `Workshop` (
   `startTime` time NOT NULL,
   `endTime` time NOT NULL,
   PRIMARY KEY (`workshopID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 -- --------------------------------------------------------
 
@@ -177,4 +177,4 @@ CREATE TABLE `wsRegist` (
   KEY `workshopID` (`workshopID`),
   CONSTRAINT `wsregist_ibfk_1` FOREIGN KEY (`memberID`) REFERENCES `Member` (`memberID`),
   CONSTRAINT `wsregist_ibfk_2` FOREIGN KEY (`workshopID`) REFERENCES `Workshop` (`workshopID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
