@@ -22,5 +22,8 @@ export const handlers = [
 
 	http.delete('/api/members/requests/:id', ({ params }) => {
 		return new HttpResponse(null, { status: 204 });
+	}),
+	http.post('/api/members/requests/:id/approve', ({ params }) => {
+		return new HttpResponse(null, { status: 204 });
 	})
 ];
