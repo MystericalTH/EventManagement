@@ -26,6 +26,15 @@ export function createPagination(data: Array<any>, maxItemsPerRow: number) {
 		}
 	};
 
+	let setPage = () => {
+		if (pageBuffer > maxPage) {
+			pageBuffer = maxPage;
+		} else if (pageBuffer < 1) {
+			pageBuffer = 1;
+		}
+		currentPage = pageBuffer;
+	};
+
 	let displayPage = () => {
 		const start = (currentPage - 1) * rowsPerPage;
 		const end = start + rowsPerPage;
@@ -60,6 +69,7 @@ export function createPagination(data: Array<any>, maxItemsPerRow: number) {
 		get data() {
 			return data;
 		},
+		setPage,
 		prevPage,
 		nextPage,
 		hasNextPage,
