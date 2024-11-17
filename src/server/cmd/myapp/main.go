@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 	"sinno-server/pkg/api" // Import the api package
 	"sinno-server/pkg/db"  // Import your db package
 
@@ -13,7 +14,8 @@ import (
 
 func main() {
 	// Initialize the MySQL database connection
-	conn, err := sql.Open("mysql", "root:Palioandy38550@tcp(127.0.0.1:3306)/myActManage")
+
+	conn, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s", os.Getenv("MYSQL_USERNAME"), os.Getenv("MYSQL_PASSWORD"), os.Getenv("MYSQL_CONNECTION"), os.Getenv("MYSQL_DATABASE_NAME")))
 	if err != nil {
 		log.Fatal("Error opening database connection: ", err)
 	}
@@ -34,5 +36,5 @@ func main() {
 	api.RegisterRoutes(r, queries)
 
 	// Run the server
-	r.Run(":8080")
+	r.Run(fmt.Sprintf(":%s", os.Getenv("LISTEN_PORT")))
 }
