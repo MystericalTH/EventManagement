@@ -17,7 +17,7 @@
 </script>
 
 <div
-	class="flex h-[100] w-40 flex-col justify-between bg-gray-700 p-4 font-custom text-base tracking-wider"
+	class="flex h-[100] w-48 flex-none flex-col justify-between bg-gray-700 p-4 font-custom text-base tracking-wider"
 >
 	<nav>
 		{#each items as item}

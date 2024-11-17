@@ -31,7 +31,7 @@ services:
     container_name: frontend
     environment:
       VITE_API_DOMAIN: "http://server:8081"
-      VITE_MSW_ENABLED: false
+    env_file: ".env"
     volumes:
       - ./src/frontend/:/usr/src/app/
       - /usr/src/app/node_modules
