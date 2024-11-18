@@ -28,4 +28,5 @@ func FeedbackRoutes(router *mux.Router) {
 
 func RegistrationRoutes(router *mux.Router) {
 	router.HandleFunc("/api/activities/{activityId}/registration/status", api.GetRegistrationStatus).Methods("GET")
+	router.HandleFunc("/api/registration/submit", api.SubmitRegistration).Methods("POST")
 }
