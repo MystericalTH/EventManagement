@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { formatDateTime } from '$lib/utils/dateTime';
-
 	let title = '';
 	let proposer = '';
 	let startDate = '';
@@ -24,8 +22,6 @@
 	const handleProposalSubmit = async (event: Event) => {
 		event.preventDefault();
 
-		const proposeDateTime = formatDateTime();
-
 		const formData = {
 			title,
 			proposer,
@@ -34,7 +30,6 @@
 			maxNumber,
 			format,
 			description,
-			proposeDateTime,
 			advisor,
 			startTime,
 			endTime,

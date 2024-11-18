@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { formatDateTime } from "$lib/utils/dateTime";
     import type { ActivityData } from "$lib/types/activity";
     export let data: { activity: ActivityData};
 
@@ -8,13 +7,10 @@
 
     const handleFeedbackSubmit = async (event: Event) => {
       event.preventDefault();
-
-      const feedbackDateTime = formatDateTime();
   
       const formData = {
       activityID: activity.id,
-      feedbackMessage: feedback,
-      feedbackDateTime
+      feedbackMessage: feedback
     };
 
     try {

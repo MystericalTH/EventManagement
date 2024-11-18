@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { formatDateTime } from "$lib/utils/dateTime";
     import type { ActivityData } from "$lib/types/activity";
     
     export let data: { activity: ActivityData; activityRoles: string[] };
@@ -10,14 +9,11 @@
 
     const handleRegisterSubmit = async (event: Event) => {
       event.preventDefault();
-
-      const registerDateTime = formatDateTime();
   
       const formData = {
       activityID: activity.id,
       role: selectedRole,
-      expectation,
-      datetime: registerDateTime
+      expectation
     };
 
     try {
