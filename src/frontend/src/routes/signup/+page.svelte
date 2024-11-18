@@ -1,5 +1,6 @@
 <script lang="ts">
-	let name = '';
+	let fName = '';
+	let lName = '';
 	let email = '';
 	let phone = '';
 	let githubUrl = '';
@@ -10,7 +11,8 @@
 		event.preventDefault();
 
 		const formData = {
-			name,
+			fName,
+			lName,
 			email,
 			phone,
 			githubUrl,
@@ -41,15 +43,25 @@
 <h1 class="my-5 text-center text-4xl font-bold">Sign Up</h1>
 <form on:submit={handleMemberSubmit} class="mx-auto flex w-72 flex-col">
 	<div class="mb-4">
-		<label for="name" class="mb-2 font-bold">Name:</label>
-		<input
-			type="text"
-			id="name"
-			bind:value={name}
-			required
-			class="rounded border border-gray-300 p-2 text-lg"
-		/>
-	</div>
+        <label for="fName" class="mb-2 font-bold">First Name:</label>
+        <input
+            type="text"
+            id="fName"
+            bind:value={fName}
+            required
+            class="rounded border border-gray-300 p-2 text-lg"
+        />
+    </div>
+    <div class="mb-4">
+        <label for="lName" class="mb-2 font-bold">Last Name:</label>
+        <input
+            type="text"
+            id="lName"
+            bind:value={lName}
+            required
+            class="rounded border border-gray-300 p-2 text-lg"
+        />
+    </div>
 	<div class="mb-4">
 		<label for="email" class="mb-2 font-bold">Email:</label>
 		<input
