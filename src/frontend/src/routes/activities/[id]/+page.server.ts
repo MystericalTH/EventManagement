@@ -78,31 +78,19 @@ async function isUserRegistered(
 
 // Function to fetch activity data
 async function getActivityData(activityId: number) {
-  // const response = await fetch(`/api/activities/${activityId}`);
-  // if (!response.ok) {
-  //   throw new Error('Failed to fetch activity data');
-  // }
-  // return await response.json();
-    return {
-      id: activityId,
-      title: 'Sample Activity',
-      startDate: '2023-10-01',
-      endDate: '2023-10-31',
-      format: 'Online',
-      description: 'This is a sample activity description.'
-    };
+  const response = await fetch(`/api/activities/${activityId}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch activity data');
+  }
+  return await response.json();
   }
 
 // Function to fetch the next activity ID
 async function getNextActivityId(currentActivityId: number): Promise<number | null> {
-	// const response = await fetch(`api/activities/${currentActivityId+1}`);
-	// if (!response.ok) {
-	//   return null; // No next activity
-	// }
-	// const result = await response.json();
-	// return result.nextActivityId || null;
-	if (currentActivityId >= 3) {
-		return null;
+	const response = await fetch(`api/activities/${currentActivityId+1}`);
+	if (!response.ok) {
+	  return null; // No next activity
 	}
-    return currentActivityId + 1;
+	const result = await response.json();
+	return result.nextActivityId || null;
   };
