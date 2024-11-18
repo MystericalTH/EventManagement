@@ -16,8 +16,9 @@ func LogRoutes() {
 
 func ActivitiesRoutes(router *mux.Router) {
 	router.HandleFunc("/api/activities", api.GetActivities).Methods("GET")
-	router.HandleFunc("/api/activities/{id}", api.GetActivityByID).Methods("GET")
+	router.HandleFunc("/api/activities/{activityId}", api.GetActivityByID).Methods("GET")
 	router.HandleFunc("/api/activities", api.PostActivity).Methods("POST")
+	router.HandleFunc("/api/activities/{activityId}/roles", api.GetActivityRoles).Methods("GET")
 }
 
 func FeedbackRoutes(router *mux.Router) {

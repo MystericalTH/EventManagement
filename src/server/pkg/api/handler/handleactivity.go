@@ -6,6 +6,8 @@ import (
 	"sinno-server/pkg/db"
 	"sinno-server/pkg/models"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func GetActivities(w http.ResponseWriter, r *http.Request) {
@@ -44,15 +46,16 @@ func GetActivities(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetActivityByID(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
-	id, err := strconv.Atoi(idStr)
+	vars := mux.Vars(r)
+	activityIDStr := vars["activityId"]
+	activityID, err := strconv.Atoi(activityIDStr)
 	if err != nil {
 		http.Error(w, "Invalid activity ID", http.StatusBadRequest)
 		return
 	}
 
 	var activity models.Activity
-	err = db.DB.QueryRow("SELECT * FROM Activity WHERE activity_id = ?", id).Scan(
+	err = db.DB.QueryRow("SELECT * FROM Activity WHERE activity_id = ?", activityID).Scan(
 		&activity.ActivityID,
 		&activity.Title,
 		&activity.Proposer,
@@ -176,7 +179,8 @@ func PostActivity(w http.ResponseWriter, r *http.Request) {
 
 func GetActivityRoles(w http.ResponseWriter, r *http.Request) {
 	// Get the activity ID from the URL path
-	activityIDStr := r.URL.Query().Get("id")
+	vars := mux.Vars(r)
+	activityIDStr := vars["activityId"]
 	activityID, err := strconv.Atoi(activityIDStr)
 	if err != nil {
 		http.Error(w, "Invalid activity ID", http.StatusBadRequest)
