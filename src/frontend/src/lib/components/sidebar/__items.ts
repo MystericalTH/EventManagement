@@ -1,18 +1,20 @@
 import type { SidebarItem } from '$lib/types/sidebar';
 
-export const defaultItems: SidebarItem[] = [
-	{
-		text: 'Signup',
-		href: '/api/signup'
-	},
-	{
-		text: 'Login',
-		subitems: [
-			{ text: 'Member', href: '/api/login?role=member' },
-			{ text: 'Admin', href: '/api/login?role=admin' }
-		]
-	}
-];
+export const defaultItems = (currentUrl: string): SidebarItem[] => {
+	return [
+		{
+			text: 'Signup',
+			href: '/api/signup'
+		},
+		{
+			text: 'Login',
+			subitems: [
+				{ text: 'Member', href: `/api/login?role=member\&redirect_uri=${currentUrl}` },
+				{ text: 'Admin', href: `/api/login?role=admin\&redirect_uri=${currentUrl}` }
+			]
+		}
+	];
+};
 
 export const adminItems: SidebarItem[] = [
 	{
