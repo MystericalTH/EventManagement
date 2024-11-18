@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { formatDateTime } from '$lib/utils/dateTime';
+
 	let title = '';
 	let proposer = '';
 	let startDate = '';
@@ -19,21 +21,10 @@
 		}
 	};
 
-	const formatDateTime = (date: Date): string => {
-		const pad = (num: number) => String(num).padStart(2, '0');
-		const year = date.getFullYear();
-		const month = pad(date.getMonth() + 1);
-		const day = pad(date.getDate());
-		const hours = pad(date.getHours());
-		const minutes = pad(date.getMinutes());
-		const seconds = pad(date.getSeconds());
-		return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-	};
-
 	const handleProposalSubmit = async (event: Event) => {
 		event.preventDefault();
 
-		const proposeDateTime = formatDateTime(new Date());
+		const proposeDateTime = formatDateTime();
 
 		const formData = {
 			title,
