@@ -134,7 +134,10 @@ func SubmitFeedback(w http.ResponseWriter, r *http.Request) {
 
 	// Insert the feedback into the database
 	_, err = db.DB.Exec("INSERT INTO Feedback (activityID, memberID, feedbackMessage, feedbackDateTime) VALUES (?, ?, ?, ?)",
-		activityID, memberID, feedbackData.Feedbackmessage, time.Now())
+		activityID,
+		memberID,
+		feedbackData.Feedbackmessage,
+		time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		http.Error(w, "Failed to submit feedback", http.StatusInternalServerError)
 		return

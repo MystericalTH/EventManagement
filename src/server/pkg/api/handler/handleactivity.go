@@ -6,6 +6,7 @@ import (
 	"sinno-server/pkg/db"
 	"sinno-server/pkg/models"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -143,7 +144,7 @@ func PostActivity(w http.ResponseWriter, r *http.Request) {
 		activity.Maxnumber,
 		activity.Format,
 		activity.Description,
-		activity.Proposedatetime,
+		time.Now().Format("2006-01-02 15:04:05"),
 		activity.Applicationstatus,
 	)
 	if err != nil {

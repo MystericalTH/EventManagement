@@ -6,6 +6,7 @@ import (
 	"sinno-server/pkg/db"
 	"sinno-server/pkg/models"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -97,27 +98,19 @@ func SubmitRegistration(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Parse the incoming request body
-	var registrationData struct {
-		ActivityID       int64  `json:"id"`
-		Expectation      string `json:"expectation"`
-		RegisterDateTime string `json:"registerDateTime"`
-		Role             string `json:"role"`
-	}
+	var registrationData db.Pjregist
 	if err := json.NewDecoder(r.Body).Decode(&registrationData); err != nil {
 		http.Error(w, "Failed to decode request body", http.StatusBadRequest)
 		return
 	}
 
 	// Insert the registration details into the Registration table
-	_, err = db.DB.Exec(`
-        INSERT INTO Registration (activityID, memberID, role, expectation, datetime)
-        VALUES (?, ?, ?, ?, ?)`,
-		registrationData.ActivityID,
+	_, err = db.DB.Exec("INSERT INTO Registration (activityID, memberID, role, expectation, datetime) VALUES (?, ?, ?, ?, ?)",
+		registrationData.Projectid,
 		memberID,
 		registrationData.Role,
 		registrationData.Expectation,
-		registrationData.RegisterDateTime,
+		time.Now().Format("2006-01-02 15:04:05"),
 	)
 	if err != nil {
 		http.Error(w, "Failed to submit registration", http.StatusInternalServerError)
