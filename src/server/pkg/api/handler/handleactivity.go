@@ -18,22 +18,22 @@ func GetActivities(w http.ResponseWriter, r *http.Request) {
 	}
 	defer rows.Close()
 
-	var activities []models.Activity
+	var activities []db.Activity
 	for rows.Next() {
-		var activity models.Activity
+		var activity db.Activity
 		if err := rows.Scan(
-			&activity.ActivityID,
+			&activity.Activityid,
 			&activity.Title,
 			&activity.Proposer,
-			&activity.StartDate,
-			&activity.EndDate,
-			&activity.MaxNumber,
+			&activity.Startdate,
+			&activity.Enddate,
+			&activity.Maxnumber,
 			&activity.Format,
 			&activity.Description,
-			&activity.ProposeDateTime,
-			&activity.AcceptAdmin,
-			&activity.AcceptDateTime,
-			&activity.ApplicationStatus,
+			&activity.Proposedatetime,
+			&activity.Acceptadmin,
+			&activity.Acceptdatetime,
+			&activity.Applicationstatus,
 		); err != nil {
 			http.Error(w, "Failed to scan activity", http.StatusInternalServerError)
 			return
@@ -54,20 +54,20 @@ func GetActivityByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var activity models.Activity
-	err = db.DB.QueryRow("SELECT * FROM Activity WHERE activity_id = ?", activityID).Scan(
-		&activity.ActivityID,
+	var activity db.Activity
+	err = db.DB.QueryRow("SELECT * FROM Activity WHERE activityID = ?", activityID).Scan(
+		&activity.Activityid,
 		&activity.Title,
 		&activity.Proposer,
-		&activity.StartDate,
-		&activity.EndDate,
-		&activity.MaxNumber,
+		&activity.Startdate,
+		&activity.Enddate,
+		&activity.Maxnumber,
 		&activity.Format,
 		&activity.Description,
-		&activity.ProposeDateTime,
-		&activity.AcceptAdmin,
-		&activity.AcceptDateTime,
-		&activity.ApplicationStatus,
+		&activity.Proposedatetime,
+		&activity.Acceptadmin,
+		&activity.Acceptdatetime,
+		&activity.Applicationstatus,
 	)
 	if err != nil {
 		http.Error(w, "Failed to fetch activity", http.StatusInternalServerError)
@@ -100,14 +100,14 @@ func PostActivity(w http.ResponseWriter, r *http.Request) {
 
 	if role == "admin" {
 		// Look up in Admin table
-		err = db.DB.QueryRow("SELECT admin_id FROM Admin WHERE email = ?", email).Scan(&proposerID)
+		err = db.DB.QueryRow("SELECT adminID FROM Admin WHERE email = ?", email).Scan(&proposerID)
 		if err != nil {
 			http.Error(w, "Failed to get admin ID", http.StatusInternalServerError)
 			return
 		}
 	} else if role == "member" {
 		// Look up in Member table
-		err = db.DB.QueryRow("SELECT member_id FROM Member WHERE email = ?", email).Scan(&proposerID)
+		err = db.DB.QueryRow("SELECT memberID FROM Member WHERE email = ?", email).Scan(&proposerID)
 		if err != nil {
 			http.Error(w, "Failed to get member ID", http.StatusInternalServerError)
 			return
@@ -118,7 +118,7 @@ func PostActivity(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var activity struct {
-		models.Activity
+		db.Activity
 		ActivityRoles []string `json:"activityRole"`
 	}
 
@@ -135,16 +135,16 @@ func PostActivity(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := tx.Exec("INSERT INTO Activity (title, proposer, start_date, end_date, max_number, format, description, propose_date_time, application_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+	result, err := tx.Exec("INSERT INTO Activity (title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, applicationStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
 		activity.Title,
 		activity.Proposer,
-		activity.StartDate,
-		activity.EndDate,
-		activity.MaxNumber,
+		activity.Startdate,
+		activity.Enddate,
+		activity.Maxnumber,
 		activity.Format,
 		activity.Description,
-		activity.ProposeDateTime,
-		activity.ApplicationStatus,
+		activity.Proposedatetime,
+		activity.Applicationstatus,
 	)
 	if err != nil {
 		tx.Rollback()
@@ -160,7 +160,7 @@ func PostActivity(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, ActivityRole := range activity.ActivityRoles {
-		_, err := tx.Exec("INSERT INTO ActivityRole (activity_id, role) VALUES (?, ?)", activityID, ActivityRole)
+		_, err := tx.Exec("INSERT INTO ActivityRole (activityID, role) VALUES (?, ?)", activityID, ActivityRole)
 		if err != nil {
 			tx.Rollback()
 			http.Error(w, "Failed to insert activity role", http.StatusInternalServerError)
@@ -188,7 +188,7 @@ func GetActivityRoles(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Fetch roles from the ActivityRole table where activity_id matches
-	rows, err := db.DB.Query("SELECT role FROM ActivityRole WHERE activity_id = ?", activityID)
+	rows, err := db.DB.Query("SELECT role FROM ActivityRole WHERE activityID = ?", activityID)
 	if err != nil {
 		http.Error(w, "Failed to fetch activity roles", http.StatusInternalServerError)
 		return
