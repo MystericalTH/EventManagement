@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS myActManage;
-USE myActManage;
+CREATE DATABASE IF NOT EXISTS ClubManagement;
+USE ClubManagement;
 
 --
 -- Table structure for table `Activity`
