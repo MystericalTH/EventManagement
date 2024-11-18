@@ -12,7 +12,17 @@ export const load: PageLoad = async ({ params }) => {
 
   const activity = await response.json();
 
+  // Fetch the activity roles related to this activity
+  const rolesResponse = await fetch(`/api/activities/${id}/roles`);
+
+  if (!rolesResponse.ok) {
+    throw new Error('Failed to fetch activity roles');
+  }
+
+  const activityRoles = await rolesResponse.json();
+
   return {
-    activity
+    activity,
+    activityRoles
   };
 };
