@@ -14,10 +14,10 @@ func LogRoutes() {
 	http.HandleFunc("/api/verify", api.HandleVerifyRole)
 }
 
-func ActivitiesRoutes() {
-	http.HandleFunc("/api/activities", api.GetActivities)
-	http.HandleFunc("/api/activities/", api.GetActivityByID)
-	http.HandleFunc("/api/proposal/submit", api.PostActivity)
+func ActivitiesRoutes(router *mux.Router) {
+	router.HandleFunc("/api/activities", api.GetActivities).Methods("GET")
+	router.HandleFunc("/api/activities/{id}", api.GetActivityByID).Methods("GET")
+	router.HandleFunc("/api/activities", api.PostActivity).Methods("POST")
 }
 
 func FeedbackRoutes(router *mux.Router) {
