@@ -21,7 +21,7 @@
     };
 
     try {
-      const response = await fetch('/api/register/submit', {
+      const response = await fetch('/api/registration/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
