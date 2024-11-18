@@ -70,6 +70,7 @@ services:
     env_file: ".env"
     environment:
       MYSQL_ROOT_PASSWORD: "root"
+    command: --lower_case_table_names=1
     ports:
       - "3306:3306"
     volumes:
@@ -78,4 +79,3 @@ services:
 
 volumes:
   mysql-data:
-
