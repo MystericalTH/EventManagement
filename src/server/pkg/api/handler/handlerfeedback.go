@@ -37,7 +37,7 @@ func GetFeedbackStatus(w http.ResponseWriter, r *http.Request) {
 
 	// Get member ID from the Member table
 	var memberID int64
-	err = db.DB.QueryRow("SELECT member_id FROM Member WHERE email = ?", email).Scan(&memberID)
+	err = db.DB.QueryRow("SELECT memberID FROM Member WHERE email = ?", email).Scan(&memberID)
 	if err != nil {
 		http.Error(w, "Failed to get member ID", http.StatusInternalServerError)
 		return
@@ -54,7 +54,7 @@ func GetFeedbackStatus(w http.ResponseWriter, r *http.Request) {
 
 	// Check if the user has submitted feedback for this activity
 	var count int
-	err = db.DB.QueryRow("SELECT COUNT(*) FROM Feedback WHERE activity_id = ? AND member_id = ?", activityID, memberID).Scan(&count)
+	err = db.DB.QueryRow("SELECT COUNT(*) FROM Feedback WHERE activityID = ? AND memberID = ?", activityID, memberID).Scan(&count)
 	if err != nil {
 		http.Error(w, "Failed to check feedback status", http.StatusInternalServerError)
 		return
@@ -98,7 +98,7 @@ func SubmitFeedback(w http.ResponseWriter, r *http.Request) {
 
 	// Get member ID from the Member table
 	var memberID int64
-	err = db.DB.QueryRow("SELECT member_id FROM Member WHERE email = ?", email).Scan(&memberID)
+	err = db.DB.QueryRow("SELECT memberID FROM Member WHERE email = ?", email).Scan(&memberID)
 	if err != nil {
 		http.Error(w, "Failed to get member ID", http.StatusInternalServerError)
 		return
@@ -117,7 +117,7 @@ func SubmitFeedback(w http.ResponseWriter, r *http.Request) {
 
 	// Check if feedback already exists
 	var count int
-	err = db.DB.QueryRow("SELECT COUNT(*) FROM Feedback WHERE activity_id = ? AND member_id = ?", feedbackData.ActivityID, memberID).Scan(&count)
+	err = db.DB.QueryRow("SELECT COUNT(*) FROM Feedback WHERE activityID = ? AND memberID = ?", feedbackData.ActivityID, memberID).Scan(&count)
 	if err != nil {
 		http.Error(w, "Failed to check existing feedback", http.StatusInternalServerError)
 		return
@@ -128,7 +128,7 @@ func SubmitFeedback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Insert the feedback into the database
-	_, err = db.DB.Exec("INSERT INTO Feedback (activity_id, member_id, feedback_text, feedback_date) VALUES (?, ?, ?, ?)",
+	_, err = db.DB.Exec("INSERT INTO Feedback (activityID, memberID, feedbackMessage, feedbackDateTime) VALUES (?, ?, ?, ?)",
 		feedbackData.ActivityID, memberID, feedbackData.Feedback, time.Now())
 	if err != nil {
 		http.Error(w, "Failed to submit feedback", http.StatusInternalServerError)
