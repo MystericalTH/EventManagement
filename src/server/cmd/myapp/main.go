@@ -15,7 +15,7 @@ import (
 func main() {
 	// Initialize the MySQL database connection
 
-	conn, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s", os.Getenv("MYSQL_USERNAME"), os.Getenv("MYSQL_PASSWORD"), os.Getenv("MYSQL_CONNECTION"), os.Getenv("MYSQL_DATABASE_NAME")))
+	conn, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s", os.Getenv("MYSQL_USER"), os.Getenv("MYSQL_PASSWORD"), os.Getenv("MYSQL_CONN"), os.Getenv("MYSQL_DATABASE_NAME")))
 	if err != nil {
 		log.Fatal("Error opening database connection: ", err)
 	}
