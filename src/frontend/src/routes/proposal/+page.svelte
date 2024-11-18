@@ -42,7 +42,7 @@
 		};
 
 		try {
-			const response = await fetch('/api/proposal/submit', {
+			const response = await fetch('/api/activities', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
