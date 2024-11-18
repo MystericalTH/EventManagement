@@ -23,10 +23,10 @@ func ActivitiesRoutes(router *mux.Router) {
 
 func FeedbackRoutes(router *mux.Router) {
 	router.HandleFunc("/api/activities/{activityId}/feedback/status", api.GetFeedbackStatus).Methods("GET")
-	router.HandleFunc("/api/feedback/submit", api.SubmitFeedback).Methods("POST")
+	router.HandleFunc("/api/activities/{activityId}/feedback/submit", api.SubmitFeedback).Methods("POST")
 }
 
 func RegistrationRoutes(router *mux.Router) {
 	router.HandleFunc("/api/activities/{activityId}/registration/status", api.GetRegistrationStatus).Methods("GET")
-	router.HandleFunc("/api/registration/submit", api.SubmitRegistration).Methods("POST")
+	router.HandleFunc("/api/activities/{activityId}/registration/submit", api.SubmitRegistration).Methods("POST")
 }

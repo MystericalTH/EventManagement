@@ -104,11 +104,16 @@ func SubmitFeedback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Decode the request body
-	var feedbackData struct {
-		ActivityID int64  `json:"id"`
-		Feedback   string `json:"feedback"`
+	vars := mux.Vars(r)
+	activityIDStr := vars["activityId"]
+	activityID, err := strconv.ParseInt(activityIDStr, 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid activity ID", http.StatusBadRequest)
+		return
 	}
+
+	// Decode the request body
+	var feedbackData db.Feedback
 	err = json.NewDecoder(r.Body).Decode(&feedbackData)
 	if err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
@@ -117,7 +122,7 @@ func SubmitFeedback(w http.ResponseWriter, r *http.Request) {
 
 	// Check if feedback already exists
 	var count int
-	err = db.DB.QueryRow("SELECT COUNT(*) FROM Feedback WHERE activityID = ? AND memberID = ?", feedbackData.ActivityID, memberID).Scan(&count)
+	err = db.DB.QueryRow("SELECT COUNT(*) FROM Feedback WHERE activityID = ? AND memberID = ?", activityID, memberID).Scan(&count)
 	if err != nil {
 		http.Error(w, "Failed to check existing feedback", http.StatusInternalServerError)
 		return
@@ -129,7 +134,7 @@ func SubmitFeedback(w http.ResponseWriter, r *http.Request) {
 
 	// Insert the feedback into the database
 	_, err = db.DB.Exec("INSERT INTO Feedback (activityID, memberID, feedbackMessage, feedbackDateTime) VALUES (?, ?, ?, ?)",
-		feedbackData.ActivityID, memberID, feedbackData.Feedback, time.Now())
+		activityID, memberID, feedbackData.Feedbackmessage, time.Now())
 	if err != nil {
 		http.Error(w, "Failed to submit feedback", http.StatusInternalServerError)
 		return
