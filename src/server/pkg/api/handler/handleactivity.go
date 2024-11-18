@@ -173,3 +173,35 @@ func PostActivity(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 }
+
+func GetActivityRoles(w http.ResponseWriter, r *http.Request) {
+	// Get the activity ID from the URL path
+	activityIDStr := r.URL.Query().Get("id")
+	activityID, err := strconv.Atoi(activityIDStr)
+	if err != nil {
+		http.Error(w, "Invalid activity ID", http.StatusBadRequest)
+		return
+	}
+
+	// Fetch roles from the ActivityRole table where activity_id matches
+	rows, err := db.DB.Query("SELECT role FROM ActivityRole WHERE activity_id = ?", activityID)
+	if err != nil {
+		http.Error(w, "Failed to fetch activity roles", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var activityRoles []string
+	for rows.Next() {
+		var role string
+		if err := rows.Scan(&role); err != nil {
+			http.Error(w, "Failed to scan activity role", http.StatusInternalServerError)
+			return
+		}
+		activityRoles = append(activityRoles, role)
+	}
+
+	// Return the roles as JSON
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(activityRoles)
+}
