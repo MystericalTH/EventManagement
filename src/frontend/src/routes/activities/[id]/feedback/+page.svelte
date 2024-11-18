@@ -9,12 +9,11 @@
       event.preventDefault();
   
       const formData = {
-      activityID: activity.id,
       feedbackMessage: feedback
     };
 
     try {
-      const response = await fetch('/api/feedback/submit', {
+      const response = await fetch(`/api/activities/${activity.id}/feedback/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

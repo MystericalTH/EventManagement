@@ -11,13 +11,12 @@
       event.preventDefault();
   
       const formData = {
-      activityID: activity.id,
       role: selectedRole,
       expectation
     };
 
     try {
-      const response = await fetch('/api/registration/submit', {
+      const response = await fetch(`/api/activities/${activity.id}/registration/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
