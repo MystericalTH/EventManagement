@@ -14,10 +14,10 @@
       const registerDateTime = formatDateTime();
   
       const formData = {
-      id: activity.id,
+      activityID: activity.id,
+      role: selectedRole,
       expectation,
-      registerDateTime,
-      role: selectedRole
+      datetime: registerDateTime
     };
 
     try {

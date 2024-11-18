@@ -12,8 +12,8 @@
       const feedbackDateTime = formatDateTime();
   
       const formData = {
-      id: activity.id,
-      feedback,
+      activityID: activity.id,
+      feedbackMessage: feedback,
       feedbackDateTime
     };
 
