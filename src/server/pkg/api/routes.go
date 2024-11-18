@@ -26,5 +26,17 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		api.PUT("/members/:id/accept", func(c *gin.Context) {
 			handler.AcceptMember(c, queries) // Pass queries to the handler
 		}) // Accept a member
+		api.GET("/login", func(c *gin.Context) {
+			handler.AuthLogin(c)
+		})
+		api.GET("/auth/google/callback", func(c *gin.Context) {
+			handler.AuthCallback(c)
+		})
+		api.GET("/login/callback", func(c *gin.Context) {
+			handler.LoginInfoRetrieval(c)
+		})
+		api.GET("/logout", func(c *gin.Context) {
+			handler.AuthLogout(c)
+		})
 	}
 }
