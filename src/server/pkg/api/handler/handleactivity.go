@@ -156,8 +156,8 @@ func PostActivity(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for _, role := range activity.ActivityRoles {
-		_, err := tx.Exec("INSERT INTO ActivityRole (activity_id, role) VALUES (?, ?)", activityID, role)
+	for _, ActivityRole := range activity.ActivityRoles {
+		_, err := tx.Exec("INSERT INTO ActivityRole (activity_id, role) VALUES (?, ?)", activityID, ActivityRole)
 		if err != nil {
 			tx.Rollback()
 			http.Error(w, "Failed to insert activity role", http.StatusInternalServerError)
