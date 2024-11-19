@@ -9,12 +9,12 @@
 	let advisor = '';
 	let starttime = '';
 	let endtime = '';
-	let activityRole: string[] = [];
+	let activityRoles: string[] = [];
 	let newActivityRole = '';
 
 	const addActivityRole = () => {
 		if (newActivityRole.trim() !== '') {
-			activityRole = [...activityRole, newActivityRole.trim()];
+			activityRoles = [...activityRoles, newActivityRole.trim()];
 			newActivityRole = '';
 		}
 	};
@@ -33,7 +33,7 @@
 			advisor,
 			starttime,
 			endtime,
-			activityRole
+			activityRoles
 		};
 
 		try {
@@ -194,7 +194,7 @@
 				>Add Role</button
 			>
 			<ul class="mt-2">
-				{#each activityRole as role}
+				{#each activityRoles as role}
 					<li class="ml-5 list-disc">{role}</li>
 				{/each}
 			</ul>
