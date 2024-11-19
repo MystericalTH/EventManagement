@@ -6,12 +6,12 @@ import (
 )
 
 // Get all activities service
-func GetAllActivitiesService(queries *db.Queries) ([]db.Activity, error) {
+func GetAllActivitiesService(queries *db.Queries) ([]db.ListRequestingActivitiesRow, error) {
 	return queries.ListRequestingActivities(context.Background())
 }
 
 // Get activity by ID service
-func GetActivityByIDService(queries *db.Queries, activityID int32) (db.Activity, error) {
+func GetActivityByIDService(queries *db.Queries, activityID int32) (db.ListActivityRow, error) {
 	return queries.ListActivity(context.Background(), activityID)
 }
 
@@ -32,4 +32,9 @@ func InsertActivityRoleService(queries *db.Queries, activityID int32, role strin
 		Activityrole: role,
 	}
 	return queries.InsertActivityRole(context.Background(), params)
+}
+
+// GetActivityIDByTitleService retrieves the activity ID based on the title
+func GetActivityIDByTitleService(queries *db.Queries, title string) (int32, error) {
+	return queries.GetActivityIDByTitle(context.Background(), title)
 }

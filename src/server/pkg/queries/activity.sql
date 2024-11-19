@@ -17,3 +17,8 @@ SELECT activityRole FROM ActivityRoles WHERE activityID = ?;
 
 -- name: InsertActivityRole :exec
 INSERT INTO ActivityRoles (activityID, activityRole) VALUES (?, ?);
+
+-- name: GetActivityIDByTitle :one
+SELECT activityID
+FROM Activity
+WHERE title = ?;
