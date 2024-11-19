@@ -5,7 +5,7 @@
 		activity: ActivityData;
 		isRegistered: boolean;
 		isEventPast: boolean;
-		hasSubmittedFeedback: boolean;	
+		hasSubmittedFeedback: boolean;
 		nextActivityId: number | null;
 	};
 
@@ -34,22 +34,24 @@
 	</div>
 	<div class="my-10 text-lg">
 		<p>{data.activity.description}</p>
-	</div>	
-	
+	</div>
+
 	{#if data.isEventPast && data.isRegistered}
 		{#if data.hasSubmittedFeedback}
-			<button class="bg-gray-500 text-white py-2 px-4 rounded" disabled>Feedback Submitted</button>
+			<button class="rounded bg-gray-500 px-4 py-2 text-white" disabled>Feedback Submitted</button>
 		{:else}
-			<button class="bg-green-500 text-white py-2 px-4 rounded" on:click={openFeedbackPage}>Submit Feedback</button>
+			<button class="rounded bg-green-500 px-4 py-2 text-white" onclick={openFeedbackPage}
+				>Submit Feedback</button
+			>
 		{/if}
+	{:else if data.isRegistered}
+		<button class="rounded bg-gray-500 px-4 py-2 text-white" disabled>Registered</button>
 	{:else}
-		{#if data.isRegistered}
-			<button class="bg-gray-500 text-white py-2 px-4 rounded" disabled>Registered</button>
-		{:else}
-			<button class="bg-blue-500 text-white py-2 px-4 rounded" on:click={openRegisterPage}>Register</button>
-		{/if}
+		<button class="rounded bg-blue-500 px-4 py-2 text-white" onclick={openRegisterPage}
+			>Register</button
+		>
 	{/if}
-    
+
 	<div class="mt-10 flex justify-between">
 		<button
 			class="rounded bg-gray-300 px-4 py-2 text-black"
