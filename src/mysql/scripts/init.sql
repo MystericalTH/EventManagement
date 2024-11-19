@@ -43,7 +43,6 @@ CREATE TABLE Activity (
   acceptAdmin int(11),
   acceptDateTime datetime,
   applicationStatus varchar(20),
-  activityType ENUM('Project', 'Workshop') NOT NULL, -- Discriminator for subclass
   PRIMARY KEY (activityID),
   CONSTRAINT activity_proposer_fk FOREIGN KEY (proposer) REFERENCES Member (memberID),
   CONSTRAINT activity_acceptAdmin_fk FOREIGN KEY (acceptAdmin) REFERENCES Admin (adminID)
