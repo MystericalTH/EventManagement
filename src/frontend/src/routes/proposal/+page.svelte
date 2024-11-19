@@ -71,7 +71,6 @@
         starttime = '';
         endtime = '';
         activityRoles = [];
-        newActivityRole = '';
     };
 </script>
 
