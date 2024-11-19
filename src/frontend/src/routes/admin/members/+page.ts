@@ -3,7 +3,8 @@ import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch }) => {
 	const res = await fetch(`/api/members`);
-	const memberList = await res.json();
+	let memberList = await res.json();
+	if (memberList == null) memberList = [];
 	adminState.memberList = memberList;
 	return { memberList };
 };

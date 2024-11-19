@@ -1,7 +1,8 @@
 FROM cosmtrek/air
 COPY ./src/server/ /usr/src/app
+COPY ./config/.air.toml /usr/src/app
 WORKDIR /usr/src/app
 
 RUN go mod tidy
 
-CMD air --build.cmd "go build -o main.o main.go" --build.bin "./main.o"
+CMD air -c .air.toml

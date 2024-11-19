@@ -5,13 +5,28 @@ services:
       context: .
       dockerfile: Dockerfile.server
     # working_dir value has to be the same of mapped volume
-    working_dir: /usr/app/
+    working_dir: /usr/src/app/
     ports:
       - 8081:8081
     env_file: ".env"
     volumes:
-      - ./src/server/:/usr/app/
-      - /usr/app/tmp/
+      - ./src/server/:/usr/src/app/
+      - /usr/src/app/tmp/
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=ClubManagement
+      - LISTEN_PORT=8081
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./src/server/
+          target: /usr/src/app/
+        - action: sync+restart
+          path: ./config/.air.toml
+          target: /usr/src/app/.air.toml
   frontend:
     container_name: frontend
     environment:
@@ -52,14 +67,15 @@ services:
     image: mysql:5.7
     container_name: mysql
     restart: always
+    env_file: ".env"
     environment:
-      MYSQL_DATABASE: 'ClubManagement'
-      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_ROOT_PASSWORD: "root"
+    command: --lower_case_table_names=1
     ports:
       - "3306:3306"
     volumes:
+      - ./src/mysql/scripts/:/docker-entrypoint-initdb.d/
       - mysql-data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   mysql-data:
