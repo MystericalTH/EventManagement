@@ -19,7 +19,9 @@ export const handlers = [
 	http.get('/api/members/requests', ({ params }) => {
 		return HttpResponse.json(memberData);
 	}),
-
+	http.get('/api/members', ({}) => {
+		return HttpResponse.json(memberData);
+	}),
 	http.delete('/api/members/requests/:id', ({ params }) => {
 		return new HttpResponse(null, { status: 204 });
 	}),

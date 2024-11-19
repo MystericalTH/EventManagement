@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { createPagination } from '$lib/utils/pagination.svelte';
-	import { rejectRequest, approveRequest } from '$lib/utils/memberRequest';
+	import { rejectRequest, approveRequest } from '$lib/utils/adminActions';
 
-	import { adminState } from '$lib/states/adminStates.svelte';
+	let { data } = $props();
+
 	import ActionButton from '$lib/components/actionButton.svelte';
-	import checkCircle from '$lib/assets/action-button-icons/check-circle';
-	import trash from '$lib/assets/action-button-icons/trash';
-	let pagination = createPagination(adminState.memberRequestList, 10);
+	import { checkCircle, trash } from '$lib/assets/action-button-icons';
+	let pagination = createPagination(data.memberRequestList, 10);
 </script>
 
 <h1 class="mb-4 text-2xl">Member Requests</h1>
@@ -22,7 +22,7 @@
 <div class="text-sm">
 	<div class="flex max-w-[1200px] justify-center">
 		<div class="overflow-auto border border-slate-200">
-			<table class="min-w-[794] divide-y divide-gray-200">
+			<table class="min-w-[794px] divide-y divide-gray-200">
 				<thead class="bg-gray-100">
 					<tr>
 						<th
@@ -56,19 +56,20 @@
 						{#key row.id}
 							<tr>
 								<td class="h-12 w-36 whitespace-nowrap px-3 py-3 text-xs"
-									>{row.firstName + ' ' + row.lastName}</td
+									>{row.fname + ' ' + row.lname}</td
 								>
-								<td class="h-12 max-w-48 px-3 text-xs">
+								<!--<td class="h-12 max-w-48 px-3 text-xs">
 									<div class="flex content-center space-x-2">
 										{#each row.interests as interest}
 											<div class="rounded-md bg-indigo-300 p-1 text-white">{interest}</div>
 										{/each}
 									</div>
-								</td>
+                </td>-->
+								<td class="h-12 w-36 whitespace-nowrap px-3 py-3 text-xs">{row.interest}</td>
 								<td class="h-12 w-48 overflow-scroll whitespace-nowrap px-3 py-3 text-xs"
 									>{row.email}</td
 								>
-								<td class="h-12 w-40 px-3 py-3 text-xs">{row.phoneNumber}</td>
+								<td class="h-12 w-40 px-3 py-3 text-xs">{row.phone}</td>
 								<td
 									class="h-12 min-w-48 max-w-64 overflow-scroll whitespace-nowrap px-3 py-3 text-xs"
 									>{row.reason}</td
