@@ -46,23 +46,26 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 
 		// Activity routes
 		api.GET("/activities", func(c *gin.Context) {
-			handler.GetActivities(c)
+			handler.GetActivities(c, queries)
 		})
-		api.GET("/activities/:id", func(c *gin.Context) {
-			handler.GetActivityByID(c)
+		api.GET("/activities/:activityId", func(c *gin.Context) {
+			handler.GetActivityByID(c, queries)
 		})
 		api.POST("/activities", func(c *gin.Context) {
-			handler.PostActivity(c)
+			handler.PostActivity(c, queries)
 		})
-		api.GET("/activities/:id/roles", func(c *gin.Context) {
-			handler.GetActivityRoles(c)
+		api.GET("/activities/:activityId/roles", func(c *gin.Context) {
+			handler.GetActivityRoles(c, queries)
+		})
+
+		// Feedback routes
+		api.GET("/activities/:activityId/feedback/status", func(c *gin.Context) {
+			handler.GetFeedbackStatus(c, queries)
+		})
+		api.POST("/activities/:activityId/feedback/submit", func(c *gin.Context) {
+			handler.SubmitFeedback(c, queries)
 		})
 	}
-}
-
-func FeedbackRoutes(router *mux.Router) {
-	router.HandleFunc("/api/activities/{activityId}/feedback/status", handler.GetFeedbackStatus).Methods("GET")
-	router.HandleFunc("/api/activities/{activityId}/feedback/submit", handler.SubmitFeedback).Methods("POST")
 }
 
 func RegistrationRoutes(router *mux.Router) {
