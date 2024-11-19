@@ -12,6 +12,12 @@ WHERE acceptAdmin IS NULL AND acceptDateTime IS NULL AND applicationStatus IS NU
 INSERT INTO Activity (title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 
+-- name: InsertProject :exec
+INSERT INTO Project (projectID, advisor) VALUES (?, ?);
+
+-- name: InsertWorkshop :exec
+INSERT INTO Workshop (workshopID, starttime, endtime) VALUES (?, ?, ?);
+
 -- name: ListActivityRoles :many
 SELECT activityRole FROM ActivityRoles WHERE activityID = ?;
 

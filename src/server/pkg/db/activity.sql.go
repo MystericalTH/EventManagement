@@ -30,14 +30,14 @@ INSERT INTO Activity (title, proposer, startDate, endDate, maxNumber, format, de
 `
 
 type InsertActivityParams struct {
-	Title           string         `json:"title"`
-	Proposer        int32          `json:"proposer"`
-	Startdate       time.Time      `json:"startdate"`
-	Enddate         time.Time      `json:"enddate"`
-	Maxnumber       sql.NullInt32  `json:"maxnumber"`
-	Format          sql.NullString `json:"format"`
-	Description     string         `json:"description"`
-	Proposedatetime time.Time      `json:"proposedatetime"`
+	Title           string    `json:"title"`
+	Proposer        int32     `json:"proposer"`
+	Startdate       time.Time `json:"startdate"`
+	Enddate         time.Time `json:"enddate"`
+	Maxnumber       int32     `json:"maxnumber"`
+	Format          string    `json:"format"`
+	Description     string    `json:"description"`
+	Proposedatetime time.Time `json:"proposedatetime"`
 }
 
 func (q *Queries) InsertActivity(ctx context.Context, arg InsertActivityParams) error {
@@ -68,30 +68,44 @@ func (q *Queries) InsertActivityRole(ctx context.Context, arg InsertActivityRole
 	return err
 }
 
+const insertProject = `-- name: InsertProject :exec
+INSERT INTO Project (projectID, advisor) VALUES (?, ?)
+`
+
+type InsertProjectParams struct {
+	Projectid int32          `json:"projectid"`
+	Advisor   sql.NullString `json:"advisor"`
+}
+
+func (q *Queries) InsertProject(ctx context.Context, arg InsertProjectParams) error {
+	_, err := q.db.ExecContext(ctx, insertProject, arg.Projectid, arg.Advisor)
+	return err
+}
+
+const insertWorkshop = `-- name: InsertWorkshop :exec
+INSERT INTO Workshop (workshopID, starttime, endtime) VALUES (?, ?, ?)
+`
+
+type InsertWorkshopParams struct {
+	Workshopid int32     `json:"workshopid"`
+	Starttime  time.Time `json:"starttime"`
+	Endtime    time.Time `json:"endtime"`
+}
+
+func (q *Queries) InsertWorkshop(ctx context.Context, arg InsertWorkshopParams) error {
+	_, err := q.db.ExecContext(ctx, insertWorkshop, arg.Workshopid, arg.Starttime, arg.Endtime)
+	return err
+}
+
 const listActivity = `-- name: ListActivity :one
 SELECT activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus
 FROM Activity
 WHERE acceptAdmin IS NULL AND acceptDateTime IS NULL AND applicationStatus IS NULL AND activityID = ?
 `
 
-type ListActivityRow struct {
-	Activityid        int32          `json:"activityid"`
-	Title             string         `json:"title"`
-	Proposer          int32          `json:"proposer"`
-	Startdate         time.Time      `json:"startdate"`
-	Enddate           time.Time      `json:"enddate"`
-	Maxnumber         sql.NullInt32  `json:"maxnumber"`
-	Format            sql.NullString `json:"format"`
-	Description       string         `json:"description"`
-	Proposedatetime   time.Time      `json:"proposedatetime"`
-	Acceptadmin       sql.NullInt32  `json:"acceptadmin"`
-	Acceptdatetime    sql.NullTime   `json:"acceptdatetime"`
-	Applicationstatus sql.NullString `json:"applicationstatus"`
-}
-
-func (q *Queries) ListActivity(ctx context.Context, activityid int32) (ListActivityRow, error) {
+func (q *Queries) ListActivity(ctx context.Context, activityid int32) (Activity, error) {
 	row := q.db.QueryRowContext(ctx, listActivity, activityid)
-	var i ListActivityRow
+	var i Activity
 	err := row.Scan(
 		&i.Activityid,
 		&i.Title,
@@ -142,30 +156,15 @@ FROM Activity
 WHERE acceptAdmin IS NULL AND acceptDateTime IS NULL AND applicationStatus IS NULL
 `
 
-type ListRequestingActivitiesRow struct {
-	Activityid        int32          `json:"activityid"`
-	Title             string         `json:"title"`
-	Proposer          int32          `json:"proposer"`
-	Startdate         time.Time      `json:"startdate"`
-	Enddate           time.Time      `json:"enddate"`
-	Maxnumber         sql.NullInt32  `json:"maxnumber"`
-	Format            sql.NullString `json:"format"`
-	Description       string         `json:"description"`
-	Proposedatetime   time.Time      `json:"proposedatetime"`
-	Acceptadmin       sql.NullInt32  `json:"acceptadmin"`
-	Acceptdatetime    sql.NullTime   `json:"acceptdatetime"`
-	Applicationstatus sql.NullString `json:"applicationstatus"`
-}
-
-func (q *Queries) ListRequestingActivities(ctx context.Context) ([]ListRequestingActivitiesRow, error) {
+func (q *Queries) ListRequestingActivities(ctx context.Context) ([]Activity, error) {
 	rows, err := q.db.QueryContext(ctx, listRequestingActivities)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListRequestingActivitiesRow
+	var items []Activity
 	for rows.Next() {
-		var i ListRequestingActivitiesRow
+		var i Activity
 		if err := rows.Scan(
 			&i.Activityid,
 			&i.Title,
