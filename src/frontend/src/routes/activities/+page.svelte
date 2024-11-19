@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { ActivityData } from '../../lib/types/activity.ts';
+	import type { ActivityData } from '$lib/types/activity.ts';
 
-	export let data: { activities: Array<ActivityData> };
+	let { data }: { data: { activities: Array<ActivityData> } } = $props();
 
-	import Card from '../../lib/components/Card.svelte';
+	import Card from '$lib/components/Card.svelte';
 
 	const currentDate = new Date();
 
