@@ -1,11 +1,11 @@
-export enum Role {
-	Admin = 'admin',
-	Member = 'member',
-	Default = ''
-}
+export const Role = {
+	ADMIN: 'admin',
+	MEMBER: 'member',
+	DEFAULT: 'default'
+};
 
-export let getRole = function (roleString: string): Role {
-	if (roleString === 'admin') return Role.Admin;
-	else if (roleString === 'member') return Role.Member;
-	else return Role.Default;
+export let getRole = function (roleString: string): string {
+	if (roleString === 'admin') return Role.ADMIN;
+	else if (roleString === 'member') return Role.MEMBER;
+	else return Role.DEFAULT;
 };

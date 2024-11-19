@@ -1,5 +1,6 @@
 import { http } from 'msw';
 import { HttpResponse } from 'msw';
+import { memberData } from './__data';
 export const handlers = [
 	// Mock a GET request to "/api/users"
 	http.get('/api/users', ({ params }) => {
@@ -14,7 +15,15 @@ export const handlers = [
 			}
 		]);
 	}),
-	http.get('/api/verify', ({ params }) => {
-		return HttpResponse.json({ role: 'admin' });
+
+	http.get('/api/members/requests', ({ params }) => {
+		return HttpResponse.json(memberData);
+	}),
+
+	http.delete('/api/members/requests/:id', ({ params }) => {
+		return new HttpResponse(null, { status: 204 });
+	}),
+	http.post('/api/members/requests/:id/approve', ({ params }) => {
+		return new HttpResponse(null, { status: 204 });
 	})
 ];

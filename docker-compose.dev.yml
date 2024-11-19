@@ -31,7 +31,7 @@ services:
     container_name: frontend
     environment:
       VITE_API_DOMAIN: "http://server:8081"
-      VITE_MSW_ENABLED: false
+    env_file: ".env"
     volumes:
       - ./src/frontend/:/usr/src/app/
       - /usr/src/app/node_modules
@@ -67,14 +67,15 @@ services:
     image: mysql:5.7
     container_name: mysql
     restart: always
+    env_file: ".env"
     environment:
-      MYSQL_DATABASE: 'ClubManagement'
-      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_ROOT_PASSWORD: "root"
+    command: --lower_case_table_names=1
     ports:
       - "3306:3306"
     volumes:
+      - ./src/mysql/scripts/:/docker-entrypoint-initdb.d/
       - mysql-data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   mysql-data:
