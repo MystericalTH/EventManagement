@@ -1,8 +1,8 @@
 export type MemberRequest = {
 	id: number;
-	firstName: string;
-	lastName: string;
-	phoneNumber: string;
+	fname: string;
+	lname: string;
+	phone: string;
 	email: string;
 	interests: Array<String>;
 	reason: string;

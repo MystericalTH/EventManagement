@@ -1,4 +1,5 @@
-export function createPagination(data: Array<any>, maxItemsPerRow: number) {
+export function createPagination(input: Array<any>, maxItemsPerRow: number) {
+	let data = $state(input);
 	let count = $derived(data.length);
 	let currentPage = $state(1);
 	let rowsPerPage = $state(maxItemsPerRow);

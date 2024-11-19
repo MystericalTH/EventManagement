@@ -66,3 +66,12 @@ func AcceptMember(c *gin.Context, queries *db.Queries) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Member accepted"})
 }
+
+func GetAllMemberRequests(c *gin.Context, queries *db.Queries) {
+	memberRequests, err := services.GetAllMemberRequestsService(queries)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, memberRequests)
+}
