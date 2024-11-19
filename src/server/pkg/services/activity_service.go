@@ -2,8 +2,6 @@ package services
 
 import (
 	"context"
-	"database/sql"
-	"time"
 
 	"sinno-server/pkg/db"
 )
@@ -14,43 +12,22 @@ func GetActivityIDByTitleService(queries *db.Queries, title string) (int32, erro
 }
 
 // Insert activity service
-func InsertActivityService(queries *db.Queries, title string, proposer int32, startDate time.Time, endDate time.Time, maxNumber int32, format string, description string, proposeDateTime time.Time) error {
-	params := db.InsertActivityParams{
-		Title:           title,
-		Proposer:        proposer,
-		Startdate:       startDate,
-		Enddate:         endDate,
-		Maxnumber:       maxNumber,
-		Format:          format,
-		Description:     description,
-		Proposedatetime: proposeDateTime,
-	}
+func InsertActivityService(queries *db.Queries, params db.InsertActivityParams) error {
 	return queries.InsertActivity(context.Background(), params)
 }
 
 // Insert activity role service
-func InsertActivityRoleService(queries *db.Queries, activityID int32, role string) error {
-	params := db.InsertActivityRoleParams{
-		Activityid:   activityID,
-		Activityrole: role,
-	}
+func InsertActivityRoleService(queries *db.Queries, params db.InsertActivityRoleParams) error {
 	return queries.InsertActivityRole(context.Background(), params)
 }
 
 // Insert project service
-func InsertProjectService(queries *db.Queries, advisor string) error {
-	params := db.InsertProjectParams{
-		Advisor: sql.NullString{String: advisor, Valid: advisor != ""},
-	}
+func InsertProjectService(queries *db.Queries, params db.InsertProjectParams) error {
 	return queries.InsertProject(context.Background(), params)
 }
 
 // Insert workshop service
-func InsertWorkshopService(queries *db.Queries, startTime time.Time, endTime time.Time) error {
-	params := db.InsertWorkshopParams{
-		Starttime: startTime,
-		Endtime:   endTime,
-	}
+func InsertWorkshopService(queries *db.Queries, params db.InsertWorkshopParams) error {
 	return queries.InsertWorkshop(context.Background(), params)
 }
 
