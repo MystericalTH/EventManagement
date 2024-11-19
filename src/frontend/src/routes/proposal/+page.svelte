@@ -1,14 +1,14 @@
 <script lang="ts">
 	let title = '';
 	let proposer = '';
-	let startDate = '';
-	let endDate = '';
-	let maxNumber = 0;
+	let startdate = '';
+	let enddate = '';
+	let maxnumber = 0;
 	let format = '';
 	let description = '';
 	let advisor = '';
-	let startTime = '';
-	let endTime = '';
+	let starttime = '';
+	let endtime = '';
 	let activityRole: string[] = [];
 	let newActivityRole = '';
 
@@ -25,14 +25,14 @@
 		const formData = {
 			title,
 			proposer,
-			startDate,
-			endDate,
-			maxNumber,
+			startdate,
+			enddate,
+			maxnumber,
 			format,
 			description,
 			advisor,
-			startTime,
-			endTime,
+			starttime,
+			endtime,
 			activityRole
 		};
 
@@ -90,7 +90,7 @@
 				<input
 					type="text"
 					id="startDate"
-					bind:value={startDate}
+					bind:value={startdate}
 					required
 					class="w-56 rounded border border-gray-300 p-2 text-lg"
 				/>
@@ -100,7 +100,7 @@
 				<input
 					type="text"
 					id="endDate"
-					bind:value={endDate}
+					bind:value={enddate}
 					required
 					class="w-56 rounded border border-gray-300 p-2 text-lg"
 				/>
@@ -121,7 +121,7 @@
 				<input
 					type="text"
 					id="startDate"
-					bind:value={startDate}
+					bind:value={startdate}
 					required
 					class="w-56 rounded border border-gray-300 p-2 text-lg"
 				/>
@@ -131,7 +131,7 @@
 				<input
 					type="text"
 					id="startTime"
-					bind:value={startTime}
+					bind:value={starttime}
 					required
 					class="w-56 rounded border border-gray-300 p-2 text-lg"
 				/>
@@ -141,7 +141,7 @@
 				<input
 					type="text"
 					id="endDate"
-					bind:value={endDate}
+					bind:value={enddate}
 					required
 					class="w-56 rounded border border-gray-300 p-2 text-lg"
 				/>
@@ -151,7 +151,7 @@
 				<input
 					type="text"
 					id="endTime"
-					bind:value={endTime}
+					bind:value={endtime}
 					required
 					class="w-56 rounded border border-gray-300 p-2 text-lg"
 				/>
@@ -162,7 +162,7 @@
 			<input
 				type="number"
 				id="maxNumber"
-				bind:value={maxNumber}
+				bind:value={maxnumber}
 				required
 				class="w-28 rounded border border-gray-300 p-2 text-lg"
 			/>

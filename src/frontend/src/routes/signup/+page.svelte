@@ -1,9 +1,9 @@
 <script lang="ts">
-	let fName = '';
-	let lName = '';
+	let fname = '';
+	let lname = '';
 	let email = '';
 	let phone = '';
-	let githubUrl = '';
+	let githuburl = '';
 	let interest = '';
 	let reason = '';
 
@@ -11,11 +11,11 @@
 		event.preventDefault();
 
 		const formData = {
-			fName,
-			lName,
+			fname,
+			lname,
 			email,
 			phone,
-			githubUrl,
+			githuburl,
 			interest,
 			reason
 		};
@@ -47,7 +47,7 @@
         <input
             type="text"
             id="fName"
-            bind:value={fName}
+            bind:value={fname}
             required
             class="rounded border border-gray-300 p-2 text-lg"
         />
@@ -57,7 +57,7 @@
         <input
             type="text"
             id="lName"
-            bind:value={lName}
+            bind:value={lname}
             required
             class="rounded border border-gray-300 p-2 text-lg"
         />
@@ -87,7 +87,7 @@
 		<input
 			type="url"
 			id="githubUrl"
-			bind:value={githubUrl}
+			bind:value={githuburl}
 			required
 			class="rounded border border-gray-300 p-2 text-lg"
 		/>
