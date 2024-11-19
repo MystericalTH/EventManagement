@@ -5,7 +5,6 @@ import (
 	"encoding/gob"
 	"encoding/json"
 	"fmt"
-	_ "log"
 	"net/http"
 	"net/url"
 	"os"
@@ -18,8 +17,6 @@ import (
 )
 
 var (
-	// Replace with your actual Google credentials
-	port         = os.Getenv("LISTEN_PORT")
 	redirectPort = os.Getenv("REDIRECT_PORT")
 	oauthConfig  = &oauth2.Config{
 		RedirectURL:  fmt.Sprintf("http://localhost:%s/api/auth/google/callback", redirectPort),
@@ -42,8 +39,8 @@ func init() {
 	gob.Register(UserInfo{})
 }
 
+// AuthLogin redirects the user to Google OAuth consent page
 func AuthLogin(c *gin.Context) {
-	// Redirect user to Google's OAuth consent page
 	role := c.Query("role")
 	redirectUri, err := url.QueryUnescape(c.Query("redirect_uri"))
 	if err != nil {
@@ -56,22 +53,22 @@ func AuthLogin(c *gin.Context) {
 	c.Redirect(http.StatusTemporaryRedirect, stateUrl)
 }
 
+// AuthCallback is called after OAuth2 authentication with Google
 func AuthCallback(c *gin.Context) {
-	// Retrieve authorization code and state
 	code := c.Query("code")
 	if code == "" {
 		c.String(http.StatusBadRequest, "Authorization code not found")
 		return
 	}
 
-	// Exchange the authorization code for an access token
+	// Exchange code for access token
 	token, err := oauthConfig.Exchange(context.Background(), code)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Failed to exchange token: %s", err.Error())
 		return
 	}
 
-	// Retrieve user information
+	// Retrieve user info from Google API
 	req, err := http.NewRequest("GET", "https://www.googleapis.com/oauth2/v3/userinfo", nil)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Failed to create request: %s", err.Error())
@@ -89,28 +86,30 @@ func AuthCallback(c *gin.Context) {
 
 	var userInfo struct {
 		Email string `json:"email"`
+		Name  string `json:"name"`
 	}
 	if err := json.NewDecoder(userInfoResp.Body).Decode(&userInfo); err != nil {
 		c.String(http.StatusInternalServerError, "Failed to decode user info: %s", err.Error())
 		return
 	}
 
-	// Save user email in session
-	session, _ := sessionStore.Get(c.Request, sessionName)
-	session.Values["user_email"] = userInfo.Email
-	if err := session.Save(c.Request, c.Writer); err != nil {
-		c.String(http.StatusInternalServerError, "Failed to save session: %s", err.Error())
+	// Save user info in session
+	session, err := sessionStore.Get(c.Request, sessionName)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Failed to retrieve session: %s", err.Error())
 		return
 	}
 
-	// Redirect back
-	redirectUri, _ := c.GetQuery("redirect_uri")
-	if redirectUri == "" {
-		redirectUri = "/"
-	}
+	session.Values["user_email"] = userInfo.Email
+	session.Values["user_name"] = userInfo.Name
+	session.Save(c.Request, c.Writer)
+
+	// Redirect to the specified or default URI
+	redirectUri := c.DefaultQuery("redirect_uri", "/")
 	c.Redirect(http.StatusFound, redirectUri)
 }
 
+// LoginInfoRetrieval retrieves login info from the session
 func LoginInfoRetrieval(c *gin.Context) {
 	session, err := sessionStore.Get(c.Request, sessionName)
 	if err != nil {
@@ -119,26 +118,37 @@ func LoginInfoRetrieval(c *gin.Context) {
 			"user":    nil,
 			"role":    nil,
 		})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Authentication successful",
-		"user":    session.Values["user"],
-		"role":    session.Values["role"],
+		"user":    session.Values["user_name"],
+		"role":    session.Values["role"], // You may want to store and retrieve this as needed
 	})
 }
 
+// AuthLogout clears the session and redirects to home
 func AuthLogout(c *gin.Context) {
-	// Clear the session
-	session, _ := sessionStore.Get(c.Request, sessionName)
-	session.Options.MaxAge = -1
+	session, err := sessionStore.Get(c.Request, sessionName)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Failed to retrieve session: %s", err.Error())
+		return
+	}
+	session.Options.MaxAge = -1 // Clear the session
 	session.Save(c.Request, c.Writer)
 
-	// Redirect to home
+	// Redirect to home page
 	c.Redirect(http.StatusFound, "/")
 }
 
+// HandleVerifyRole checks the user's role in the session
 func HandleVerifyRole(c *gin.Context) {
-	session, _ := sessionStore.Get(c.Request, sessionName)
+	session, err := sessionStore.Get(c.Request, sessionName)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"role": "unknown"})
+		return
+	}
+
 	role, ok := session.Values["role"].(string)
 	if !ok {
 		role = "unknown"
