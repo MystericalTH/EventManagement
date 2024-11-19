@@ -123,7 +123,7 @@ func SubmitFeedback(c *gin.Context, queries *db.Queries) {
 	}
 
 	// Create feedback parameters
-	params := db.CreateFeedbackParams{
+	params := db.InsertFeedbackParams{
 		Activityid:      int32(activityID),
 		Memberid:        memberID,
 		Feedbackmessage: feedbackData.Feedbackmessage,
