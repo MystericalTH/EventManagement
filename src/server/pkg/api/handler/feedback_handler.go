@@ -111,17 +111,6 @@ func SubmitFeedback(c *gin.Context, queries *db.Queries) {
 		return
 	}
 
-	// Check if feedback already exists
-	hasSubmitted, err := services.HasSubmittedFeedbackService(queries, int32(activityID), memberID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check existing feedback"})
-		return
-	}
-	if hasSubmitted {
-		c.JSON(http.StatusConflict, gin.H{"error": "Feedback already submitted"})
-		return
-	}
-
 	// Create feedback parameters
 	params := db.InsertFeedbackParams{
 		Activityid:      int32(activityID),
