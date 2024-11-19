@@ -9,7 +9,7 @@
       event.preventDefault();
   
       const formData = {
-      feedbackMessage: feedback
+      feedbackmessage: feedback
     };
 
     try {
