@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -41,6 +42,7 @@ func init() {
 
 // AuthLogin redirects the user to Google OAuth consent page
 func AuthLogin(c *gin.Context) {
+	// Redirect user to Google's OAuth consent page
 	role := c.Query("role")
 	redirectUri, err := url.QueryUnescape(c.Query("redirect_uri"))
 	if err != nil {
@@ -55,27 +57,36 @@ func AuthLogin(c *gin.Context) {
 
 // AuthCallback is called after OAuth2 authentication with Google
 func AuthCallback(c *gin.Context) {
+	// Retrieve the authorization code from Google
 	code := c.Query("code")
+	state, err := url.QueryUnescape(c.Query("state"))
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Failed to unescape state: %s", err.Error())
+		return
+	}
+
 	if code == "" {
 		c.String(http.StatusBadRequest, "Authorization code not found")
 		return
 	}
 
-	// Exchange code for access token
+	// Exchange the code for a token
 	token, err := oauthConfig.Exchange(context.Background(), code)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Failed to exchange token: %s", err.Error())
 		return
 	}
 
-	// Retrieve user info from Google API
+	// Create a new HTTP request to fetch user info from the OAuth provider
 	req, err := http.NewRequest("GET", "https://www.googleapis.com/oauth2/v3/userinfo", nil)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Failed to create request: %s", err.Error())
 		return
 	}
-	req.Header.Set("Authorization", "Bearer "+token.AccessToken)
 
+	// Set the Authorization header with the access token
+	req.Header.Set("Authorization", "Bearer "+token.AccessToken)
+	// Execute the request
 	client := oauthConfig.Client(context.Background(), token)
 	userInfoResp, err := client.Do(req)
 	if err != nil {
@@ -84,14 +95,16 @@ func AuthCallback(c *gin.Context) {
 	}
 	defer userInfoResp.Body.Close()
 
-	var userInfo struct {
-		Email string `json:"email"`
-		Name  string `json:"name"`
-	}
+	// Parse the user info
+	var userInfo UserInfo
 	if err := json.NewDecoder(userInfoResp.Body).Decode(&userInfo); err != nil {
 		c.String(http.StatusInternalServerError, "Failed to decode user info: %s", err.Error())
 		return
 	}
+
+	stateparts := strings.SplitN(state, "__", 3)
+	role := stateparts[1]
+	redirectUri := stateparts[2]
 
 	// Save user info in session
 	session, err := sessionStore.Get(c.Request, sessionName)
@@ -99,13 +112,13 @@ func AuthCallback(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "Failed to retrieve session: %s", err.Error())
 		return
 	}
-
+	session.Values["user"] = userInfo
+	session.Values["role"] = role
 	session.Values["user_email"] = userInfo.Email
 	session.Values["user_name"] = userInfo.Name
 	session.Save(c.Request, c.Writer)
 
 	// Redirect to the specified or default URI
-	redirectUri := c.DefaultQuery("redirect_uri", "/")
 	c.Redirect(http.StatusFound, redirectUri)
 }
 

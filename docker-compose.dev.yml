@@ -64,6 +64,7 @@ services:
           path: ./config/nginx/nginx.conf
           target: /etc/nginx/conf.d/nginx.conf
   mysql:
+    platform: linux/x86_64
     image: mysql:5.7
     container_name: mysql
     restart: always
