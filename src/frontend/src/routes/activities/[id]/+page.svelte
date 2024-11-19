@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ActivityData } from '../../../lib/types/activity.ts';
+	import type { ActivityData } from '$lib/types/activity.ts';
 
 	export let data: {
 		activity: ActivityData;
