@@ -6,13 +6,13 @@ import (
 )
 
 // CreateFeedbackService creates a new feedback entry
-func CreateFeedbackService(queries *db.Queries, params db.CreateFeedbackParams) error {
-	return queries.CreateFeedback(context.Background(), params)
+func CreateFeedbackService(queries *db.Queries, params db.InsertFeedbackParams) error {
+	return queries.InsertFeedback(context.Background(), params)
 }
 
 // GetFeedbackByIDService retrieves a feedback entry by ID
 func GetFeedbackByIDService(queries *db.Queries, feedbackID int32) (db.Feedback, error) {
-	return queries.GetFeedbackByID(context.Background(), feedbackID)
+	return queries.ListFeedbackByID(context.Background(), feedbackID)
 }
 
 // ListFeedbacksService lists all feedback entries

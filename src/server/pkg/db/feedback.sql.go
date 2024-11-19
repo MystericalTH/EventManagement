@@ -9,41 +9,6 @@ import (
 	"context"
 )
 
-const createFeedback = `-- name: CreateFeedback :exec
-INSERT INTO Feedback (activityID, memberID, feedbackMessage, feedbackDateTime)
-VALUES (?, ?, ?, NOW())
-`
-
-type CreateFeedbackParams struct {
-	Activityid      int32  `json:"activityid"`
-	Memberid        int32  `json:"memberid"`
-	Feedbackmessage string `json:"feedbackmessage"`
-}
-
-func (q *Queries) CreateFeedback(ctx context.Context, arg CreateFeedbackParams) error {
-	_, err := q.db.ExecContext(ctx, createFeedback, arg.Activityid, arg.Memberid, arg.Feedbackmessage)
-	return err
-}
-
-const getFeedbackByID = `-- name: GetFeedbackByID :one
-SELECT feedbackID, activityID, memberID, feedbackMessage, feedbackDateTime
-FROM Feedback
-WHERE feedbackID = ?
-`
-
-func (q *Queries) GetFeedbackByID(ctx context.Context, feedbackid int32) (Feedback, error) {
-	row := q.db.QueryRowContext(ctx, getFeedbackByID, feedbackid)
-	var i Feedback
-	err := row.Scan(
-		&i.Feedbackid,
-		&i.Activityid,
-		&i.Memberid,
-		&i.Feedbackmessage,
-		&i.Feedbackdatetime,
-	)
-	return i, err
-}
-
 const hasSubmittedFeedback = `-- name: HasSubmittedFeedback :one
 SELECT COUNT(*) > 0 FROM Feedback WHERE activityID = ? AND memberID = ?
 `
@@ -58,6 +23,41 @@ func (q *Queries) HasSubmittedFeedback(ctx context.Context, arg HasSubmittedFeed
 	var column_1 bool
 	err := row.Scan(&column_1)
 	return column_1, err
+}
+
+const insertFeedback = `-- name: InsertFeedback :exec
+INSERT INTO Feedback (activityID, memberID, feedbackMessage, feedbackDateTime)
+VALUES (?, ?, ?, NOW())
+`
+
+type InsertFeedbackParams struct {
+	Activityid      int32  `json:"activityid"`
+	Memberid        int32  `json:"memberid"`
+	Feedbackmessage string `json:"feedbackmessage"`
+}
+
+func (q *Queries) InsertFeedback(ctx context.Context, arg InsertFeedbackParams) error {
+	_, err := q.db.ExecContext(ctx, insertFeedback, arg.Activityid, arg.Memberid, arg.Feedbackmessage)
+	return err
+}
+
+const listFeedbackByID = `-- name: ListFeedbackByID :one
+SELECT feedbackID, activityID, memberID, feedbackMessage, feedbackDateTime
+FROM Feedback
+WHERE feedbackID = ?
+`
+
+func (q *Queries) ListFeedbackByID(ctx context.Context, feedbackid int32) (Feedback, error) {
+	row := q.db.QueryRowContext(ctx, listFeedbackByID, feedbackid)
+	var i Feedback
+	err := row.Scan(
+		&i.Feedbackid,
+		&i.Activityid,
+		&i.Memberid,
+		&i.Feedbackmessage,
+		&i.Feedbackdatetime,
+	)
+	return i, err
 }
 
 const listFeedbacks = `-- name: ListFeedbacks :many

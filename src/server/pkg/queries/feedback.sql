@@ -1,8 +1,8 @@
--- name: CreateFeedback :exec
+-- name: InsertFeedback :exec
 INSERT INTO Feedback (activityID, memberID, feedbackMessage, feedbackDateTime)
 VALUES (?, ?, ?, NOW());
 
--- name: GetFeedbackByID :one
+-- name: ListFeedbackByID :one
 SELECT feedbackID, activityID, memberID, feedbackMessage, feedbackDateTime
 FROM Feedback
 WHERE feedbackID = ?;
