@@ -2,7 +2,7 @@ version: "2"
 sql:
   - engine: "mysql"
     queries: "src/server/pkg/queries/"
-    schema: "init.sql"
+    schema: "src/mysql/init.sql"
     gen:
       go:
         package: "db"
