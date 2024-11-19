@@ -118,7 +118,14 @@ func AuthCallback(c *gin.Context) {
 }
 
 func LoginInfoRetrieval(c *gin.Context) {
-	session, _ := sessionStore.Get(c.Request, sessionName)
+	session, err := sessionStore.Get(c.Request, sessionName)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Authentication failed",
+			"user":    nil,
+			"role":    nil,
+		})
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Authentication successful",
 		"user":    session.Values["user"],

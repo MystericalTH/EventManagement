@@ -24,3 +24,7 @@ func CreateMemberService(queries *db.Queries, params db.InsertMemberParams) erro
 func AcceptMemberService(queries *db.Queries, memberID int32) error {
 	return queries.AcceptMember(context.Background(), memberID)
 }
+
+func GetAllMemberRequestsService(queries *db.Queries) ([]db.ListRequestingMembersRow, error) {
+	return queries.ListRequestingMembers(context.Background())
+}
