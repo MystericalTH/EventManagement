@@ -5,9 +5,4 @@ WORKDIR /usr/src/app
 
 RUN go mod tidy
 
-ENV LISTEN_PORT=8081
-ENV REDIRECT_PORT=8080
-
-EXPOSE 8081:$LISTEN_PORT
-
 CMD air -c .air.toml
