@@ -4,8 +4,6 @@ import (
 	"sinno-server/pkg/api/handler"
 	"sinno-server/pkg/db"
 
-	"github.com/gorilla/mux"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -65,10 +63,13 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		api.POST("/activities/:activityId/feedback/submit", func(c *gin.Context) {
 			handler.SubmitFeedback(c, queries)
 		})
-	}
-}
 
-func RegistrationRoutes(router *mux.Router) {
-	router.HandleFunc("/api/activities/{activityId}/registration/status", handler.GetRegistrationStatus).Methods("GET")
-	router.HandleFunc("/api/activities/{activityId}/registration/submit", handler.SubmitRegistration).Methods("POST")
+		// Registration routes
+		api.GET("/activities/:activityId/registration/status", func(c *gin.Context) {
+			handler.GetRegistrationStatus(c, queries)
+		})
+		api.POST("/activities/:activityId/registration/submit", func(c *gin.Context) {
+			handler.SubmitRegistration(c, queries)
+		})
+	}
 }
