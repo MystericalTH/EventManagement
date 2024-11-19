@@ -1,6 +1,5 @@
 <script lang="ts">
 	let title = '';
-	let proposer = '';
 	let startdate = '';
 	let enddate = '';
 	let maxnumber = 0;
@@ -22,19 +21,24 @@
 	const handleProposalSubmit = async (event: Event) => {
 		event.preventDefault();
 
-		const formData = {
+		const formData: any = {
 			title,
-			proposer,
-			startdate,
-			enddate,
 			maxnumber,
 			format,
 			description,
-			advisor,
-			starttime,
-			endtime,
 			activityRoles
 		};
+
+		if (format === 'project') {
+            formData.startDate = new Date(startdate).toISOString();
+            formData.endDate = new Date(enddate).toISOString();
+            formData.advisor = advisor;
+        } else if (format === 'workshop') {
+            formData.startDate = startdate;
+            formData.startTime = starttime;
+            formData.endDate = enddate;
+            formData.endTime = endtime;
+        }
 
 		try {
 			const response = await fetch('/api/activities', {
@@ -47,6 +51,7 @@
 
 			if (response.ok) {
 				console.log('Form submitted successfully');
+				resetForm();
 			} else {
 				console.error('Form submission failed');
 			}
@@ -54,6 +59,20 @@
 			console.error('Error submitting form:', error);
 		}
 	};
+
+	const resetForm = () => {
+        title = '';
+        startdate = '';
+        enddate = '';
+        maxnumber = 0;
+        format = '';
+        description = '';
+        advisor = '';
+        starttime = '';
+        endtime = '';
+        activityRoles = [];
+        newActivityRole = '';
+    };
 </script>
 
 <h1 class="my-5 text-center text-4xl font-bold">Activity Proposal</h1>
@@ -88,22 +107,22 @@
 			<div class="mb-4">
 				<label for="startDate" class="mb-2 font-bold">Start Date:</label>
 				<input
-					type="text"
-					id="startDate"
-					bind:value={startdate}
-					required
-					class="w-56 rounded border border-gray-300 p-2 text-lg"
-				/>
+                    type="date"
+                    id="startDate"
+                    bind:value={startdate}
+                    required
+                    class="w-56 rounded border border-gray-300 p-2 text-lg"
+                />
 			</div>
 			<div class="mb-4">
 				<label for="endDate" class="mb-2 font-bold">End Date:</label>
 				<input
-					type="text"
-					id="endDate"
-					bind:value={enddate}
-					required
-					class="w-56 rounded border border-gray-300 p-2 text-lg"
-				/>
+                    type="date"
+                    id="endDate"
+                    bind:value={enddate}
+                    required
+                    class="w-56 rounded border border-gray-300 p-2 text-lg"
+                />
 			</div>
 			<div class="mb-4">
 				<label for="advisor" class="mb-2 font-bold">Advisor:</label>
@@ -119,42 +138,42 @@
 			<div class="mb-4">
 				<label for="startDate" class="mb-2 font-bold">Start Date:</label>
 				<input
-					type="text"
-					id="startDate"
-					bind:value={startdate}
-					required
-					class="w-56 rounded border border-gray-300 p-2 text-lg"
-				/>
+                    type="date"
+                    id="startDate"
+                    bind:value={startdate}
+                    required
+                    class="w-56 rounded border border-gray-300 p-2 text-lg"
+                />
 			</div>
 			<div class="mb-4">
 				<label for="startTime" class="mb-2 font-bold">Start Time:</label>
 				<input
-					type="text"
-					id="startTime"
-					bind:value={starttime}
-					required
-					class="w-56 rounded border border-gray-300 p-2 text-lg"
-				/>
+                    type="time"
+                    id="startTime"
+                    bind:value={starttime}
+                    required
+                    class="w-56 rounded border border-gray-300 p-2 text-lg"
+                />
 			</div>
 			<div class="mb-4">
 				<label for="endDate" class="mb-2 font-bold">End Date:</label>
 				<input
-					type="text"
-					id="endDate"
-					bind:value={enddate}
-					required
-					class="w-56 rounded border border-gray-300 p-2 text-lg"
-				/>
+                    type="date"
+                    id="endDate"
+                    bind:value={enddate}
+                    required
+                    class="w-56 rounded border border-gray-300 p-2 text-lg"
+                />
 			</div>
 			<div class="mb-4">
 				<label for="endTime" class="mb-2 font-bold">End Time:</label>
 				<input
-					type="text"
-					id="endTime"
-					bind:value={endtime}
-					required
-					class="w-56 rounded border border-gray-300 p-2 text-lg"
-				/>
+                    type="time"
+                    id="endTime"
+                    bind:value={endtime}
+                    required
+                    class="w-56 rounded border border-gray-300 p-2 text-lg"
+                />
 			</div>
 		{/if}
 		<div class="mb-4">
