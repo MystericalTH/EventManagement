@@ -21,8 +21,10 @@ func CreateMemberService(queries *db.Queries, params db.InsertMemberParams) erro
 }
 
 // Accept member service
-func AcceptMemberService(queries *db.Queries, memberID int32) error {
-	return queries.AcceptMember(context.Background(), memberID)
+func AcceptMemberService(queries *db.Queries, memberID int32, adminEmail string) error {
+	// Pass both the memberID and adminEmail to the SQLC query
+	err := queries.AcceptMember(context.Background(), adminEmail, memberID)
+	return err
 }
 
 func GetAllMemberRequestsService(queries *db.Queries) ([]db.ListRequestingMembersRow, error) {

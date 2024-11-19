@@ -23,6 +23,8 @@ INSERT INTO MEMBER (fName, lName, email, phone, githubUrl, interest, reason)
 VALUES (?, ?, ?, ?, ?, ?, ?);
 
 -- name: AcceptMember :exec
-UPDATE MEMBER 
-SET acceptDateTime = NOW() 
+UPDATE MEMBER
+SET acceptDateTime = NOW(),
+    acceptAdmin = ? -- Include the admin responsible for the approval
 WHERE memberID = ?;
+

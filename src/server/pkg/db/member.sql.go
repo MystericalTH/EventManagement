@@ -7,16 +7,23 @@ package db
 
 import (
 	"context"
+	"database/sql"
 )
 
 const acceptMember = `-- name: AcceptMember :exec
-UPDATE MEMBER 
-SET acceptDateTime = NOW() 
+UPDATE MEMBER
+SET acceptDateTime = NOW(),
+    acceptAdmin = ? -- Include the admin responsible for the approval
 WHERE memberID = ?
 `
 
-func (q *Queries) AcceptMember(ctx context.Context, memberid int32) error {
-	_, err := q.db.ExecContext(ctx, acceptMember, memberid)
+type AcceptMemberParams struct {
+	Acceptadmin sql.NullInt32 `json:"acceptadmin"`
+	Memberid    int32         `json:"memberid"`
+}
+
+func (q *Queries) AcceptMember(ctx context.Context, arg AcceptMemberParams) error {
+	_, err := q.db.ExecContext(ctx, acceptMember, arg.Acceptadmin, arg.Memberid)
 	return err
 }
 
