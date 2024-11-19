@@ -53,18 +53,42 @@ func CreateMember(c *gin.Context, queries *db.Queries) {
 
 // Handler for accepting a member
 func AcceptMember(c *gin.Context, queries *db.Queries) {
-	id, err := strconv.Atoi(c.Param("id"))
+	// Retrieve user email from session
+	session, err := sessionStore.Get(c.Request, sessionName)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid member ID"})
+		c.String(http.StatusUnauthorized, "Session retrieval failed")
 		return
 	}
 
-	err = services.AcceptMemberService(queries, int32(id))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	userEmail, ok := session.Values["user_email"].(string)
+	if !ok || userEmail == "" {
+		c.String(http.StatusUnauthorized, "Unauthorized: User email not found in session")
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "Member accepted"})
+
+	// Fetch adminID using the email
+	adminID, err := services.FetchAdminIDService(queries, userEmail)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Failed to fetch admin ID: %s", err.Error())
+		return
+	}
+
+	// Parse memberID from URL parameters
+	memberIDParam := c.Param("id")
+	memberID, err := strconv.Atoi(memberIDParam)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Invalid member ID: %s", err.Error())
+		return
+	}
+
+	// Call service to accept the member
+	err = services.AcceptMemberService(queries, int32(memberID), adminID)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Failed to accept member: %s", err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Member accepted successfully"})
 }
 
 func GetAllMemberRequests(c *gin.Context, queries *db.Queries) {

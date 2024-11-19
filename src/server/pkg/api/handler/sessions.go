@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -58,36 +57,28 @@ func AuthLogin(c *gin.Context) {
 }
 
 func AuthCallback(c *gin.Context) {
-	// Retrieve the authorization code from Google
+	// Retrieve authorization code and state
 	code := c.Query("code")
-	state, err := url.QueryUnescape(c.Query("state"))
-	if err != nil {
-		c.String(http.StatusInternalServerError, "Failed to unescape state: %s", err.Error())
-		return
-	}
-
 	if code == "" {
 		c.String(http.StatusBadRequest, "Authorization code not found")
 		return
 	}
 
-	// Exchange the code for a token
+	// Exchange the authorization code for an access token
 	token, err := oauthConfig.Exchange(context.Background(), code)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Failed to exchange token: %s", err.Error())
 		return
 	}
 
-	// Create a new HTTP request to fetch user info from the OAuth provider
+	// Retrieve user information
 	req, err := http.NewRequest("GET", "https://www.googleapis.com/oauth2/v3/userinfo", nil)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Failed to create request: %s", err.Error())
 		return
 	}
-
-	// Set the Authorization header with the access token
 	req.Header.Set("Authorization", "Bearer "+token.AccessToken)
-	// Execute the request
+
 	client := oauthConfig.Client(context.Background(), token)
 	userInfoResp, err := client.Do(req)
 	if err != nil {
@@ -96,25 +87,28 @@ func AuthCallback(c *gin.Context) {
 	}
 	defer userInfoResp.Body.Close()
 
-	// Parse the user info
-	var userInfo UserInfo
+	var userInfo struct {
+		Email string `json:"email"`
+	}
 	if err := json.NewDecoder(userInfoResp.Body).Decode(&userInfo); err != nil {
 		c.String(http.StatusInternalServerError, "Failed to decode user info: %s", err.Error())
 		return
 	}
 
-	stateparts := strings.SplitN(state, "__", 3)
-	role := stateparts[1]
-	redirectUri := stateparts[2]
-
-	// Store user info in session
+	// Save user email in session
 	session, _ := sessionStore.Get(c.Request, sessionName)
-	session.Values["user"] = userInfo
-	session.Values["role"] = role
-	session.Save(c.Request, c.Writer)
+	session.Values["user_email"] = userInfo.Email
+	if err := session.Save(c.Request, c.Writer); err != nil {
+		c.String(http.StatusInternalServerError, "Failed to save session: %s", err.Error())
+		return
+	}
 
-	// Redirect to profile
-	c.Redirect(http.StatusFound, fmt.Sprintf(redirectUri))
+	// Redirect back
+	redirectUri, _ := c.GetQuery("redirect_uri")
+	if redirectUri == "" {
+		redirectUri = "/"
+	}
+	c.Redirect(http.StatusFound, redirectUri)
 }
 
 func LoginInfoRetrieval(c *gin.Context) {

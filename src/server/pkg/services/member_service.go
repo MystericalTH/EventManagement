@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"database/sql"
 	"sinno-server/pkg/db"
 )
 
@@ -21,10 +22,12 @@ func CreateMemberService(queries *db.Queries, params db.InsertMemberParams) erro
 }
 
 // Accept member service
-func AcceptMemberService(queries *db.Queries, memberID int32, adminEmail string) error {
-	// Pass both the memberID and adminEmail to the SQLC query
-	err := queries.AcceptMember(context.Background(), adminEmail, memberID)
-	return err
+func AcceptMemberService(queries *db.Queries, memberID int32, adminID int32) error {
+	params := db.AcceptMemberParams{
+		Acceptadmin: sql.NullInt32{Int32: adminID, Valid: true},
+		Memberid:    memberID,
+	}
+	return queries.AcceptMember(context.Background(), params)
 }
 
 func GetAllMemberRequestsService(queries *db.Queries) ([]db.ListRequestingMembersRow, error) {

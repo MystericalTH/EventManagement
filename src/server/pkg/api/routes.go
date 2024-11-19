@@ -28,7 +28,7 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		}) // Create a new member
 		api.PUT("/members/:id/accept", func(c *gin.Context) {
 			handler.AcceptMember(c, queries) // Pass queries to the handler
-		}) // Accept a member
+		})
 		api.GET("/login", func(c *gin.Context) {
 			handler.AuthLogin(c)
 		})
