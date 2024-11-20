@@ -29,8 +29,8 @@ var (
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
 		Endpoint:     google.Endpoint,
 	}
-	sessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
-	sessionName  = "session-one"
+	SessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+	SessionName  = "session-one"
 )
 
 type UserInfo struct {
@@ -108,7 +108,7 @@ func AuthCallback(c *gin.Context) {
 	redirectUri := stateparts[2]
 
 	// Store user info in session
-	session, _ := sessionStore.Get(c.Request, sessionName)
+	session, _ := SessionStore.Get(c.Request, SessionName)
 	session.Values["user"] = userInfo
 	session.Values["role"] = role
 	session.Save(c.Request, c.Writer)
@@ -118,7 +118,7 @@ func AuthCallback(c *gin.Context) {
 }
 
 func LoginInfoRetrieval(c *gin.Context) {
-	session, err := sessionStore.Get(c.Request, sessionName)
+	session, err := SessionStore.Get(c.Request, SessionName)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "Authentication failed",
@@ -135,7 +135,7 @@ func LoginInfoRetrieval(c *gin.Context) {
 
 func AuthLogout(c *gin.Context) {
 	// Clear the session
-	session, _ := sessionStore.Get(c.Request, sessionName)
+	session, _ := SessionStore.Get(c.Request, SessionName)
 	session.Options.MaxAge = -1
 	session.Save(c.Request, c.Writer)
 
@@ -144,7 +144,7 @@ func AuthLogout(c *gin.Context) {
 }
 
 func HandleVerifyRole(c *gin.Context) {
-	session, _ := sessionStore.Get(c.Request, sessionName)
+	session, _ := SessionStore.Get(c.Request, SessionName)
 	role, ok := session.Values["role"].(string)
 	if !ok {
 		role = "unknown"

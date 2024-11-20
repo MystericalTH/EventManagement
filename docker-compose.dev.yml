@@ -20,12 +20,10 @@ services:
       - ./src/server/:/usr/src/app/
       - server-tmp:/usr/src/app/tmp/
     environment:
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_USER=root
-      - DB_PASSWORD=root
-      - DB_NAME=ClubManagement
-      - LISTEN_PORT=8081
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+      - MYSQL_CONN=mysql:3306
+      - MYSQL_DATABASE_NAME=ClubManagement
     develop:
       watch:
         - action: sync+restart
@@ -86,6 +84,7 @@ services:
           path: ./config/nginx/nginx.conf
           target: /etc/nginx/conf.d/nginx.conf
   mysql:
+    platform: linux/x86_64
     image: mysql:5.7
     container_name: mysql
     restart: always

@@ -2,7 +2,7 @@
 	let name = '';
 	let email = '';
 	let phone = '';
-	let githubUrl = '';
+	let githuburl = '';
 	let interest = '';
 	let reason = '';
 
@@ -13,7 +13,7 @@
 			name,
 			email,
 			phone,
-			githubUrl,
+			githuburl,
 			interest,
 			reason
 		};
@@ -79,13 +79,13 @@
 				/>
 			</div>
 			<div class="content-center text-right">
-				<label for="githubUrl" class="mb-2 font-bold">GitHub</label>
+				<label for="githuburl" class="mb-2 font-bold">GitHub</label>
 			</div>
 			<div>
 				<input
 					type="url"
-					id="githubUrl"
-					bind:value={githubUrl}
+					id="githuburl"
+					bind:value={githuburl}
 					required
 					class="w-72 rounded border border-gray-300 p-2 text-base"
 				/>

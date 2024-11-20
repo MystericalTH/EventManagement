@@ -5,11 +5,16 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"sinno-server/pkg/api" // Import the api package
-	"sinno-server/pkg/db"  // Import your db package
+	"sinno-server/pkg/api"
+	"sinno-server/pkg/db"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql" // MySQL driver
+
+	_ "github.com/go-sql-driver/mysql"
+)
+
+var (
+	port = os.Getenv("LISTEN_PORT")
 )
 
 func main() {
@@ -36,5 +41,5 @@ func main() {
 	api.RegisterRoutes(r, queries)
 
 	// Run the server
-	r.Run(fmt.Sprintf(":%s", os.Getenv("LISTEN_PORT")))
+	r.Run(fmt.Sprintf(":%s", port))
 }

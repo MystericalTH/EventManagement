@@ -15,8 +15,8 @@ type Activity struct {
 	Proposer          int32          `json:"proposer"`
 	Startdate         time.Time      `json:"startdate"`
 	Enddate           time.Time      `json:"enddate"`
-	Maxnumber         sql.NullInt32  `json:"maxnumber"`
-	Format            sql.NullString `json:"format"`
+	Maxnumber         int32          `json:"maxnumber"`
+	Format            string         `json:"format"`
 	Description       string         `json:"description"`
 	Proposedatetime   time.Time      `json:"proposedatetime"`
 	Acceptadmin       sql.NullInt32  `json:"acceptadmin"`

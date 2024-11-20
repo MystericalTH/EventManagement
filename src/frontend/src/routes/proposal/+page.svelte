@@ -1,6 +1,5 @@
 <script lang="ts">
 	let title = $state('');
-	let proposer = $state('');
 	let startDate = $state('');
 	let endDate = $state('');
 	let maxNumber = $state(1);
@@ -21,31 +20,28 @@
 	const deleteActivityRole = (roleToDelete: string) => {
 		activityRole = activityRole.filter((role) => role !== roleToDelete);
 	};
-	const formatDateTime = (date: Date): string => {
-		const pad = (num: number) => String(num).padStart(2, '0');
-		const year = date.getFullYear();
-		const month = pad(date.getMonth() + 1);
-		const day = pad(date.getDate());
-		const hours = pad(date.getHours());
-		const minutes = pad(date.getMinutes());
-		const seconds = pad(date.getSeconds());
-		return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-	};
+
+	// const formatDateTime = (date: Date): string => {
+	// 	const pad = (num: number) => String(num).padStart(2, '0');
+	// 	const year = date.getFullYear();
+	// 	const month = pad(date.getMonth() + 1);
+	// 	const day = pad(date.getDate());
+	// 	const hours = pad(date.getHours());
+	// 	const minutes = pad(date.getMinutes());
+	// 	const seconds = pad(date.getSeconds());
+	// 	return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+	// };
 
 	const handleProposalSubmit = async (event: Event) => {
 		event.preventDefault();
 
-		const proposeDateTime = formatDateTime(new Date());
-
 		const formData = {
 			title,
-			proposer,
 			startDate,
 			endDate,
 			maxNumber,
 			format,
 			description,
-			proposeDateTime,
 			advisor,
 			startTime,
 			endTime,
