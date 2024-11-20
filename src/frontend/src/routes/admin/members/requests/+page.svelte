@@ -53,7 +53,7 @@
 				</thead>
 				<tbody class="divide-y divide-gray-200">
 					{#each pagination.displayPage() as row}
-						{#key row.id}
+						{#key row.memberid}
 							<tr>
 								<td class="h-12 w-36 whitespace-nowrap px-3 py-3 text-xs"
 									>{row.fname + ' ' + row.lname}</td
@@ -78,14 +78,14 @@
 									<div class="flex justify-center space-x-2">
 										<ActionButton
 											imgsrc={checkCircle}
-											action={() => approveRequest(row.id, pagination)}
-											alt={`Approve request ${row.id}`}
+											action={() => approveRequest(row.memberid, pagination)}
+											alt={`Approve request ${row.memberid}`}
 											width={'20px'}
 										></ActionButton>
 										<ActionButton
 											imgsrc={trash}
-											action={() => rejectRequest(row.id, pagination)}
-											alt={`Reject request ${row.id}`}
+											action={() => rejectRequest(row.memberid, pagination)}
+											alt={`Reject request ${row.memberid}`}
 											width={'20px'}
 										></ActionButton>
 									</div>
