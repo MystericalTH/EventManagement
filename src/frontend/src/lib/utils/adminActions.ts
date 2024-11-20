@@ -21,7 +21,7 @@ export const rejectRequest = (id: number, pagination) => {
 };
 
 export const approveRequest = (id: number, pagination) => {
-	fetch(`/api/members/requests/${id}/approve`, { method: 'POST' }).then((r) => {
+	fetch(`/api/members/${id}/accept`, { method: 'PUT' }).then((r) => {
 		if (r.status == 204) {
 			removeItem(id, pagination);
 		} else {
@@ -32,7 +32,7 @@ export const approveRequest = (id: number, pagination) => {
 };
 
 export const removeMember = (id: number, pagination) => {
-	fetch(`/api/members/requests/${id}`, { method: 'DELETE' }).then((r) => {
+	fetch(`/api/members/${id}`, { method: 'DELETE' }).then((r) => {
 		if (r.status == 204) {
 			removeItem(id, pagination);
 		} else {
