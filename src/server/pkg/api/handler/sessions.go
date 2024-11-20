@@ -151,3 +151,7 @@ func HandleVerifyRole(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"role": role})
 }
+
+func Healthchecks(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"healthchecks": "running"})
+}
