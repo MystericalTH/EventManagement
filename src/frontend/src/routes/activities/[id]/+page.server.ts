@@ -82,19 +82,19 @@ async function isUserRegistered(
 
 // Function to fetch activity data
 async function getActivityData(activityId: number) {
-  const response = await fetch(`/api/activities/${activityId}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch activity data');
-  }
-  return await response.json();
-  }
+	const response = await fetch(`/api/activities/${activityId}`);
+	if (!response.ok) {
+		throw new Error('Failed to fetch activity data');
+	}
+	return await response.json();
+}
 
 // Function to fetch the next activity ID
 async function getNextActivityId(currentActivityId: number): Promise<number | null> {
-	const response = await fetch(`api/activities/${currentActivityId+1}`);
+	const response = await fetch(`api/activities/${currentActivityId + 1}`);
 	if (!response.ok) {
-	  return null; // No next activity
+		return null; // No next activity
 	}
 	const result = await response.json();
 	return result.nextActivityId || null;
-  };
+}
