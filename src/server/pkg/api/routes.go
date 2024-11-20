@@ -41,5 +41,8 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		api.GET("/logout", func(c *gin.Context) {
 			handler.AuthLogout(c)
 		})
+		api.GET("/health", func(c *gin.Context) {
+			handler.Healthchecks(c)
+		})
 	}
 }
