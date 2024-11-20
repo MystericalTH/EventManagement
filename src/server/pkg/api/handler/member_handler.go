@@ -88,7 +88,7 @@ func AcceptMember(c *gin.Context, queries *db.Queries) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Member accepted successfully"})
+	c.JSON(http.StatusNoContent, gin.H{"message": "Member accepted successfully"})
 }
 
 func GetAllMemberRequests(c *gin.Context, queries *db.Queries) {
