@@ -1,6 +1,6 @@
 CREATE DATABASE IF NOT EXISTS ClubManagement;
 USE ClubManagement;
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'root';
+GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%';
 
 -- Drop unnecessary tables if they exist
 DROP TABLE IF EXISTS wsRegist;
