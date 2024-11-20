@@ -74,5 +74,8 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		api.POST("/activities/:activityId/registration/submit", func(c *gin.Context) {
 			handler.SubmitRegistration(c, queries)
 		})
+		api.GET("/health", func(c *gin.Context) {
+			handler.Healthchecks(c)
+		})
 	}
 }
