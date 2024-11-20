@@ -130,7 +130,6 @@ func PostActivity(c *gin.Context, queries *db.Queries) {
 		return
 	}
 
-	// Set ProposeDateTime to current UTC time
 	proposeDateTime := time.Now()
 
 	// Prepare service params
