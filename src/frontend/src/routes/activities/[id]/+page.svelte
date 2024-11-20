@@ -55,14 +55,14 @@
 	<div class="mt-10 flex justify-between">
 		<button
 			class="rounded bg-gray-300 px-4 py-2 text-black"
-			on:click={() => navigateToActivity(-1)}
+			onclick={() => navigateToActivity(-1)}
 			style="visibility: {data.activity.id > 1 ? 'visible' : 'hidden'}"
 		>
 			Previous
 		</button>
 		<button
 			class="rounded bg-gray-300 px-4 py-2 text-black"
-			on:click={() => navigateToActivity(1)}
+			onclick={() => navigateToActivity(1)}
 			style="visibility: {data.nextActivityId !== null ? 'visible' : 'hidden'}"
 		>
 			Next
