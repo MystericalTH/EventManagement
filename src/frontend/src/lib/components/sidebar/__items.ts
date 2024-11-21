@@ -35,15 +35,17 @@ export const adminItems: SidebarItem[] = [
 ];
 
 export const memberItems: SidebarItem[] = [
+	{ text: 'Home', href: '/home' },
+	{ text: 'Activities', href: '/activities' },
 	{
-		text: 'Activity',
+		text: 'Personal List',
 		subitems: [
-			{ text: 'Your Activities', href: '/member/activities' },
-			{ text: 'Your Proposals', href: '/member/activities/proposals' }
+			{ text: 'Your Engagements', href: '/member/activities' },
+			{ text: 'Your Proposals', href: '/member/activities/proposals' },
+			{
+				text: 'Propose New Activity',
+				href: '/member/activities/propose'
+			}
 		]
-	},
-	{
-		text: 'Propose New Activity',
-		href: '/member/activities/propose'
 	}
 ];
