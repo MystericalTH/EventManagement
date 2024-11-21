@@ -21,31 +21,20 @@
 		activityRole = activityRole.filter((role) => role !== roleToDelete);
 	};
 
-	// const formatDateTime = (date: Date): string => {
-	// 	const pad = (num: number) => String(num).padStart(2, '0');
-	// 	const year = date.getFullYear();
-	// 	const month = pad(date.getMonth() + 1);
-	// 	const day = pad(date.getDate());
-	// 	const hours = pad(date.getHours());
-	// 	const minutes = pad(date.getMinutes());
-	// 	const seconds = pad(date.getSeconds());
-	// 	return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-	// };
-
 	const handleProposalSubmit = async (event: Event) => {
 		event.preventDefault();
 
 		const formData = {
-			title,
-			startDate,
-			endDate,
-			maxNumber,
-			format,
-			description,
-			advisor,
-			startTime,
-			endTime,
-			activityRole
+			title: title,
+			startdate: startDate,
+			enddate: endDate,
+			maxnumber: maxNumber,
+			format: format,
+			description: description,
+			advisor: advisor,
+			starttime: startTime,
+			endtime: endTime,
+			activityrole: activityRole
 		};
 
 		try {
