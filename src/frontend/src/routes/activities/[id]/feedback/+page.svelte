@@ -1,9 +1,8 @@
 <script lang="ts">
-	import type { ActivityData } from '$lib/types/activity';
-	export let data: { activity: ActivityData };
+	import type { PageData } from './$types';
+	let { data }: { data: PageData } = $props();
 
-	let { activity } = data;
-	let feedback = '';
+	let feedback = $state('');
 
 	const handleFeedbackSubmit = async (event: Event) => {
 		event.preventDefault();

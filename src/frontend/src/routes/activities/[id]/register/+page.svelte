@@ -1,11 +1,10 @@
 <script lang="ts">
-	import type { ActivityData } from '$lib/types/activity';
-
-	export let data: { activity: ActivityData; activityRoles: string[] };
+	import type { PageData } from './$types';
+	let { data }: { data: PageData } = $props();
 
 	let { activity, activityRoles } = data;
-	let expectation = '';
-	let selectedRole = '';
+	let expectation = $state('');
+	let selectedRole = $state('');
 
 	const handleRegisterSubmit = async (event: Event) => {
 		event.preventDefault();

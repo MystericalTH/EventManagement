@@ -1,13 +1,7 @@
 <script lang="ts">
-	import type { ActivityData } from '$lib/types/activity.ts';
+	import type { PageData } from './$types';
 
-	export let data: {
-		activity: ActivityData;
-		isRegistered: boolean;
-		isEventPast: boolean;
-		hasSubmittedFeedback: boolean;
-		nextActivityId: number | null;
-	};
+	let { data }: { data: PageData } = $props();
 
 	const openRegisterPage = () => {
 		window.location.href = `/activity/${data.activity.id}/register`;
