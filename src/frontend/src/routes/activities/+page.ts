@@ -7,6 +7,7 @@ export const load: PageLoad = async ({ fetch }) => {
 		console.log('err');
 		throw new Error(`Failed to load activities: ${response.status} ${response.statusText}`);
 	}
-	const activities: ActivityData[] = await response.json();
+	let fetchActivities = await response.json();
+	let activities: ActivityData[] = fetchActivities == null ? [] : [...fetchActivities];
 	return { activities };
 };
