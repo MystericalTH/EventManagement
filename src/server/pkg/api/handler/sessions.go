@@ -26,8 +26,8 @@ var (
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
 		Endpoint:     google.Endpoint,
 	}
-	sessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
-	sessionName  = "session-one"
+	SessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+	SessionName  = "session-one"
 )
 
 type UserInfo struct {
@@ -107,7 +107,7 @@ func AuthCallback(c *gin.Context) {
 	redirectUri := stateparts[2]
 
 	// Save user info in session
-	session, err := sessionStore.Get(c.Request, sessionName)
+	session, err := SessionStore.Get(c.Request, SessionName)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Failed to retrieve session: %s", err.Error())
 		return
@@ -124,7 +124,7 @@ func AuthCallback(c *gin.Context) {
 
 // LoginInfoRetrieval retrieves login info from the session
 func LoginInfoRetrieval(c *gin.Context) {
-	session, err := sessionStore.Get(c.Request, sessionName)
+	session, err := SessionStore.Get(c.Request, SessionName)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "Authentication failed",
@@ -142,7 +142,7 @@ func LoginInfoRetrieval(c *gin.Context) {
 
 // AuthLogout clears the session and redirects to home
 func AuthLogout(c *gin.Context) {
-	session, err := sessionStore.Get(c.Request, sessionName)
+	session, err := SessionStore.Get(c.Request, SessionName)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Failed to retrieve session: %s", err.Error())
 		return
@@ -156,7 +156,7 @@ func AuthLogout(c *gin.Context) {
 
 // HandleVerifyRole checks the user's role in the session
 func HandleVerifyRole(c *gin.Context) {
-	session, err := sessionStore.Get(c.Request, sessionName)
+	session, err := SessionStore.Get(c.Request, SessionName)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"role": "unknown"})
 		return
@@ -167,4 +167,8 @@ func HandleVerifyRole(c *gin.Context) {
 		role = "unknown"
 	}
 	c.JSON(http.StatusOK, gin.H{"role": role})
+}
+
+func Healthchecks(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"healthchecks": "running"})
 }

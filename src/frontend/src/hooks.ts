@@ -1,7 +1,7 @@
 import type { HandleFetch } from '@sveltejs/kit';
 import { browser, dev } from '$app/environment';
 
-if (dev && browser) {
+if (dev && browser && import.meta.env.VITE_MSW_ENABLED == 'true') {
 	console.log('BROWSER REFERRED');
 
 	const { worker } = await import('$msw/browser');
@@ -10,17 +10,3 @@ if (dev && browser) {
 	// you think it best fits your project.
 	worker.start({ onUnhandledRequest: 'bypass' }).catch(console.warn);
 }
-
-export const handleFetch: HandleFetch = async ({ request, fetch }) => {
-	const isMswEnabled = import.meta.env.VITE_MSW_ENABLED === 'true';
-	console.log('HOOK Fetch');
-	if (isMswEnabled) {
-		import('$msw')
-			.then((res) => res.inject())
-			.then(() => {
-				console.log('Enter MSW');
-				return fetch(request);
-			});
-	}
-	return fetch(request);
-};

@@ -4,7 +4,7 @@ export const load: PageLoad = async ({ params }) => {
 	const id = params.id;
 
 	// Fetch the activity data using the ID
-	const response = await fetch(`/api/activities?id=${id}`);
+	const response = await fetch(`/api/activities/${id}`);
 
 	if (!response.ok) {
 		throw new Error('Failed to fetch activity data');
