@@ -1,12 +1,12 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import type { Pagination } from '$lib/types';
+	import type { Member, Pagination } from '$lib/types';
 
 	let { data }: { data: PageData } = $props();
 
 	import ActionButton from '$lib/components/ActionButton.svelte';
 	import { createPagination } from '$lib/utils/pagination.svelte';
-	let pagination: Pagination = createPagination(data.memberList, 10);
+	let pagination: Pagination<Member> = createPagination<Member>(data.memberList, 10);
 	import { removeMember } from '$lib/utils/adminActions';
 	import { edit, trash } from '$lib/assets/action-button-icons';
 </script>

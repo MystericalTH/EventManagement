@@ -1,4 +1,4 @@
-export type MemberRequest = {
+export type Member = {
 	id: number;
 	fname: string;
 	lname: string;

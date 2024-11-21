@@ -3,8 +3,10 @@ export interface Activity {
 	title: string;
 	proposer: string;
 	startDate: string;
+	startTime: string;
 	endDate: string;
-	maxNumber: number;
+	endTime: string;
+	maxParticipant: number;
 	format: string;
 	description: string;
 	proposeDateTime: string;

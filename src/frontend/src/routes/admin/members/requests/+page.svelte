@@ -1,12 +1,15 @@
 <script lang="ts">
 	import { createPagination } from '$lib/utils/pagination.svelte';
 	import { rejectMemberRequest, approveMemberRequest } from '$lib/utils/adminActions';
-	import type { Pagination } from '$lib/types';
+	import type { Member, Pagination } from '$lib/types';
 	let { data } = $props();
 
 	import ActionButton from '$lib/components/ActionButton.svelte';
 	import { checkCircle, trash } from '$lib/assets/action-button-icons';
-	let pagination: Pagination = createPagination(data.memberRequestList, 10);
+	let pagination: Pagination<Member> = createPagination<Member>(
+		data.memberRequestList,
+		10
+	);
 </script>
 
 <h1 class="mb-4 text-2xl">Member Requests</h1>

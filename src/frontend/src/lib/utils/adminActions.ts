@@ -1,7 +1,7 @@
-import type { MemberRequest } from '$lib/types';
-const removeItem = (id: number, pagination: any) => {
+import type { Member, Pagination } from '$lib/types';
+const removeItem = (id: number, pagination: Pagination<any>) => {
 	pagination.data.splice(
-		pagination.data.findIndex((e: MemberRequest) => e.id === id),
+		pagination.data.findIndex((e: Member) => e.id === id),
 		1
 	);
 	if (pagination.maxPage < pagination.pageBuffer) {
@@ -9,7 +9,7 @@ const removeItem = (id: number, pagination: any) => {
 	}
 };
 
-export const rejectRequest = (id: number, pagination) => {
+export const rejectMemberRequest = (id: number, pagination: Pagination<any>) => {
 	fetch(`/api/members/requests/${id}`, { method: 'DELETE' }).then((r) => {
 		if (r.status == 204) {
 			removeItem(id, pagination);
@@ -20,7 +20,7 @@ export const rejectRequest = (id: number, pagination) => {
 	});
 };
 
-export const approveRequest = (id: number, pagination) => {
+export const approveMemberRequest = (id: number, pagination: Pagination<any>) => {
 	fetch(`/api/members/${id}/accept`, { method: 'PUT' }).then((r) => {
 		if (r.status == 204) {
 			removeItem(id, pagination);
@@ -31,7 +31,7 @@ export const approveRequest = (id: number, pagination) => {
 	});
 };
 
-export const removeMember = (id: number, pagination) => {
+export const removeMember = (id: number, pagination: Pagination<any>) => {
 	fetch(`/api/members/${id}`, { method: 'DELETE' }).then((r) => {
 		if (r.status == 204) {
 			removeItem(id, pagination);
