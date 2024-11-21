@@ -1,4 +1,4 @@
-import type { ActivityData } from '$lib/types/activity';
+import type { Activity } from '$lib/types';
 
 export const activityData = [
 	{
@@ -43,4 +43,4 @@ export const activityData = [
 		acceptDateTime: '2021-09-02',
 		applicationStatus: 'Approved'
 	}
-] as ActivityData[];
+] as Activity[];

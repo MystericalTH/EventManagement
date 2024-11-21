@@ -1,4 +1,4 @@
-import type { MemberRequest } from '$lib/types/memberRequest';
+import type { MemberRequest } from '$lib/types';
 const removeItem = (id: number, pagination: any) => {
 	pagination.data.splice(
 		pagination.data.findIndex((e: MemberRequest) => e.id === id),

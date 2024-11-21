@@ -1,4 +1,4 @@
-import type { SidebarItem } from '$lib/types/sidebar';
+import type { SidebarItem } from '$lib/types';
 
 export const defaultItems = (currentUrl: string): SidebarItem[] => {
 	return [

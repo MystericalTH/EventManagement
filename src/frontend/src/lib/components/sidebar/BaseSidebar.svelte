@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
-	import type { SidebarItem } from '$lib/types/sidebar';
+	import type { SidebarItem } from '$lib/types';
 	export let items: SidebarItem[];
 	export let hasLogout: boolean = true;
 	const openItems = writable(new Set<string>());

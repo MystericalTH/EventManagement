@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { ActivityData } from '$lib/types/activity.ts';
+	import type { Activity } from '$lib/types';
 
 	export let data: {
-		activity: ActivityData;
+		activity: Activity;
 		isRegistered: boolean;
 		isEventPast: boolean;
 		hasSubmittedFeedback: boolean;

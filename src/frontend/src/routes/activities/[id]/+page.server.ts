@@ -7,7 +7,7 @@ export const load: PageServerLoad = async ({ locals, params, request }) => {
 
 	const isRegistered = sessionId ? await isUserRegistered(sessionId, activityId, request) : false;
 
-	const activity = await getActivityData(activityId);
+	const activity = await getActivity(activityId);
 	const nextActivityId = await getNextActivityId(activityId);
 
 	// Check if the event is past its end date
@@ -81,7 +81,7 @@ async function isUserRegistered(
 }
 
 // Function to fetch activity data
-async function getActivityData(activityId: number) {
+async function getActivity(activityId: number) {
 	const response = await fetch(`/api/activities/${activityId}`);
 	if (!response.ok) {
 		throw new Error('Failed to fetch activity data');

@@ -1,6 +1,6 @@
 import Edit from './edit.svg';
 
-import type { ImageSource } from '$lib/types/actionButtonIcons';
+import type { ImageSource } from '$lib/types';
 
 let imgsrc: ImageSource = {
 	idle: Edit,

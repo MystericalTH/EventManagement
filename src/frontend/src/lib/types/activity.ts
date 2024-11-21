@@ -1,4 +1,4 @@
-export interface ActivityData {
+export interface Activity {
 	id: number;
 	title: string;
 	proposer: string;
