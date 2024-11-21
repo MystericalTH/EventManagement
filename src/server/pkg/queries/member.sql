@@ -24,7 +24,21 @@ VALUES (?, ?, ?, ?, ?, ?, ?);
 
 -- name: AcceptMember :exec
 UPDATE MEMBER
-SET acceptDateTime = NOW(),
+SET acceptDateTime = LOCALTIME(),
     acceptAdmin = ? -- Include the admin responsible for the approval
 WHERE memberID = ?;
 
+-- name: DeleteMember :exec
+DELETE FROM MEMBER
+WHERE memberID = ?;
+
+-- name: UpdateMember :exec
+UPDATE MEMBER
+SET fName = ?,
+    lName = ?,
+    email = ?,
+    phone = ?,
+    githubUrl = ?,
+    interest = ?,
+    reason = ?
+WHERE memberID = ?;

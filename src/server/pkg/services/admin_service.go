@@ -13,3 +13,7 @@ func FetchAdminIDService(queries *db.Queries, email string) (int32, error) {
 	}
 	return adminID, nil
 }
+
+func DeleteMemberService(queries *db.Queries, memberID int32) error {
+	return queries.DeleteMember(context.Background(), memberID)
+}

@@ -15,15 +15,15 @@ CREATE TABLE Member (
   fName varchar(255) NOT NULL,
   lName varchar(255) NOT NULL,
   email varchar(320) NOT NULL,
-  phone varchar(20) NOT NULL,
-  githubUrl varchar(320),
+  phone varchar(20) UNIQUE NOT NULL,-
+  githubUrl varchar(320) NOT NULL,
   interest text NOT NULL,
   reason text NOT NULL,
   acceptDateTime datetime,
   acceptAdmin int(11),
   PRIMARY KEY (memberID),
   CONSTRAINT member_ibfk_1 FOREIGN KEY (acceptAdmin) REFERENCES Admin (adminID)
-  CONSTRAINT unique_email UNIQUE USING INDEX 
+
 );
 
 -- Table structure for Activity (superclass)
@@ -123,3 +123,6 @@ ON Member (email);
 
 CREATE UNIQUE INDEX index_admin_email
 ON Admin (email);
+
+CREATE UNIQUE INDEX index_developer_email
+ON Developer (email);

@@ -21,6 +21,9 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		api.GET("/members/requests", func(c *gin.Context) {
 			handler.GetAllMemberRequests(c, queries) // Pass queries to the handler
 		}) // Accept a member
+		api.DELETE("/members/requests/:id", func(c *gin.Context) {
+			handler.DeleteMember(c, queries) // Pass queries to the handler
+		}) // Delete a member request
 		api.GET("/members/:id", func(c *gin.Context) {
 			handler.GetMemberByID(c, queries) // Pass queries to the handler
 		})
@@ -29,6 +32,12 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		})
 		api.PUT("/members/:id/accept", func(c *gin.Context) {
 			handler.AcceptMember(c, queries) // Pass queries to the handler
+		})
+		api.PUT("/members/:id", func(c *gin.Context) {
+			handler.UpdateMember(c, queries) // Pass queries to the handler
+		})
+		api.DELETE("/members/:id", func(c *gin.Context) {
+			handler.DeleteMember(c, queries) // Pass queries to the handler
 		})
 		api.GET("/login", func(c *gin.Context) {
 			handler.AuthLogin(c)

@@ -33,3 +33,7 @@ func AcceptMemberService(queries *db.Queries, memberID int32, adminID int32) err
 func GetAllMemberRequestsService(queries *db.Queries) ([]db.ListRequestingMembersRow, error) {
 	return queries.ListRequestingMembers(context.Background())
 }
+
+func UpdateMemberService(queries *db.Queries, params db.UpdateMemberParams) error {
+	return queries.UpdateMember(context.Background(), params)
+}
