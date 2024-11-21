@@ -1,6 +1,6 @@
 import { http } from 'msw';
 import { HttpResponse } from 'msw';
-import { memberData, activityData } from './__data';
+import { memberData } from './__data';
 export const handlers = [
 	// Mock a GET request to "/api/users"
 	http.get('/api/users', ({ params }) => {
@@ -27,19 +27,5 @@ export const handlers = [
 	}),
 	http.post('/api/members/requests/:id/approve', ({ params }) => {
 		return new HttpResponse(null, { status: 204 });
-	}),
-	http.get('/api/activities', () => {
-		return HttpResponse.json(activityData);
-	}),
-	http.get('/api/activities/:id', ({ params }) => {
-		let { id } = params;
-		console.log('enter');
-		return HttpResponse.json(activityData.at(id));
-	}),
-	http.get('/api/activities/:id/registration/status', ({}) => {
-		return HttpResponse.json({ is_registered: true });
-	}),
-	http.get('/api/activities/:id/feedback/status', ({}) => {
-		return HttpResponse.json({ hasSubmittedFeedback: true });
 	})
 ];
