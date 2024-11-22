@@ -1,6 +1,6 @@
 import { http } from 'msw';
 import { HttpResponse } from 'msw';
-import { memberData } from './__data';
+import { memberData, activityData } from './__data';
 export const handlers = [
 	// Mock a GET request to "/api/users"
 	http.get('/api/users', ({ params }) => {
@@ -22,10 +22,19 @@ export const handlers = [
 	http.get('/api/members', ({}) => {
 		return HttpResponse.json(memberData);
 	}),
-	http.delete('/api/members/requests/:id', ({ params }) => {
+	http.delete('/api/members/:id', ({ params }) => {
 		return new HttpResponse(null, { status: 204 });
 	}),
-	http.post('/api/members/requests/:id/approve', ({ params }) => {
+	http.put('/api/members/requests/:id/approve', ({ params }) => {
+		return new HttpResponse(null, { status: 204 });
+	}),
+	http.get('/api/activities/requests', () => {
+		return HttpResponse.json(activityData);
+	}),
+	http.put('/api/activities/:id/approve', ({ params }) => {
+		return new HttpResponse(null, { status: 204 });
+	}),
+	http.delete('/api/activities/:id', ({ params }) => {
 		return new HttpResponse(null, { status: 204 });
 	})
 ];
