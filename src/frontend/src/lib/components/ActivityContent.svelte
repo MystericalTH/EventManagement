@@ -10,9 +10,9 @@
 
 {#if data != null}
 	<h1 class="text-3xl">{data.title}</h1>
-	<p class="mt-2 text-sm italic text-gray-400">Submitted by {data.proposer}</p>
+	<p class="mb-4 mt-2 text-sm italic text-gray-400">Submitted by {data.proposer}</p>
 	<div>
-		<h2 class="my-4 text-xl">Activity Details</h2>
+		<h2 class="mb-2 text-xl">Activity Details</h2>
 		<ul class="flex flex-col space-y-2">
 			<li>
 				<span class="inline-flex items-center align-middle"
@@ -47,21 +47,16 @@
 		</ul>
 	</div>
 	<div class="my-4">
-		<h2 class="my-4 text-xl">Description</h2>
+		<h2 class="mb-2 text-xl">Description</h2>
 		<p>{data.description}</p>
 	</div>
-	<div class="my-4 flex flex-row items-center justify-between text-xl">
-		Recruting Roles
-		<div
-			class="align-center flex flex-wrap content-center"
-			style="column-gap: 10px; row-gap: 10px;"
-		>
-			{#each data.roles as role}
-				<div class="rounded-lg bg-indigo-500 p-2 text-base text-white">
-					{role}
-				</div>
-			{/each}
-		</div>
+	<div class="my-2 flex flex-row items-center justify-between text-xl">Recruting Roles</div>
+	<div class="align-center flex flex-wrap content-center" style="column-gap: 10px; row-gap: 10px;">
+		{#each data.roles as role}
+			<div class="rounded-lg bg-indigo-500 p-2 text-base text-white">
+				{role}
+			</div>
+		{/each}
 	</div>
 {:else}
 	<div class="flex items-center justify-center text-base text-gray-300">Nothing to see here</div>
