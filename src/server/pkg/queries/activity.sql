@@ -28,3 +28,13 @@ INSERT INTO ActivityRoles (activityID, activityRole) VALUES (?, ?);
 SELECT activityID
 FROM Activity
 WHERE title = ?;
+
+-- name: DeleteActivity :exec
+DELETE FROM Activity
+WHERE ActivityID = ?;
+
+-- name: ApproveActivityRegistration :exec
+UPDATE Activity
+SET acceptDateTime = LOCALTIME(),
+    acceptAdmin = ? -- Include the admin responsible for the approval
+WHERE activityID = ?;

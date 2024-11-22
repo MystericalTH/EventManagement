@@ -225,3 +225,54 @@ func parseDate(dateStr string) (time.Time, error) {
 func parseTime(timeStr string) (time.Time, error) {
 	return time.Parse("15:04", timeStr)
 }
+
+func ApproveActivityRegistration(c *gin.Context, queries *db.Queries) {
+	// Retrieve user info from session
+	session, err := SessionStore.Get(c.Request, SessionName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session"})
+		return
+	}
+	userEmail, ok := session.Values["user_email"].(string)
+	if !ok || userEmail == "" {
+		c.String(http.StatusUnauthorized, "Unauthorized: User email not found in session")
+		return
+	}
+
+	adminID, err := services.FetchAdminIDService(queries, userEmail)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Failed to fetch admin ID: %s", err.Error())
+		return
+	}
+
+	activityIDStr := c.Param("activityId")
+	activityID, err := strconv.Atoi(activityIDStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})
+		return
+	}
+
+	// Call the service to approve the activity registration
+	if err := services.ApproveActivityRegistrationService(queries, int32(activityID), adminID); err != nil {
+		log.Printf("ApproveActivityRegistration failed: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to approve activity registration"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Activity registration approved successfully"})
+}
+
+func DeleteActivity(c *gin.Context, queries *db.Queries) {
+	ActivitityID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid member ID"})
+		return
+	}
+
+	err = services.DeleteActivityService(queries, int32(ActivitityID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusNoContent, gin.H{"message": "Activity deleted successfully"})
+}

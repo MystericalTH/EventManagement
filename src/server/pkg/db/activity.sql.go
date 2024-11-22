@@ -11,6 +11,33 @@ import (
 	"time"
 )
 
+const approveActivityRegistration = `-- name: ApproveActivityRegistration :exec
+UPDATE Activity
+SET acceptDateTime = LOCALTIME(),
+    acceptAdmin = ? -- Include the admin responsible for the approval
+WHERE activityID = ?
+`
+
+type ApproveActivityRegistrationParams struct {
+	Acceptadmin sql.NullInt32 `json:"acceptadmin"`
+	Activityid  int32         `json:"activityid"`
+}
+
+func (q *Queries) ApproveActivityRegistration(ctx context.Context, arg ApproveActivityRegistrationParams) error {
+	_, err := q.db.ExecContext(ctx, approveActivityRegistration, arg.Acceptadmin, arg.Activityid)
+	return err
+}
+
+const deleteActivity = `-- name: DeleteActivity :exec
+DELETE FROM Activity
+WHERE ActivityID = ?
+`
+
+func (q *Queries) DeleteActivity(ctx context.Context, activityid int32) error {
+	_, err := q.db.ExecContext(ctx, deleteActivity, activityid)
+	return err
+}
+
 const getActivityIDByTitle = `-- name: GetActivityIDByTitle :one
 SELECT activityID
 FROM Activity

@@ -120,13 +120,15 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 
 		// PUT /registration status
 		api.PUT("/activities/:activityId/approve", func(c *gin.Context) {
-			handler.AcceptRegistration(c, queries)
+			handler.ApproveActivityRegistration(c, queries)
 		})
 
 		// DELETE /registration
 		api.DELETE("activities/:activityId", func(c *gin.Context) {
 			handler.DeleteActivity(c, queries) // Pass queries to the handler
 		})
+
+		//! MEMBERS AND ACTIVITIES !//
 
 	}
 }
