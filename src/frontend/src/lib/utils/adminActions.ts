@@ -5,7 +5,8 @@ const removeItem = (id: number, pagination: Pagination<any>) => {
 		1
 	);
 	if (pagination.maxPage < pagination.pageBuffer) {
-		pagination.setPage(pagination.maxPage);
+		pagination.pageBuffer = pagination.maxPage;
+		pagination.setPage();
 	}
 };
 
