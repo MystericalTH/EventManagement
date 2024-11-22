@@ -2,10 +2,6 @@ CREATE DATABASE IF NOT EXISTS ClubManagement;
 USE ClubManagement;
 GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%';
 
--- Drop unnecessary tables if they exist
-DROP TABLE IF EXISTS wsRegist;
-DROP TABLE IF EXISTS pjRegist;
-
 -- Table structure for Admin
 CREATE TABLE Admin (
   adminID int(11) NOT NULL AUTO_INCREMENT,
@@ -19,7 +15,7 @@ CREATE TABLE Member (
   fName varchar(255) NOT NULL,
   lName varchar(255) NOT NULL,
   email varchar(320) NOT NULL,
-  phone varchar(20) NOT NULL,
+  phone varchar(20) UNIQUE NOT NULL,
   githubUrl varchar(320) NOT NULL,
   interest text NOT NULL,
   reason text NOT NULL,
@@ -27,6 +23,7 @@ CREATE TABLE Member (
   acceptAdmin int(11),
   PRIMARY KEY (memberID),
   CONSTRAINT member_ibfk_1 FOREIGN KEY (acceptAdmin) REFERENCES Admin (adminID)
+
 );
 
 -- Table structure for Activity (superclass)
@@ -120,3 +117,12 @@ CREATE TABLE ActivityRegistration (
   CONSTRAINT activityRegist_member_fk FOREIGN KEY (memberID) REFERENCES Member (memberID),
   CONSTRAINT activityRegist_activity_fk FOREIGN KEY (activityID) REFERENCES Activity (activityID)
 );
+
+CREATE UNIQUE INDEX index_member_email
+ON Member (email);
+
+CREATE UNIQUE INDEX index_admin_email
+ON Admin (email);
+
+CREATE UNIQUE INDEX index_developer_email
+ON Developer (email);

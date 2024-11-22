@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 
+	"database/sql"
 	"sinno-server/pkg/db"
 )
 
@@ -44,4 +45,16 @@ func GetActivityRolesService(queries *db.Queries, activityID int32) ([]string, e
 // Get all activities service
 func GetAllActivitiesService(queries *db.Queries) ([]db.Activity, error) {
 	return queries.ListRequestingActivities(context.Background())
+}
+
+func ApproveActivityRegistrationService(queries *db.Queries, activityID int32, adminID int32) error {
+	params := db.ApproveActivityRegistrationParams{
+		Acceptadmin: sql.NullInt32{Int32: adminID, Valid: true},
+		Activityid:  activityID,
+	}
+	return queries.ApproveActivityRegistration(context.Background(), params)
+}
+
+func DeleteActivityService(queries *db.Queries, activityID int32) error {
+	return queries.DeleteActivity(context.Background(), activityID)
 }

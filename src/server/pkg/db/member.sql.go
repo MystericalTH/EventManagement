@@ -7,16 +7,33 @@ package db
 
 import (
 	"context"
+	"database/sql"
 )
 
 const acceptMember = `-- name: AcceptMember :exec
-UPDATE MEMBER 
-SET acceptDateTime = NOW() 
+UPDATE MEMBER
+SET acceptDateTime = LOCALTIME(),
+    acceptAdmin = ? -- Include the admin responsible for the approval
 WHERE memberID = ?
 `
 
-func (q *Queries) AcceptMember(ctx context.Context, memberid int32) error {
-	_, err := q.db.ExecContext(ctx, acceptMember, memberid)
+type AcceptMemberParams struct {
+	Acceptadmin sql.NullInt32 `json:"acceptadmin"`
+	Memberid    int32         `json:"memberid"`
+}
+
+func (q *Queries) AcceptMember(ctx context.Context, arg AcceptMemberParams) error {
+	_, err := q.db.ExecContext(ctx, acceptMember, arg.Acceptadmin, arg.Memberid)
+	return err
+}
+
+const deleteMember = `-- name: DeleteMember :exec
+DELETE FROM MEMBER
+WHERE memberID = ?
+`
+
+func (q *Queries) DeleteMember(ctx context.Context, memberid int32) error {
+	_, err := q.db.ExecContext(ctx, deleteMember, memberid)
 	return err
 }
 
@@ -210,4 +227,41 @@ func (q *Queries) ListRequestingMembers(ctx context.Context) ([]ListRequestingMe
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateMember = `-- name: UpdateMember :exec
+UPDATE MEMBER
+SET fName = ?,
+    lName = ?,
+    email = ?,
+    phone = ?,
+    githubUrl = ?,
+    interest = ?,
+    reason = ?
+WHERE memberID = ?
+`
+
+type UpdateMemberParams struct {
+	Fname     string `json:"fname"`
+	Lname     string `json:"lname"`
+	Email     string `json:"email"`
+	Phone     string `json:"phone"`
+	Githuburl string `json:"githuburl"`
+	Interest  string `json:"interest"`
+	Reason    string `json:"reason"`
+	Memberid  int32  `json:"memberid"`
+}
+
+func (q *Queries) UpdateMember(ctx context.Context, arg UpdateMemberParams) error {
+	_, err := q.db.ExecContext(ctx, updateMember,
+		arg.Fname,
+		arg.Lname,
+		arg.Email,
+		arg.Phone,
+		arg.Githuburl,
+		arg.Interest,
+		arg.Reason,
+		arg.Memberid,
+	)
+	return err
 }

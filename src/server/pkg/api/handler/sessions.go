@@ -5,7 +5,6 @@ import (
 	"encoding/gob"
 	"encoding/json"
 	"fmt"
-	_ "log"
 	"net/http"
 	"net/url"
 	"os"
@@ -19,8 +18,6 @@ import (
 )
 
 var (
-	// Replace with your actual Google credentials
-	port         = os.Getenv("LISTEN_PORT")
 	redirectPort = os.Getenv("REDIRECT_PORT")
 	oauthConfig  = &oauth2.Config{
 		RedirectURL:  fmt.Sprintf("http://localhost:%s/api/auth/google/callback", redirectPort),
@@ -43,6 +40,7 @@ func init() {
 	gob.Register(UserInfo{})
 }
 
+// AuthLogin redirects the user to Google OAuth consent page
 func AuthLogin(c *gin.Context) {
 	// Redirect user to Google's OAuth consent page
 	role := c.Query("role")
@@ -57,6 +55,7 @@ func AuthLogin(c *gin.Context) {
 	c.Redirect(http.StatusTemporaryRedirect, stateUrl)
 }
 
+// AuthCallback is called after OAuth2 authentication with Google
 func AuthCallback(c *gin.Context) {
 	// Retrieve the authorization code from Google
 	code := c.Query("code")
@@ -107,16 +106,23 @@ func AuthCallback(c *gin.Context) {
 	role := stateparts[1]
 	redirectUri := stateparts[2]
 
-	// Store user info in session
-	session, _ := SessionStore.Get(c.Request, SessionName)
+	// Save user info in session
+	session, err := SessionStore.Get(c.Request, SessionName)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Failed to retrieve session: %s", err.Error())
+		return
+	}
 	session.Values["user"] = userInfo
 	session.Values["role"] = role
+	session.Values["user_email"] = userInfo.Email
+	session.Values["user_name"] = userInfo.Name
 	session.Save(c.Request, c.Writer)
 
-	// Redirect to profile
-	c.Redirect(http.StatusFound, fmt.Sprintf(redirectUri))
+	// Redirect to the specified or default URI
+	c.Redirect(http.StatusFound, redirectUri)
 }
 
+// LoginInfoRetrieval retrieves login info from the session
 func LoginInfoRetrieval(c *gin.Context) {
 	session, err := SessionStore.Get(c.Request, SessionName)
 	if err != nil {
@@ -125,26 +131,37 @@ func LoginInfoRetrieval(c *gin.Context) {
 			"user":    nil,
 			"role":    nil,
 		})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Authentication successful",
-		"user":    session.Values["user"],
-		"role":    session.Values["role"],
+		"user":    session.Values["user_name"],
+		"role":    session.Values["role"], // You may want to store and retrieve this as needed
 	})
 }
 
+// AuthLogout clears the session and redirects to home
 func AuthLogout(c *gin.Context) {
-	// Clear the session
-	session, _ := SessionStore.Get(c.Request, SessionName)
-	session.Options.MaxAge = -1
+	session, err := SessionStore.Get(c.Request, SessionName)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Failed to retrieve session: %s", err.Error())
+		return
+	}
+	session.Options.MaxAge = -1 // Clear the session
 	session.Save(c.Request, c.Writer)
 
-	// Redirect to home
+	// Redirect to home page
 	c.Redirect(http.StatusFound, "/")
 }
 
+// HandleVerifyRole checks the user's role in the session
 func HandleVerifyRole(c *gin.Context) {
-	session, _ := SessionStore.Get(c.Request, SessionName)
+	session, err := SessionStore.Get(c.Request, SessionName)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"role": "unknown"})
+		return
+	}
+
 	role, ok := session.Values["role"].(string)
 	if !ok {
 		role = "unknown"
