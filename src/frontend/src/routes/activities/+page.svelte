@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ActivityData } from '$lib/types/activity.ts';
+	import type { Activity } from '$lib/types/activity.ts';
 	import ActivitySlider from '$lib/components/activity/ActivitySlider.svelte';
 
 	let { data }: { data: { activities: Array<Activity> } } = $props();
