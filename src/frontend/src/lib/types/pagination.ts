@@ -5,7 +5,7 @@ export interface Pagination<T> {
 	pageBuffer: number;
 	maxPage: number;
 	data: Array<T>;
-	setPage: (value: number) => void;
+	setPage: () => void;
 	prevPage: () => void;
 	nextPage: () => void;
 	hasNextPage: () => boolean;
