@@ -10,7 +10,7 @@ const removeItem = (id: number, pagination: Pagination<any>) => {
 };
 
 export const rejectMemberRequest = (id: number, pagination: Pagination<any>) => {
-	fetch(`/api/members/requests/${id}`, { method: 'DELETE' }).then((r) => {
+	fetch(`/api/members/${id}`, { method: 'DELETE' }).then((r) => {
 		if (r.status == 204) {
 			removeItem(id, pagination);
 		} else {
@@ -21,7 +21,7 @@ export const rejectMemberRequest = (id: number, pagination: Pagination<any>) => 
 };
 
 export const approveMemberRequest = (id: number, pagination: Pagination<any>) => {
-	fetch(`/api/members/${id}/accept`, { method: 'PUT' }).then((r) => {
+	fetch(`/api/members/${id}/approve`, { method: 'PUT' }).then((r) => {
 		if (r.status == 204) {
 			removeItem(id, pagination);
 		} else {
@@ -33,6 +33,39 @@ export const approveMemberRequest = (id: number, pagination: Pagination<any>) =>
 
 export const removeMember = (id: number, pagination: Pagination<any>) => {
 	fetch(`/api/members/${id}`, { method: 'DELETE' }).then((r) => {
+		if (r.status == 204) {
+			removeItem(id, pagination);
+		} else {
+			console.log('Not deleted');
+			// TODO:  add handling
+		}
+	});
+};
+
+export const approveActivityRequest = (id: number, pagination: Pagination<any>) => {
+	fetch(`/api/activity/${id}/approve`, { method: 'PUT' }).then((r) => {
+		if (r.status == 204) {
+			removeItem(id, pagination);
+		} else {
+			console.log('Not approved');
+			// TODO:  add handling
+		}
+	});
+};
+
+export const removeActivity = (id: number, pagination: Pagination<any>) => {
+	fetch(`/api/activity/${id}`, { method: 'DELETE' }).then((r) => {
+		if (r.status == 204) {
+			removeItem(id, pagination);
+		} else {
+			console.log('Not deleted');
+			// TODO:  add handling
+		}
+	});
+};
+
+export const rejectActivityRequest = (id: number, pagination: Pagination<any>) => {
+	fetch(`/api/activity/${id}`, { method: 'DELETE' }).then((r) => {
 		if (r.status == 204) {
 			removeItem(id, pagination);
 		} else {
