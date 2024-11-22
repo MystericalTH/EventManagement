@@ -245,7 +245,7 @@
 					</div>
 
 					<div></div>
-					<div class="mt-2 flex flex-wrap content-center" style="column-gap: 10px; row-gap: 10px;">
+					<div class="flex flex-wrap content-center" style="column-gap: 10px; row-gap: 10px;">
 						{#each activityRole as role}
 							<button
 								type="button"
