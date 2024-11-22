@@ -46,7 +46,7 @@ export const handlers = [
 	http.get('/api/activities/:id', ({ params }) => {
 		let { id } = params;
 		console.log('enter');
-		return HttpResponse.json(activityData.at(id));
+		return HttpResponse.json(activityData.at(parseInt(id)));
 	}),
 	http.get('/api/activities/:id/registration/status', ({}) => {
 		return HttpResponse.json({ is_registered: true });
@@ -55,6 +55,9 @@ export const handlers = [
 		return HttpResponse.json({ hasSubmittedFeedback: true });
 	}),
 	http.get('/api/member/activities/proposals', ({}) => {
+		return HttpResponse.json(activityData);
+	}),
+	http.get('/api/member/activities', ({}) => {
 		return HttpResponse.json(activityData);
 	})
 ];
