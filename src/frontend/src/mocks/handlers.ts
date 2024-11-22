@@ -53,5 +53,8 @@ export const handlers = [
 	}),
 	http.get('/api/activities/:id/feedback/status', ({}) => {
 		return HttpResponse.json({ hasSubmittedFeedback: true });
+	}),
+	http.get('/api/member/activities/proposals', ({}) => {
+		return HttpResponse.json(activityData);
 	})
 ];
