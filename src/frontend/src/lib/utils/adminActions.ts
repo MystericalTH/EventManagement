@@ -43,7 +43,7 @@ export const removeMember = (id: number, pagination: Pagination<any>) => {
 };
 
 export const approveActivityRequest = (id: number, pagination: Pagination<any>) => {
-	fetch(`/api/activity/${id}/approve`, { method: 'PUT' }).then((r) => {
+	fetch(`/api/activities/${id}/approve`, { method: 'PUT' }).then((r) => {
 		if (r.status == 204) {
 			removeItem(id, pagination);
 		} else {
@@ -54,7 +54,7 @@ export const approveActivityRequest = (id: number, pagination: Pagination<any>) 
 };
 
 export const removeActivity = (id: number, pagination: Pagination<any>) => {
-	fetch(`/api/activity/${id}`, { method: 'DELETE' }).then((r) => {
+	fetch(`/api/activities/${id}`, { method: 'DELETE' }).then((r) => {
 		if (r.status == 204) {
 			removeItem(id, pagination);
 		} else {
@@ -65,7 +65,7 @@ export const removeActivity = (id: number, pagination: Pagination<any>) => {
 };
 
 export const rejectActivityRequest = (id: number, pagination: Pagination<any>) => {
-	fetch(`/api/activity/${id}`, { method: 'DELETE' }).then((r) => {
+	fetch(`/api/activities/${id}`, { method: 'DELETE' }).then((r) => {
 		if (r.status == 204) {
 			removeItem(id, pagination);
 		} else {
