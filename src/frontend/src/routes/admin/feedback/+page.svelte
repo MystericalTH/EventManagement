@@ -81,13 +81,13 @@
               </tbody> -->
               <tbody class="divide-y divide-gray-200">
                 {#each pagination.displayPage() as row}
-                    {#key row.id}
+                    {#key row.feedbackid}
                         <tr>
                             <td class="h-12 w-36 whitespace-nowrap px-3 py-3 text-xs"
                                 >{row.fname + ' ' + row.lname}</td
                             >
                             <td class="h-12 w-48 overflow-scroll whitespace-nowrap px-3 py-3 text-xs"
-                                >{row.feedbackdatetime}</td
+                                >{row.feedbackdateTime}</td
                             >
                             <td
                                 class="h-12 min-w-48 max-w-64 overflow-scroll whitespace-nowrap px-3 py-3 text-xs"

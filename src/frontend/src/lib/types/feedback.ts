@@ -1,9 +1,9 @@
 export interface FeedbackData {
-    feedbackID: Number;
-    activityID: Number;
-    memberID: Number;
+    feedbackid: Number;
+    activityid: Number;
+    memberid: Number;
     fname: string;
     lname: string;
-    feedbackMessage: string;
-    feedbackDateTime: string;
+    feedbackmessage: string;
+    feedbackdatetime: string;
 }
