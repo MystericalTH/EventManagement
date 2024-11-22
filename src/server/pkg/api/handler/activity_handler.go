@@ -61,15 +61,15 @@ func GetActivityRoles(c *gin.Context, queries *db.Queries) {
 
 type CreateActivityRequest struct {
 	Title         string   `json:"title" binding:"required"`
-	Startdate     string   `json:"startdate" binding:"required"`
-	Enddate       string   `json:"enddate" binding:"required"`
-	Maxnumber     int32    `json:"maxnumber" binding:"required"`
+	Startdate     string   `json:"startDate" binding:"required"`
+	Enddate       string   `json:"endDate" binding:"required"`
+	Maxnumber     int32    `json:"maxParticipant" binding:"required"`
 	Format        string   `json:"format" binding:"required"`
 	Description   string   `json:"description" binding:"required"`
 	Advisor       *string  `json:"advisor,omitempty"`
-	Starttime     string   `json:"starttime,omitempty"`
-	Endtime       string   `json:"endtime,omitempty"`
-	Activityroles []string `json:"activityRoles"`
+	Starttime     string   `json:"startTime,omitempty"`
+	Endtime       string   `json:"endTime,omitempty"`
+	Activityroles []string `json:"roles"`
 }
 
 // Handler for posting a new activity
@@ -239,7 +239,7 @@ func ApproveActivityRegistration(c *gin.Context, queries *db.Queries) {
 		return
 	}
 
-	adminID, err := services.FetchAdminIDService(queries, userEmail)
+	adminID, err := services.GetAdminIDByEmailService(queries, userEmail)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Failed to fetch admin ID: %s", err.Error())
 		return
