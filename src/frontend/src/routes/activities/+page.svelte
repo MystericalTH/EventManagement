@@ -2,7 +2,7 @@
 	import type { ActivityData } from '$lib/types/activity.ts';
 	import ActivitySlider from '$lib/components/activity/ActivitySlider.svelte';
 
-	let { data }: { data: { activities: Array<ActivityData> } } = $props();
+	let { data }: { data: { activities: Array<Activity> } } = $props();
 
 	const currentDate = new Date();
 

@@ -1,4 +1,5 @@
-export function createPagination(input: Array<any>, maxItemsPerRow: number) {
+import type { Pagination } from '$lib/types';
+export function createPagination<T>(input: Array<T>, maxItemsPerRow: number): Pagination<T> {
 	let data = $state(input);
 	let count = $derived(data.length);
 	let currentPage = $state(1);

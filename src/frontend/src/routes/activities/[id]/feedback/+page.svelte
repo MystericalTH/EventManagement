@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { ActivityData } from '$lib/types/activity';
-	export let data: { activity: ActivityData };
+	import type { Activity } from '$lib/types';
+	export let data: { activity: Activity };
 
 	let { activity } = data;
 	let feedback = '';

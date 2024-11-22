@@ -1,11 +1,11 @@
-import Edit from './edit.svg';
+import Eye from './eye.svg';
 
 import type { ImageSource } from '$lib/types';
 
 let imgsrc: ImageSource = {
-	idle: Edit,
-	enter: Edit,
-	click: Edit
+	idle: Eye,
+	enter: Eye,
+	click: Eye
 };
 
 export default imgsrc;
