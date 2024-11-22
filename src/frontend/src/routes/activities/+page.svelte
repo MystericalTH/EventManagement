@@ -1,9 +1,8 @@
 <script lang="ts">
-	import type { Activity } from '$lib/types';
+	import type { Activity } from '$lib/types/activity.ts';
+	import ActivitySlider from '$lib/components/activity/ActivitySlider.svelte';
 
 	let { data }: { data: { activities: Array<Activity> } } = $props();
-
-	import Card from '$lib/components/Card.svelte';
 
 	const currentDate = new Date();
 
@@ -24,35 +23,12 @@
 	});
 </script>
 
-<h1>Up Coming</h1>
-{#each upcomingActivities as activity}
-	<Card
-		title={activity.title}
-		startDate={new Date(activity.startDate).toISOString().split('T')[0]}
-		endDate={new Date(activity.endDate).toISOString().split('T')[0]}
-		format={activity.format}
-		href={`activity/${activity.id.toString()}`}
-	/>
-{/each}
-
-<h1>On Going</h1>
-{#each ongoingActivities as activity}
-	<Card
-		title={activity.title}
-		startDate={new Date(activity.startDate).toISOString().split('T')[0]}
-		endDate={new Date(activity.endDate).toISOString().split('T')[0]}
-		format={activity.format}
-		href={`activity/${activity.id.toString()}`}
-	/>
-{/each}
-
-<h1>Completed</h1>
-{#each completedActivities as activity}
-	<Card
-		title={activity.title}
-		startDate={new Date(activity.startDate).toISOString().split('T')[0]}
-		endDate={new Date(activity.endDate).toISOString().split('T')[0]}
-		format={activity.format}
-		href={`activity/${activity.id.toString()}`}
-	/>
-{/each}
+<div class="overflow-y-scroll">
+	<h1 class="mb-6 text-3xl font-bold">Activities</h1>
+	<h2 class="mb-2 text-xl">Upcoming</h2>
+	<ActivitySlider activities={upcomingActivities} />
+	<h2 class="mb-2 text-xl">Ongoing</h2>
+	<ActivitySlider activities={ongoingActivities} />
+	<h2 class="mb-2 text-xl">Completed</h2>
+	<ActivitySlider activities={completedActivities} />
+</div>
