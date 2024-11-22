@@ -1,5 +1,5 @@
 import type { PageLoad } from './$types';
-import type { ActivityData } from '$lib/types/activity';
+import type { Activity } from '$lib/types';
 
 export const load: PageLoad = async ({ fetch }) => {
 	const response = await fetch('/api/activities');
@@ -7,6 +7,6 @@ export const load: PageLoad = async ({ fetch }) => {
 		console.log('err');
 		throw new Error(`Failed to load activities: ${response.status} ${response.statusText}`);
 	}
-	const activities: ActivityData[] = await response.json();
+	const activities: Activity[] = await response.json();
 	return { activities };
 };

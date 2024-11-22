@@ -2,7 +2,7 @@ import Idle from './check-circle.png';
 import Enter from './check-circle-green.png';
 import Click from './check-circle-green-full.png';
 
-import type { ImageSource } from '$lib/types/actionButtonIcons';
+import type { ImageSource } from '$lib/types';
 
 let imgsrc: ImageSource = {
 	idle: Idle,

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { ActivityData } from '$lib/types/activity';
+	import type { Activity } from '$lib/types';
 
-	export let data: { activity: ActivityData; activityRoles: string[] };
+	export let data: { activity: Activity; activityRoles: string[] };
 
 	let { activity, activityRoles } = data;
 	let expectation = '';
