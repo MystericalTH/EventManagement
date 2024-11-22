@@ -73,7 +73,7 @@ func AcceptMember(c *gin.Context, queries *db.Queries) {
 	}
 
 	// Fetch adminID using the email
-	adminID, err := services.FetchAdminIDService(queries, userEmail)
+	adminID, err := services.GetAdminIDByEmailService(queries, userEmail)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Failed to fetch admin ID: %s", err.Error())
 		return
