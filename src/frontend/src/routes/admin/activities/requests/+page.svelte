@@ -25,7 +25,7 @@
 
 <h1 class="mb-4 font-custom text-2xl">Activity Requests</h1>
 <div class="text-base">
-	<div class="flex max-w-[1200px] justify-center">
+	<div class="flex justify-center">
 		<div class="overflow-auto border border-slate-200">
 			<table class="min-w-[794px] divide-y divide-gray-200">
 				<thead class="bg-gray-100">
@@ -47,8 +47,8 @@
 							>Estimated Participants</th
 						>
 						<th
-							class="w-8 px-3 py-3 text-left text-sm font-medium uppercase tracking-wider text-gray-500"
-							>Action</th
+							class="w-8 px-3 py-3 text-center text-sm font-medium uppercase tracking-wider text-gray-500"
+							>Actions</th
 						>
 					</tr>
 				</thead>
@@ -65,7 +65,7 @@
 										<ActionButton
 											imgsrc={view}
 											action={() => viewActivity(row)}
-											alt={`Reject request ${row.id}`}
+											alt={`View request ${row.id}`}
 											width={'20px'}
 										></ActionButton>
 										<ActionButton
