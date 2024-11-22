@@ -31,6 +31,9 @@ export const handlers = [
 	http.get('/api/activities/requests', () => {
 		return HttpResponse.json(activityData);
 	}),
+	http.get('/api/activities', () => {
+		return HttpResponse.json(activityData);
+	}),
 	http.put('/api/activities/:id/approve', ({ params }) => {
 		return new HttpResponse(null, { status: 204 });
 	}),
