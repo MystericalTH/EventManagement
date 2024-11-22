@@ -154,7 +154,7 @@ export const activityData = [
 		acceptAdmin: 'Admin1',
 		acceptDateTime: '2023-10-21T09:00:00Z',
 		roles: ['guide', 'participant'],
-		applicationStatus: 'Accepted'
+		applicationStatus: 'Pending'
 	},
 	{
 		id: 2,
@@ -171,7 +171,7 @@ export const activityData = [
 		acceptAdmin: 'Admin2',
 		acceptDateTime: '2023-10-23T11:00:00Z',
 		roles: ['speaker', 'listener'],
-		applicationStatus: 'Accepted'
+		applicationStatus: 'Approved'
 	},
 	{
 		id: 3,
@@ -188,7 +188,7 @@ export const activityData = [
 		acceptAdmin: 'Admin3',
 		acceptDateTime: '2023-10-24T13:00:00Z',
 		roles: ['guide', 'participant'],
-		applicationStatus: 'Accepted'
+		applicationStatus: 'Pending'
 	},
 	{
 		id: 4,
@@ -205,7 +205,7 @@ export const activityData = [
 		acceptAdmin: 'Admin4',
 		acceptDateTime: '2023-10-25T15:00:00Z',
 		roles: ['guide', 'participant'],
-		applicationStatus: 'Accepted'
+		applicationStatus: 'Approved'
 	},
 	{
 		id: 5,
@@ -222,6 +222,6 @@ export const activityData = [
 		acceptAdmin: 'Admin5',
 		acceptDateTime: '2023-10-26T17:00:00Z',
 		roles: ['guide', 'participant'],
-		applicationStatus: 'Accepted'
+		applicationStatus: 'Approved'
 	}
 ];

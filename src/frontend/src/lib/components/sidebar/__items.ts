@@ -43,7 +43,7 @@ export const memberItems: SidebarItem[] = [
 			{ text: 'Your Engagements', href: '/member/activities' },
 			{ text: 'Your Proposals', href: '/member/activities/proposals' },
 			{
-				text: 'Propose New Activity',
+				text: 'Propose Activity',
 				href: '/member/activities/propose'
 			}
 		]
