@@ -10,6 +10,7 @@ export interface Activity {
 	format: string;
 	description: string;
 	proposeDateTime: string;
+	advisor: string;
 	acceptAdmin?: string;
 	acceptDateTime?: string;
 	applicationStatus?: string;
