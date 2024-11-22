@@ -22,36 +22,33 @@
 	<nav>
 		<ul class="list-none">
 			{#each items as item}
-				<li>
-					<div
-						class="collapsible space-between mb-2 flex cursor-pointer items-center justify-between text-white hover:text-indigo-300 hover:drop-shadow-lg"
-						on:click={() => toggleItem(item.text)}
-					>
-						{#if item.subitems}
-							<button>
-								<span>{item.text}</span>
-								<span class="arrow ml-2 text-xs">{$openItems.has(item.text) ? '▲' : '▼'}</span>
-							</button>
-						{:else}
-							<a
-								class="text-white no-underline hover:text-indigo-300 hover:drop-shadow-lg"
-								href={item.href}>{item.text}</a
-							>
-						{/if}
-					</div>
+				<li class="mb-2">
+					{#if item.subitems}
+						<button
+							class="space-between flex w-full flex-row items-center justify-between text-white hover:text-indigo-300 hover:drop-shadow-lg"
+							on:click={() => toggleItem(item.text)}
+						>
+							<span>{item.text}</span>
+							<span class="arrow ml-2 text-sm">{$openItems.has(item.text) ? '▲' : '▼'}</span>
+						</button>
+					{:else}
+						<a
+							class="text-white no-underline hover:text-indigo-300 hover:drop-shadow-lg"
+							href={item.href}>{item.text}</a
+						>
+					{/if}{#if item.subitems && $openItems.has(item.text)}
+						<ul class="subitems pl-2 text-sm">
+							{#each item.subitems as subitem}
+								<li class="my-2">
+									<a
+										class="text-white no-underline hover:text-indigo-300 hover:drop-shadow-lg"
+										href={subitem.href}>{subitem.text}</a
+									>
+								</li>
+							{/each}
+						</ul>
+					{/if}
 				</li>
-				{#if item.subitems && $openItems.has(item.text)}
-					<ul class="subitems pl-2 text-sm">
-						{#each item.subitems as subitem}
-							<li class="my-2">
-								<a
-									class="text-white no-underline hover:text-indigo-300 hover:drop-shadow-lg"
-									href={subitem.href}>{subitem.text}</a
-								>
-							</li>
-						{/each}
-					</ul>
-				{/if}
 			{/each}
 		</ul>
 	</nav>

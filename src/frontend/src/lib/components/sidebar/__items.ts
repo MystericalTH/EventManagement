@@ -18,7 +18,7 @@ export const defaultItems = (currentUrl: string): SidebarItem[] => {
 
 export const adminItems: SidebarItem[] = [
 	{
-		text: 'Activity',
+		text: 'Activities',
 		subitems: [
 			{ text: 'Manage Activities', href: '/admin/activities' },
 			{ text: 'Activity Requests', href: '/admin/activities/requests' },
