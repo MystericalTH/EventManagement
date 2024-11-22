@@ -4,6 +4,7 @@ export type Member = {
 	lname: string;
 	phone: string;
 	email: string;
-	interests: Array<String>;
+	interest: string;
+	githuburl?: string;
 	reason: string;
 };
