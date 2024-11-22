@@ -82,7 +82,7 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		})
 
 		// POST /activities create an activity
-		api.POST("/activities", func(c *gin.Context) {
+		api.POST("/proposal/submit", func(c *gin.Context) {
 			handler.PostActivity(c, queries)
 		})
 
