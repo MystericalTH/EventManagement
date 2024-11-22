@@ -1,3 +1,5 @@
+import type { Activity } from '$lib/types';
+
 export const memberData = [
 	{
 		id: 1,
@@ -133,5 +135,93 @@ export const memberData = [
 		email: 'mia.scott@example.com',
 		interest: 'Photography', // Changed to singular
 		reason: 'Interested in travel photography.'
+	}
+];
+
+export const activityData = [
+	{
+		id: 1,
+		title: 'Morning Yoga',
+		proposer: 'Alice',
+		startDate: '2023-11-01',
+		startTime: '06:00',
+		endDate: '2023-11-01',
+		endTime: '07:00',
+		maxParticipant: 20,
+		format: 'Project',
+		description: 'A relaxing morning yoga session.',
+		proposeDateTime: '2023-10-20T08:00:00Z',
+		acceptAdmin: 'Admin1',
+		acceptDateTime: '2023-10-21T09:00:00Z',
+		roles: ['guide', 'participant'],
+		applicationStatus: 'Accepted'
+	},
+	{
+		id: 2,
+		title: 'Tech Talk',
+		proposer: 'Bob',
+		startDate: '2023-11-02',
+		startTime: '14:00',
+		endDate: '2023-11-02',
+		endTime: '16:00',
+		maxParticipant: 50,
+		format: 'Online',
+		description: 'A talk on the latest in tech.',
+		proposeDateTime: '2023-10-22T10:00:00Z',
+		acceptAdmin: 'Admin2',
+		acceptDateTime: '2023-10-23T11:00:00Z',
+		roles: ['speaker', 'listener'],
+		applicationStatus: 'Accepted'
+	},
+	{
+		id: 3,
+		title: 'Cooking Workshop',
+		proposer: 'Charlie',
+		startDate: '2023-11-04',
+		startTime: null,
+		endDate: '2023-11-05',
+		endTime: null,
+		maxParticipant: 15,
+		format: 'Project',
+		description: 'Learn to cook delicious meals.',
+		proposeDateTime: '2023-10-23T12:00:00Z',
+		acceptAdmin: 'Admin3',
+		acceptDateTime: '2023-10-24T13:00:00Z',
+		roles: ['guide', 'participant'],
+		applicationStatus: 'Accepted'
+	},
+	{
+		id: 4,
+		title: 'Art Exhibition',
+		proposer: 'Dave',
+		startDate: '2023-11-04',
+		startTime: null,
+		endDate: '2023-11-04',
+		endTime: null,
+		maxParticipant: 100,
+		format: 'Project',
+		description: 'An exhibition of modern art.',
+		proposeDateTime: '2023-10-24T14:00:00Z',
+		acceptAdmin: 'Admin4',
+		acceptDateTime: '2023-10-25T15:00:00Z',
+		roles: ['guide', 'participant'],
+		applicationStatus: 'Accepted'
+	},
+	{
+		id: 5,
+		title: 'Music Concert',
+		proposer: 'Eve',
+		startDate: '2023-11-05',
+		startTime: '18:00',
+		endDate: '2023-11-06',
+		endTime: '21:00',
+		maxParticipant: 200,
+		format: 'Project',
+		description: 'A live music concert.',
+		proposeDateTime: '2023-10-25T16:00:00Z',
+		acceptAdmin: 'Admin5',
+		acceptDateTime: '2023-10-26T17:00:00Z',
+		roles: ['guide', 'participant'],
+		applicationStatus: 'Accepted'
 	}
 ];

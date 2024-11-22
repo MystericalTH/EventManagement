@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Role, getRole } from '$lib/types/role';
+	import { Role, getRole } from '$lib/utils/role';
 	import BaseSidebar from './BaseSidebar.svelte';
 	import { adminItems, memberItems, defaultItems } from './__items';
 	import { page } from '$app/stores';

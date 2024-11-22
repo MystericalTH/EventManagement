@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ImageSource } from '$lib/types/actionButtonIcons';
+	import type { ImageSource } from '$lib/types';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
 	let {
 		imgsrc,

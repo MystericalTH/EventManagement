@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { ActivityData } from '$lib/types/activity.ts';
+	import type { Activity } from '$lib/types';
 
-	let { data }: { data: { activities: Array<ActivityData> } } = $props();
+	let { data }: { data: { activities: Array<Activity> } } = $props();
 
 	import Card from '$lib/components/Card.svelte';
 
