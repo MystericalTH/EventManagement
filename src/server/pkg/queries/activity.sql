@@ -8,6 +8,11 @@ SELECT activityID, title, proposer, startDate, endDate, maxNumber, format, descr
 FROM Activity
 WHERE acceptAdmin IS NULL AND acceptDateTime IS NULL AND applicationStatus IS NULL AND activityID = ?;
 
+-- name: ListAcceptedActivities :many
+SELECT activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus
+FROM Activity
+WHERE acceptAdmin IS NOT NULL AND acceptDateTime IS NOT NULL AND applicationStatus IS NOT NULL;
+
 -- name: InsertActivity :exec
 INSERT INTO Activity (title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?);

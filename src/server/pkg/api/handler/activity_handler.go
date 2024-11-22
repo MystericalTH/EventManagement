@@ -276,3 +276,12 @@ func DeleteActivity(c *gin.Context, queries *db.Queries) {
 	}
 	c.JSON(http.StatusNoContent, gin.H{"message": "Activity deleted successfully"})
 }
+
+func GetAcceptedActivities(c *gin.Context, queries *db.Queries) {
+	activities, err := services.GetAcceptedActivitiesService(queries)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch activities"})
+		return
+	}
+	c.JSON(http.StatusOK, activities)
+}

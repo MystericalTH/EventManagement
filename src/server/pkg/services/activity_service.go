@@ -58,3 +58,7 @@ func ApproveActivityRegistrationService(queries *db.Queries, activityID int32, a
 func DeleteActivityService(queries *db.Queries, activityID int32) error {
 	return queries.DeleteActivity(context.Background(), activityID)
 }
+
+func GetAcceptedActivitiesService(queries *db.Queries) ([]db.Activity, error) {
+	return queries.ListAcceptedActivities(context.Background())
+}

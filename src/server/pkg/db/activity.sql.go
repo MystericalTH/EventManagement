@@ -124,6 +124,48 @@ func (q *Queries) InsertWorkshop(ctx context.Context, arg InsertWorkshopParams) 
 	return err
 }
 
+const listAcceptedActivities = `-- name: ListAcceptedActivities :many
+SELECT activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus
+FROM Activity
+WHERE acceptAdmin IS NOT NULL AND acceptDateTime IS NOT NULL AND applicationStatus IS NOT NULL
+`
+
+func (q *Queries) ListAcceptedActivities(ctx context.Context) ([]Activity, error) {
+	rows, err := q.db.QueryContext(ctx, listAcceptedActivities)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Activity
+	for rows.Next() {
+		var i Activity
+		if err := rows.Scan(
+			&i.Activityid,
+			&i.Title,
+			&i.Proposer,
+			&i.Startdate,
+			&i.Enddate,
+			&i.Maxnumber,
+			&i.Format,
+			&i.Description,
+			&i.Proposedatetime,
+			&i.Acceptadmin,
+			&i.Acceptdatetime,
+			&i.Applicationstatus,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listActivity = `-- name: ListActivity :one
 SELECT activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus
 FROM Activity

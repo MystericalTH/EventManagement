@@ -60,7 +60,7 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		})
 
 		// PUT /members/:id/accept accept a member request
-		api.PUT("/members/:id/accept", func(c *gin.Context) {
+		api.PUT("/members/:id/approve", func(c *gin.Context) {
 			handler.AcceptMember(c, queries)
 		})
 
@@ -72,7 +72,7 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		//! ACTIVITY ROUTES !//
 
 		// GET /activities get all requesting activities
-		api.GET("/admin/activities/requests", func(c *gin.Context) {
+		api.GET("/activities/requests", func(c *gin.Context) {
 			handler.GetActivities(c, queries)
 		})
 
@@ -93,6 +93,9 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 
 		//! FEEDBACK ROUTES !//
 
+		api.GET("/activities/", func(c *gin.Context) {
+			handler.GetAcceptedActivities(c, queries)
+		})
 		// GET /feedback get a feedback
 		api.GET("/activities/:activityId/feedback/status", func(c *gin.Context) {
 			handler.GetFeedbackStatus(c, queries)
