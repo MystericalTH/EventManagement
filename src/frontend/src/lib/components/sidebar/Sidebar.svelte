@@ -18,6 +18,8 @@
 	<BaseSidebar items={adminItems} />
 {:else if enumRole === Role.MEMBER}
 	<BaseSidebar items={memberItems} />
+{:else if enumRole === Role.DEFAULT}
+	<BaseSidebar items={[]} hasLogout={true} />
 {:else}
 	<BaseSidebar items={defaultItems(currentUrl)} hasLogout={false} />
 {/if}
