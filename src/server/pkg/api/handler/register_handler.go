@@ -140,7 +140,7 @@ func GetActivityRegistration(c *gin.Context, queries *db.Queries) {
 	// Get all registrations for this activity
 	registrations, err := services.GetActivityRegistrationService(queries, int32(activityID))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get registrations"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get registrations", "message": err.Error()})
 		return
 	}
 
