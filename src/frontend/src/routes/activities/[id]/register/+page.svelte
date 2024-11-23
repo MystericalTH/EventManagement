@@ -4,8 +4,8 @@
 	export let data: { activity: Activity; activityRoles: string[] };
 
 	let { activity, activityRoles } = data;
-	let expectation = '';
-	let selectedRole = '';
+	let expectation = $state('');
+	let selectedRole = $state('');
 
 	const handleRegisterSubmit = async (event: Event) => {
 		event.preventDefault();

@@ -2,8 +2,7 @@
 	import type { Activity } from '$lib/types';
 	export let data: { activity: Activity };
 
-	let { activity } = data;
-	let feedback = '';
+	let feedback = $state('');
 
 	const handleFeedbackSubmit = async (event: Event) => {
 		event.preventDefault();
