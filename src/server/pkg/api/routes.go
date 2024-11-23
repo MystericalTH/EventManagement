@@ -91,6 +91,11 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 			handler.GetActivityRoles(c, queries)
 		})
 
+		// GET /member/activities/proposals list of proposals by member
+		api.GET(("member/activities/proposals"), func(c *gin.Context) {
+			handler.GetProposedActivities(c, queries)
+		})
+
 		//! FEEDBACK ROUTES !//
 
 		api.GET("/activities/", func(c *gin.Context) {

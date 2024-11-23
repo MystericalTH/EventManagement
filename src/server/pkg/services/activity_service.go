@@ -63,6 +63,6 @@ func GetAcceptedActivitiesService(queries *db.Queries) ([]db.Activity, error) {
 	return queries.ListAcceptedActivities(context.Background())
 }
 
-func GetActivitiesByProposerService(queries *db.Queries, proposerID int32) ([]db.Activity, error) {
+func GetProposedActivitiesService(queries *db.Queries, proposerID int32) ([]db.Activity, error) {
 	return queries.ListActivitiesByProposer(context.Background(), proposerID)
 }
