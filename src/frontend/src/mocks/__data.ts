@@ -1,4 +1,4 @@
-import type { Activity } from '$lib/types';
+import type { Activity, FeedbackData } from '$lib/types';
 
 export const memberData = [
 	{
@@ -223,5 +223,34 @@ export const activityData = [
 		acceptDateTime: '2023-10-26T17:00:00Z',
 		roles: ['guide', 'participant'],
 		applicationStatus: 'Approved'
+	}
+];
+export const mockFeedbackData: FeedbackData[] = [
+	{
+		feedbackid: 1,
+		activityid: 101,
+		memberid: 1001,
+		fname: 'John',
+		lname: 'Doe',
+		feedbackmessage: 'Great event!',
+		feedbackdatetime: '2023-10-01T10:00:00Z'
+	},
+	{
+		feedbackid: 2,
+		activityid: 101,
+		memberid: 1002,
+		fname: 'Jane',
+		lname: 'Smith',
+		feedbackmessage: 'Had a wonderful time.',
+		feedbackdatetime: '2023-10-01T11:00:00Z'
+	},
+	{
+		feedbackid: 3,
+		activityid: 101,
+		memberid: 1003,
+		fname: 'Alice',
+		lname: 'Johnson',
+		feedbackmessage: 'Very well organized.',
+		feedbackdatetime: '2023-10-01T12:00:00Z'
 	}
 ];

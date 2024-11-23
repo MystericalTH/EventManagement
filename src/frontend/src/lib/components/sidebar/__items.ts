@@ -22,7 +22,7 @@ export const adminItems: SidebarItem[] = [
 		subitems: [
 			{ text: 'Manage Activities', href: '/admin/activities' },
 			{ text: 'Activity Requests', href: '/admin/activities/requests' },
-			{ text: 'See Feedback', href: '/admin/activities/feedback' }
+			{ text: 'See Feedback', href: '/admin/feedback' }
 		]
 	},
 	{
