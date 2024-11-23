@@ -33,7 +33,7 @@ func InsertWorkshopService(queries *db.Queries, params db.InsertWorkshopParams) 
 }
 
 // Get activity by ID service
-func GetActivityByIDService(queries *db.Queries, activityID int32) (db.Activity, error) {
+func GetActivityByIDService(queries *db.Queries, activityID int32) (db.ListActivityRow, error) {
 	return queries.ListActivity(context.Background(), activityID)
 }
 
@@ -59,6 +59,6 @@ func DeleteActivityService(queries *db.Queries, activityID int32) error {
 	return queries.DeleteActivity(context.Background(), activityID)
 }
 
-func GetAcceptedActivitiesService(queries *db.Queries) ([]db.Activity, error) {
+func GetAcceptedActivitiesService(queries *db.Queries) ([]db.ListAcceptedActivitiesRow, error) {
 	return queries.ListAcceptedActivities(context.Background())
 }

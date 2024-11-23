@@ -125,20 +125,51 @@ func (q *Queries) InsertWorkshop(ctx context.Context, arg InsertWorkshopParams) 
 }
 
 const listAcceptedActivities = `-- name: ListAcceptedActivities :many
-SELECT activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus
-FROM Activity
+SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
+  FROM Activity a 
+  LEFT JOIN Workshop w ON a.activityID = w.workshopID
+  LEFT JOIN Project p ON a.activityID = p.projectID
+  LEFT JOIN 
+    (
+        SELECT 
+            activityID, 
+            GROUP_CONCAT(role) AS roles
+        FROM 
+            ActivityRoles
+        GROUP BY 
+            activityID
+    ) ar ON a.activityID = ar.activityID
 WHERE acceptAdmin IS NOT NULL AND acceptDateTime IS NOT NULL AND applicationStatus IS NOT NULL
 `
 
-func (q *Queries) ListAcceptedActivities(ctx context.Context) ([]Activity, error) {
+type ListAcceptedActivitiesRow struct {
+	Activityid        int32          `json:"activityid"`
+	Title             string         `json:"title"`
+	Proposer          int32          `json:"proposer"`
+	Startdate         time.Time      `json:"startdate"`
+	Enddate           time.Time      `json:"enddate"`
+	Maxnumber         int32          `json:"maxnumber"`
+	Format            string         `json:"format"`
+	Description       string         `json:"description"`
+	Proposedatetime   time.Time      `json:"proposedatetime"`
+	Acceptadmin       sql.NullInt32  `json:"acceptadmin"`
+	Acceptdatetime    sql.NullTime   `json:"acceptdatetime"`
+	Applicationstatus sql.NullString `json:"applicationstatus"`
+	Starttime         sql.NullString `json:"starttime"`
+	Endtime           sql.NullString `json:"endtime"`
+	Advisor           sql.NullString `json:"advisor"`
+	Roles             sql.NullString `json:"roles"`
+}
+
+func (q *Queries) ListAcceptedActivities(ctx context.Context) ([]ListAcceptedActivitiesRow, error) {
 	rows, err := q.db.QueryContext(ctx, listAcceptedActivities)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Activity
+	var items []ListAcceptedActivitiesRow
 	for rows.Next() {
-		var i Activity
+		var i ListAcceptedActivitiesRow
 		if err := rows.Scan(
 			&i.Activityid,
 			&i.Title,
@@ -152,6 +183,10 @@ func (q *Queries) ListAcceptedActivities(ctx context.Context) ([]Activity, error
 			&i.Acceptadmin,
 			&i.Acceptdatetime,
 			&i.Applicationstatus,
+			&i.Starttime,
+			&i.Endtime,
+			&i.Advisor,
+			&i.Roles,
 		); err != nil {
 			return nil, err
 		}
@@ -167,14 +202,45 @@ func (q *Queries) ListAcceptedActivities(ctx context.Context) ([]Activity, error
 }
 
 const listActivity = `-- name: ListActivity :one
-SELECT activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus
-FROM Activity
-WHERE acceptAdmin IS NULL AND acceptDateTime IS NULL AND applicationStatus IS NULL AND activityID = ?
+SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
+  FROM Activity a 
+  LEFT JOIN Workshop w ON a.activityID = w.workshopID
+  LEFT JOIN Project p ON a.activityID = p.projectID
+  LEFT JOIN 
+    (
+        SELECT 
+            activityID, 
+            GROUP_CONCAT(role) AS roles
+        FROM 
+            ActivityRoles
+        GROUP BY 
+            activityID
+    ) ar ON a.activityID = ar.activityID
+WHERE a.activityID = ?
 `
 
-func (q *Queries) ListActivity(ctx context.Context, activityid int32) (Activity, error) {
+type ListActivityRow struct {
+	Activityid        int32          `json:"activityid"`
+	Title             string         `json:"title"`
+	Proposer          int32          `json:"proposer"`
+	Startdate         time.Time      `json:"startdate"`
+	Enddate           time.Time      `json:"enddate"`
+	Maxnumber         int32          `json:"maxnumber"`
+	Format            string         `json:"format"`
+	Description       string         `json:"description"`
+	Proposedatetime   time.Time      `json:"proposedatetime"`
+	Acceptadmin       sql.NullInt32  `json:"acceptadmin"`
+	Acceptdatetime    sql.NullTime   `json:"acceptdatetime"`
+	Applicationstatus sql.NullString `json:"applicationstatus"`
+	Starttime         sql.NullString `json:"starttime"`
+	Endtime           sql.NullString `json:"endtime"`
+	Advisor           sql.NullString `json:"advisor"`
+	Roles             sql.NullString `json:"roles"`
+}
+
+func (q *Queries) ListActivity(ctx context.Context, activityid int32) (ListActivityRow, error) {
 	row := q.db.QueryRowContext(ctx, listActivity, activityid)
-	var i Activity
+	var i ListActivityRow
 	err := row.Scan(
 		&i.Activityid,
 		&i.Title,
@@ -188,6 +254,10 @@ func (q *Queries) ListActivity(ctx context.Context, activityid int32) (Activity,
 		&i.Acceptadmin,
 		&i.Acceptdatetime,
 		&i.Applicationstatus,
+		&i.Starttime,
+		&i.Endtime,
+		&i.Advisor,
+		&i.Roles,
 	)
 	return i, err
 }
