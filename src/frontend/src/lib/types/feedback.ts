@@ -1,4 +1,4 @@
-export interface FeedbackData {
+export interface Feedback {
 	feedbackid: Number;
 	activityid: Number;
 	memberid: Number;

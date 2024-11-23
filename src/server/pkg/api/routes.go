@@ -63,8 +63,11 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		api.GET("/activities/:activityId/feedback/status", func(c *gin.Context) {
 			handler.GetFeedbackStatus(c, queries)
 		})
-		api.POST("/activities/:activityId/feedback/submit", func(c *gin.Context) {
+		api.POST("/activities/:activityId/feedback", func(c *gin.Context) {
 			handler.SubmitFeedback(c, queries)
+		})
+		api.GET("/activities/:activityId/feedback", func(c *gin.Context) {
+			handler.GetFeedbacksByActivity(c, queries)
 		})
 
 		// Registration routes
