@@ -43,3 +43,8 @@ UPDATE Activity
 SET acceptDateTime = LOCALTIME(),
     acceptAdmin = ? -- Include the admin responsible for the approval
 WHERE activityID = ?;
+
+-- name: ListActivitiesByProposer :many
+SELECT activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus
+FROM Activity
+WHERE acceptAdmin IS NULL AND acceptDateTime IS NULL AND applicationStatus IS NULL AND proposer = ?;

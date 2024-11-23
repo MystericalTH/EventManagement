@@ -62,3 +62,7 @@ func DeleteActivityService(queries *db.Queries, activityID int32) error {
 func GetAcceptedActivitiesService(queries *db.Queries) ([]db.Activity, error) {
 	return queries.ListAcceptedActivities(context.Background())
 }
+
+func GetActivitiesByProposerService(queries *db.Queries, proposerID int32) ([]db.Activity, error) {
+	return queries.ListActivitiesByProposer(context.Background(), proposerID)
+}
