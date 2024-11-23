@@ -40,9 +40,6 @@ export const handlers = [
 	http.delete('/api/activities/:id', ({ params }) => {
 		return new HttpResponse(null, { status: 204 });
 	}),
-	http.get('/api/activities', () => {
-		return HttpResponse.json(activityData);
-	}),
 	http.get('/api/activities/:id', ({ params }) => {
 		let { id } = params;
 		console.log('enter');

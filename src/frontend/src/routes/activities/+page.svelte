@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Activity } from '$lib/types/activity.ts';
+	import type { Activity } from '$lib/types';
 	import ActivitySlider from '$lib/components/activity/ActivitySlider.svelte';
 	import { cross } from '$lib/assets/action-button-icons';
 	import Overlay from '$lib/components/Overlay.svelte';
