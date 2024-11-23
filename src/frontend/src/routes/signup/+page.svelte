@@ -101,7 +101,7 @@
 					type="email"
 					id="email"
 					value={email}
-					class="w-72 rounded border border-gray-300 p-2 text-base"
+					class="w-72 rounded border border-gray-300 bg-gray-200 p-2 text-base text-gray-400"
 					disabled
 				/>
 			</div>
@@ -125,7 +125,6 @@
 					type="url"
 					id="githuburl"
 					bind:value={githuburl}
-					required
 					class="w-72 rounded border border-gray-300 p-2 text-base"
 				/>
 			</div>
