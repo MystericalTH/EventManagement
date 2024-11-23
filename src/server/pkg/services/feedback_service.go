@@ -10,14 +10,9 @@ func CreateFeedbackService(queries *db.Queries, params db.InsertFeedbackParams) 
 	return queries.InsertFeedback(context.Background(), params)
 }
 
-// GetFeedbackByIDService retrieves a feedback entry by ID
-func GetFeedbackByIDService(queries *db.Queries, feedbackID int32) (db.Feedback, error) {
-	return queries.ListFeedbackByID(context.Background(), feedbackID)
-}
-
-// ListFeedbacksService lists all feedback entries
-func GetAllFeedbacksService(queries *db.Queries) ([]db.Feedback, error) {
-	return queries.ListFeedbacks(context.Background())
+// ListFeedbacksByActivityService lists all feedback entries for an activity
+func GetFeedbacksByActivityService(queries *db.Queries, activityID int32) ([]db.ListFeedbacksRow, error) {
+	return queries.ListFeedbacks(context.Background(), activityID)
 }
 
 // HasSubmittedFeedbackService checks if feedback has been submitted by a member for an activity

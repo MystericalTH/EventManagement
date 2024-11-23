@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"time"
 )
 
 const hasSubmittedFeedback = `-- name: HasSubmittedFeedback :one
@@ -41,43 +42,36 @@ func (q *Queries) InsertFeedback(ctx context.Context, arg InsertFeedbackParams) 
 	return err
 }
 
-const listFeedbackByID = `-- name: ListFeedbackByID :one
-SELECT feedbackID, activityID, memberID, feedbackMessage, feedbackDateTime
+const listFeedbacks = `-- name: ListFeedbacks :many
+SELECT feedbackID, activityID, Member.fname, Member.lName, feedbackMessage, feedbackDateTime
 FROM Feedback
-WHERE feedbackID = ?
+JOIN Member ON Feedback.memberID = Member.memberID
+WHERE activityID = ?
 `
 
-func (q *Queries) ListFeedbackByID(ctx context.Context, feedbackid int32) (Feedback, error) {
-	row := q.db.QueryRowContext(ctx, listFeedbackByID, feedbackid)
-	var i Feedback
-	err := row.Scan(
-		&i.Feedbackid,
-		&i.Activityid,
-		&i.Memberid,
-		&i.Feedbackmessage,
-		&i.Feedbackdatetime,
-	)
-	return i, err
+type ListFeedbacksRow struct {
+	Feedbackid       int32     `json:"feedbackid"`
+	Activityid       int32     `json:"activityid"`
+	Fname            string    `json:"fname"`
+	Lname            string    `json:"lname"`
+	Feedbackmessage  string    `json:"feedbackmessage"`
+	Feedbackdatetime time.Time `json:"feedbackdatetime"`
 }
 
-const listFeedbacks = `-- name: ListFeedbacks :many
-SELECT feedbackID, activityID, memberID, feedbackMessage, feedbackDateTime
-FROM Feedback
-`
-
-func (q *Queries) ListFeedbacks(ctx context.Context) ([]Feedback, error) {
-	rows, err := q.db.QueryContext(ctx, listFeedbacks)
+func (q *Queries) ListFeedbacks(ctx context.Context, activityid int32) ([]ListFeedbacksRow, error) {
+	rows, err := q.db.QueryContext(ctx, listFeedbacks, activityid)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Feedback
+	var items []ListFeedbacksRow
 	for rows.Next() {
-		var i Feedback
+		var i ListFeedbacksRow
 		if err := rows.Scan(
 			&i.Feedbackid,
 			&i.Activityid,
-			&i.Memberid,
+			&i.Fname,
+			&i.Lname,
 			&i.Feedbackmessage,
 			&i.Feedbackdatetime,
 		); err != nil {
