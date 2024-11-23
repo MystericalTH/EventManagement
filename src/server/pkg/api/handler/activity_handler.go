@@ -11,6 +11,7 @@ import (
 	"sinno-server/pkg/services"
 
 	"github.com/gin-gonic/gin"
+	"sinno-server/pkg/utils/typing"
 )
 
 // Handler for getting all activities
@@ -20,7 +21,12 @@ func GetActivities(c *gin.Context, queries *db.Queries) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch activities"})
 		return
 	}
-	c.JSON(http.StatusOK, activities)
+	formattedActivities, err := typing.ConvertToActivities(activities)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to ConvertToActivity"})
+		return
+	}
+	c.JSON(http.StatusOK, formattedActivities)
 }
 
 // Handler for getting an activity by ID
@@ -31,14 +37,17 @@ func GetActivityByID(c *gin.Context, queries *db.Queries) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})
 		return
 	}
-
 	activity, err := services.GetActivityByIDService(queries, int32(activityID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch activity"})
 		return
 	}
-
-	c.JSON(http.StatusOK, activity)
+	formattedActivity, err := typing.ConvertToActivity(activity)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to ConvertToActivity"})
+		return
+	}
+	c.JSON(http.StatusOK, formattedActivity)
 }
 
 // Handler for getting activity roles
@@ -271,5 +280,10 @@ func GetAcceptedActivities(c *gin.Context, queries *db.Queries) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch activities"})
 		return
 	}
-	c.JSON(http.StatusOK, activities)
+	formattedActivities, err := typing.ConvertToActivities(activities)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to ConvertToActivity"})
+		return
+	}
+	c.JSON(http.StatusOK, formattedActivities)
 }
