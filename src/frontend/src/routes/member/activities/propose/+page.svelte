@@ -24,21 +24,16 @@
 	const handleProposalSubmit = async (event: Event) => {
 		event.preventDefault();
 
-		const startDateISO = new Date(startDate).toISOString();
-		const endDateISO = new Date(endDate).toISOString();
-		const startTimeISO = new Date(startTime).toISOString();
-		const endTimeISO = new Date(endTime).toISOString();
-
 		const formData = {
 			title,
-			startDate: startDateISO,
-			endDate: endDateISO,
+			startDate,
+			endDate,
 			maxNumber,
 			format,
 			description,
 			advisor,
-			startTime: startTimeISO,
-			endTime: endTimeISO,
+			startTime,
+			endTime,
 			activityRole
 		};
 

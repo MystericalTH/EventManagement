@@ -115,8 +115,8 @@ INSERT INTO Workshop (workshopID, starttime, endtime) VALUES (?, ?, ?)
 
 type InsertWorkshopParams struct {
 	Workshopid int32     `json:"workshopid"`
-	Starttime  time.Time `json:"starttime"`
-	Endtime    time.Time `json:"endtime"`
+	Starttime  string `json:"starttime"`
+	Endtime    string `json:"endtime"`
 }
 
 func (q *Queries) InsertWorkshop(ctx context.Context, arg InsertWorkshopParams) error {

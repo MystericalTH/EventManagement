@@ -172,17 +172,10 @@ func PostActivity(c *gin.Context, queries *db.Queries) {
 			return
 		}
 	} else if req.Format == "workshop" {
-		startTime, startErr := parseTime(req.Starttime)
-		endTime, endErr := parseTime(req.Endtime)
-		if startErr != nil || endErr != nil {
-			log.Printf("PostActivity: Invalid workshop times. StartTime: %s, EndTime: %s. Errors: %v, %v\n", req.Starttime, req.Endtime, startErr, endErr)
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid workshop times"})
-			return
-		}
 		workshopParams := db.InsertWorkshopParams{
 			Workshopid: activityID,
-			Starttime:  startTime,
-			Endtime:    endTime,
+			Starttime:  req.Starttime,
+			Endtime:    req.Endtime,
 		}
 		log.Printf("PostActivity: InsertWorkshopParams: %+v\n", workshopParams)
 		if err := services.InsertWorkshopService(queries, workshopParams); err != nil {
