@@ -63,13 +63,13 @@ type CreateActivityRequest struct {
 	Title         string   `json:"title" binding:"required"`
 	Startdate     string   `json:"startDate" binding:"required"`
 	Enddate       string   `json:"endDate" binding:"required"`
-	Maxnumber     int32    `json:"maxParticipant" binding:"required"` // Updated to match frontend
+	Maxnumber     int32    `json:"maxNumber" binding:"required"` // Updated to match frontend
 	Format        string   `json:"format" binding:"required"`
 	Description   string   `json:"description" binding:"required"`
 	Advisor       *string  `json:"advisor"`
 	Starttime     string   `json:"startTime"`
 	Endtime       string   `json:"endTime"`
-	Activityroles []string `json:"roles" binding:"required"`
+	Activityroles []string `json:"activityRole" binding:"required"`
 }
 
 func PostActivity(c *gin.Context, queries *db.Queries) {
