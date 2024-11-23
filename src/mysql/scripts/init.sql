@@ -14,7 +14,7 @@ CREATE TABLE Member (
   memberID int(11) NOT NULL AUTO_INCREMENT,
   fName varchar(255) NOT NULL,
   lName varchar(255) NOT NULL,
-  email varchar(320) NOT NULL,
+  email varchar(320) UNIQUE NOT NULL,
   phone varchar(20) UNIQUE NOT NULL,
   githubUrl varchar(320) NOT NULL,
   interest text NOT NULL,
@@ -126,3 +126,6 @@ ON Admin (email);
 
 CREATE UNIQUE INDEX index_developer_email
 ON Developer (email);
+
+CREATE UNIQUE INDEX index_activity_title
+ON Activity (title);
