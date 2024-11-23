@@ -1,6 +1,6 @@
-import type { Activity, FeedbackData } from '$lib/types';
+import type { Activity, Feedback MemberRegistration, Member } from '$lib/types';
 
-export const memberData = [
+export const memberData: Member[] = [
 	{
 		id: 1,
 		fname: 'John',
@@ -138,7 +138,7 @@ export const memberData = [
 	}
 ];
 
-export const activityData = [
+export const activityData: Activity[] = [
 	{
 		id: 1,
 		title: 'Morning Yoga',
@@ -225,7 +225,7 @@ export const activityData = [
 		applicationStatus: 'Approved'
 	}
 ];
-export const mockFeedbackData: FeedbackData[] = [
+export const mockFeedbackData: Feedback[] = [
 	{
 		feedbackid: 1,
 		activityid: 101,
@@ -252,5 +252,52 @@ export const mockFeedbackData: FeedbackData[] = [
 		lname: 'Johnson',
 		feedbackmessage: 'Very well organized.',
 		feedbackdatetime: '2023-10-01T12:00:00Z'
+	}
+];
+export const memberRegistrationData: MemberRegistration[] = [
+	{
+		memberid: 1,
+		fname: 'John',
+		lname: 'Doe',
+		phone: '123-456-7890',
+		email: 'john.doe@example.com',
+		role: 'Organizer',
+		expectation: 'To manage events efficiently'
+	},
+	{
+		memberid: 2,
+		fname: 'Jane',
+		lname: 'Smith',
+		phone: '987-654-3210',
+		email: 'jane.smith@example.com',
+		role: 'Volunteer',
+		expectation: 'To help with event logistics'
+	},
+	{
+		memberid: 3,
+		fname: 'Alice',
+		lname: 'Johnson',
+		phone: '555-123-4567',
+		email: 'alice.johnson@example.com',
+		role: 'Speaker',
+		expectation: 'To deliver insightful talks'
+	},
+	{
+		memberid: 4,
+		fname: 'Bob',
+		lname: 'Brown',
+		phone: '444-555-6666',
+		email: 'bob.brown@example.com',
+		role: 'Attendee',
+		expectation: 'To network and learn'
+	},
+	{
+		memberid: 5,
+		fname: 'Charlie',
+		lname: 'Davis',
+		phone: '333-444-5555',
+		email: 'charlie.davis@example.com',
+		role: 'Sponsor',
+		expectation: 'To promote products and services'
 	}
 ];

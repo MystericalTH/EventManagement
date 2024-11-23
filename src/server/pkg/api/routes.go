@@ -105,6 +105,9 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		api.POST("/activities/:activityId/feedback/submit", func(c *gin.Context) {
 			handler.SubmitFeedback(c, queries)
 		})
+		api.GET("/activities/:activityId/feedback", func(c *gin.Context) {
+			handler.GetFeedbacksByActivity(c, queries)
+		})
 
 		// GET /registration status
 		api.GET("/activities/:activityId/registration/status", func(c *gin.Context) {

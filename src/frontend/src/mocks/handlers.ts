@@ -1,6 +1,6 @@
 import { http } from 'msw';
 import { HttpResponse } from 'msw';
-import { memberData, activityData, mockFeedbackData } from './__data';
+import { memberData, activityData, mockFeedbackData, memberRegistrationData } from './__data';
 export const handlers = [
 	// // Mock a GET request to "/api/users"
 	// http.get('/api/users', ({ params }) => {
@@ -40,13 +40,10 @@ export const handlers = [
 	http.delete('/api/activities/:id', ({ params }) => {
 		return new HttpResponse(null, { status: 204 });
 	}),
-	http.get('/api/activities', () => {
-		return HttpResponse.json(activityData);
-	}),
 	http.get('/api/activities/:id', ({ params }) => {
 		let { id } = params;
 		console.log('enter');
-		return HttpResponse.json([activityData[parseInt(id)]]);
+		return HttpResponse.json(activityData[parseInt(id) - 1]);
 	}),
 	http.get('/api/activities/:id/registration/status', ({}) => {
 		return HttpResponse.json({ is_registered: true });
@@ -70,7 +67,9 @@ export const handlers = [
 		} else {
 			result = [wait_result];
 		}
-		console.log(result);
 		return HttpResponse.json(result);
+	}),
+	http.get('/api/activities/:id/registration', ({ params }) => {
+		return HttpResponse.json(memberRegistrationData);
 	})
 ];

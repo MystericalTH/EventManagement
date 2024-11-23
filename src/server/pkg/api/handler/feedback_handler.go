@@ -35,7 +35,7 @@ func GetFeedbackStatus(c *gin.Context, queries *db.Queries) {
 	}
 
 	// Get member ID from the service
-	memberID, err := queries.GetMemberIDByEmail(c, email)
+	memberID, err := services.GetMemberIDByEmailService(queries, email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID"})
 		return
@@ -90,7 +90,7 @@ func SubmitFeedback(c *gin.Context, queries *db.Queries) {
 		return
 	}
 
-	memberID, err := queries.GetMemberIDByEmail(c, email)
+	memberID, err := services.GetMemberIDByEmailService(queries, email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID"})
 		return
@@ -125,4 +125,24 @@ func SubmitFeedback(c *gin.Context, queries *db.Queries) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Feedback submitted successfully"})
+}
+
+// ListFeedbacksByActivity handles listing feedback entries for an activity
+func GetFeedbacksByActivity(c *gin.Context, queries *db.Queries) {
+	// Get activity ID from URL
+	activityIDStr := c.Param("activityId")
+	activityID, err := strconv.ParseInt(activityIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})
+		return
+	}
+
+	// Get feedback entries using the service
+	feedbacks, err := services.GetFeedbacksByActivityService(queries, int32(activityID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get feedback entries"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"feedbacks": feedbacks})
 }
