@@ -8,3 +8,13 @@ export type Member = {
 	githuburl?: string;
 	reason: string;
 };
+
+export type MemberRegistration = {
+	memberid: number;
+	fname: string;
+	lname: string;
+	phone: string;
+	email: string;
+	role: string;
+	expectation: string;
+};
