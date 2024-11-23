@@ -82,7 +82,7 @@ type Project struct {
 }
 
 type Workshop struct {
-	Workshopid int32     `json:"workshopid"`
-	Starttime  time.Time `json:"starttime"`
-	Endtime    time.Time `json:"endtime"`
+	Workshopid int32  `json:"workshopid"`
+	Starttime  string `json:"starttime"`
+	Endtime    string `json:"endtime"`
 }

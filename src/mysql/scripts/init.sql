@@ -56,8 +56,8 @@ CREATE TABLE Project (
 -- Subclass: Table structure for Workshop
 CREATE TABLE Workshop (
   workshopID int(11) NOT NULL,
-  startTime time NOT NULL,
-  endTime time NOT NULL,
+  startTime varchar(255) NOT NULL,
+  endTime varchar(255) NOT NULL,
   PRIMARY KEY (workshopID),
   CONSTRAINT workshop_fk FOREIGN KEY (workshopID) REFERENCES Activity (activityID)
 );

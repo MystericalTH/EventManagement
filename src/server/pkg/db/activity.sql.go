@@ -114,7 +114,7 @@ INSERT INTO Workshop (workshopID, starttime, endtime) VALUES (?, ?, ?)
 `
 
 type InsertWorkshopParams struct {
-	Workshopid int32     `json:"workshopid"`
+	Workshopid int32  `json:"workshopid"`
 	Starttime  string `json:"starttime"`
 	Endtime    string `json:"endtime"`
 }
