@@ -20,6 +20,17 @@ func (q *Queries) GetAdminIDByEmail(ctx context.Context, email string) (int32, e
 	return adminid, err
 }
 
+const getDeveloperIDByEmail = `-- name: GetDeveloperIDByEmail :one
+SELECT developerID FROM Developer WHERE email = ?
+`
+
+func (q *Queries) GetDeveloperIDByEmail(ctx context.Context, email string) (int32, error) {
+	row := q.db.QueryRowContext(ctx, getDeveloperIDByEmail, email)
+	var developerid int32
+	err := row.Scan(&developerid)
+	return developerid, err
+}
+
 const getMemberIDByEmail = `-- name: GetMemberIDByEmail :one
 SELECT memberID FROM Member WHERE email = ?
 `
