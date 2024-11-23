@@ -1,16 +1,40 @@
 <script lang="ts">
-	let name = '';
-	let email = '';
-	let phone = '';
-	let githuburl = '';
-	let interest = '';
-	let reason = '';
+	import Overlay from '$lib/components/Overlay.svelte';
+	import { cross } from '$lib/assets/action-button-icons';
+	import ActionButton from '$lib/components/ActionButton.svelte';
+	import { onMount } from 'svelte';
+	let showOverlay = $state(false);
+	let overlayMessage = $state('');
+	let fname = $state('');
+	let lname = $state('');
+	let email = $state('');
+	let phone = $state('');
+	let githuburl = $state('');
+	let interest = $state('');
+	let reason = $state('');
+	let getDetail = async () => {
+		const response: Response = await fetch('/api/login/callback');
+		let loginInfo = await response.json();
 
+		console.log(response.status);
+		if (loginInfo.role == null) {
+			window.location.href = '/api/login?role=default&redirect_uri=/signup';
+		}
+		email = loginInfo.user.email;
+	};
+
+	onMount(getDetail);
+
+	const closeOverlay = () => {
+		showOverlay = false;
+		window.location.href = '/api/logout';
+	};
 	const handleMemberSubmit = async (event: Event) => {
 		event.preventDefault();
 
 		const formData = {
-			name,
+			fname,
+			lname,
 			email,
 			phone,
 			githuburl,
@@ -19,7 +43,7 @@
 		};
 
 		try {
-			const response = await fetch('/api/member', {
+			const response = await fetch('/api/members', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -29,9 +53,12 @@
 
 			if (response.ok) {
 				console.log('Form submitted successfully');
+				overlayMessage = 'Request sent!';
 			} else {
 				console.error('Form submission failed');
+				overlayMessage = 'Request failed. Please try again later.';
 			}
+			showOverlay = true;
 		} catch (error) {
 			console.error('Error submitting form:', error);
 		}
@@ -43,13 +70,25 @@
 	<form onsubmit={handleMemberSubmit} class="flex flex-col py-4">
 		<div class="grid grid-cols-[40%_60%] gap-4 pr-2">
 			<div class="content-center text-right">
-				<label for="name" class="mb-2 font-bold">Name</label>
+				<label for="fname" class="mb-2 font-bold">First Name</label>
 			</div>
 			<div>
 				<input
 					type="text"
 					id="name"
-					bind:value={name}
+					bind:value={fname}
+					required
+					class="w-72 rounded border border-gray-300 p-2 text-base"
+				/>
+			</div>
+			<div class="content-center text-right">
+				<label for="lname" class="mb-2 font-bold">Last Name</label>
+			</div>
+			<div>
+				<input
+					type="text"
+					id="name"
+					bind:value={lname}
 					required
 					class="w-72 rounded border border-gray-300 p-2 text-base"
 				/>
@@ -61,9 +100,9 @@
 				<input
 					type="email"
 					id="email"
-					bind:value={email}
-					required
-					class="w-72 rounded border border-gray-300 p-2 text-base"
+					value={email}
+					class="w-72 rounded border border-gray-300 bg-gray-200 p-2 text-base text-gray-400"
+					disabled
 				/>
 			</div>
 			<div class="content-center text-right">
@@ -86,7 +125,6 @@
 					type="url"
 					id="githuburl"
 					bind:value={githuburl}
-					required
 					class="w-72 rounded border border-gray-300 p-2 text-base"
 				/>
 			</div>
@@ -122,3 +160,12 @@
 		</div>
 	</form>
 </div>
+
+<Overlay {showOverlay} width="[200px]" height="[150px]">
+	<div class="flex justify-end">
+		<ActionButton imgsrc={cross} action={closeOverlay} width="20px" alt="Close" />
+	</div>
+	<div class="mt-4 h-16 w-56 flex-1 text-center text-xl">
+		{overlayMessage}
+	</div>
+</Overlay>
