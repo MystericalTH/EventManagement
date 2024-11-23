@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"time"
 )
 
 const getRegistrationStatus = `-- name: GetRegistrationStatus :one
@@ -50,19 +51,20 @@ func (q *Queries) InsertRegistration(ctx context.Context, arg InsertRegistration
 }
 
 const listActivityRegistration = `-- name: ListActivityRegistration :many
-SELECT Member.fname, Member.lname, role, Member.email, Member.phone, expectation
+SELECT Member.fname, Member.lname, role, Member.email, Member.phone, expectation, datetime
 FROM ActivityRegistration
 JOIN Member ON ActivityRegistration.memberID = Member.memberID
 WHERE activityID = ?
 `
 
 type ListActivityRegistrationRow struct {
-	Fname       string `json:"fname"`
-	Lname       string `json:"lname"`
-	Role        string `json:"role"`
-	Email       string `json:"email"`
-	Phone       string `json:"phone"`
-	Expectation string `json:"expectation"`
+	Fname       string    `json:"fname"`
+	Lname       string    `json:"lname"`
+	Role        string    `json:"role"`
+	Email       string    `json:"email"`
+	Phone       string    `json:"phone"`
+	Expectation string    `json:"expectation"`
+	Datetime    time.Time `json:"datetime"`
 }
 
 func (q *Queries) ListActivityRegistration(ctx context.Context, activityid int32) ([]ListActivityRegistrationRow, error) {
@@ -81,6 +83,7 @@ func (q *Queries) ListActivityRegistration(ctx context.Context, activityid int32
 			&i.Email,
 			&i.Phone,
 			&i.Expectation,
+			&i.Datetime,
 		); err != nil {
 			return nil, err
 		}

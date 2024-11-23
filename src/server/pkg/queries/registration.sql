@@ -8,7 +8,7 @@ FROM ActivityRegistration
 WHERE activityID = ? AND memberID = ?;
 
 -- name: ListActivityRegistration :many
-SELECT Member.fname, Member.lname, role, Member.email, Member.phone, expectation
+SELECT Member.fname, Member.lname, role, Member.email, Member.phone, expectation, datetime
 FROM ActivityRegistration
 JOIN Member ON ActivityRegistration.memberID = Member.memberID
 WHERE activityID = ?;
