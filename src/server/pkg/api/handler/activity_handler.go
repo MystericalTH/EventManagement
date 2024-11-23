@@ -63,76 +63,73 @@ type CreateActivityRequest struct {
 	Title         string   `json:"title" binding:"required"`
 	Startdate     string   `json:"startDate" binding:"required"`
 	Enddate       string   `json:"endDate" binding:"required"`
-	Maxnumber     int32    `json:"maxParticipant" binding:"required"`
+	Maxnumber     int32    `json:"maxParticipant" binding:"required"` // Updated to match frontend
 	Format        string   `json:"format" binding:"required"`
 	Description   string   `json:"description" binding:"required"`
-	Advisor       *string  `json:"advisor,omitempty"`
-	Starttime     string   `json:"startTime,omitempty"`
-	Endtime       string   `json:"endTime,omitempty"`
-	Activityroles []string `json:"roles"`
+	Advisor       *string  `json:"advisor"`
+	Starttime     string   `json:"startTime"`
+	Endtime       string   `json:"endTime"`
+	Activityroles []string `json:"roles" binding:"required"`
 }
 
-// Handler for posting a new activity
 func PostActivity(c *gin.Context, queries *db.Queries) {
-	// Retrieve user info from session
+	log.Println("PostActivity: Started handling request")
+
+	// Retrieve user email and role from session
 	session, err := SessionStore.Get(c.Request, SessionName)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session"})
+		log.Printf("PostActivity: Failed to retrieve session: %v\n", err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Session retrieval failed"})
 		return
 	}
 
-	// Get user information and role from session
-	userInfo, userOk := session.Values["user"].(UserInfo)
+	userEmail, emailOk := session.Values["user_email"].(string)
 	role, roleOk := session.Values["role"].(string)
-	if !userOk || !roleOk {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+	if !emailOk || !roleOk || role != "member" {
+		log.Printf("PostActivity: Unauthorized access. EmailOk: %v, RoleOk: %v, Role: %v\n", emailOk, roleOk, role)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized: Invalid session or insufficient privileges"})
 		return
 	}
 
-	email := userInfo.Email
+	log.Printf("PostActivity: Retrieved session for email: %s and role: %s\n", userEmail, role)
 
-	// Only allow members to check feedback status
-	if role != "member" {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Only members can check feedback status"})
-		return
-	}
-
-	// Get member ID from the service
-	memberID, err := queries.GetMemberIDByEmail(c, email)
+	// Fetch member ID using the email
+	memberID, err := services.GetMemberIDByEmailService(queries, userEmail)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID"})
+		log.Printf("PostActivity: Failed to fetch member ID for email %s: %v\n", userEmail, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch member ID", "details": err.Error()})
 		return
 	}
 
-	// Bind JSON request to CreateActivityRequest
+	log.Printf("PostActivity: Retrieved member ID: %d for email: %s\n", memberID, userEmail)
+
+	// Parse and validate request body
 	var req CreateActivityRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Printf("PostActivity: Failed to bind JSON request: %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
 
+	log.Printf("PostActivity: Request payload: %+v\n", req)
+
+	// Validate and parse date fields
 	startDate, err := parseDate(req.Startdate)
 	if err != nil {
-		log.Printf("StartDate parsing failed: %v", err)
+		log.Printf("PostActivity: Invalid start date: %s. Error: %v\n", req.Startdate, err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid start date format"})
 		return
 	}
 	endDate, err := parseDate(req.Enddate)
-	if err != nil {
-		log.Printf("EndDate parsing failed: %v", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid end date format"})
+	if err != nil || !startDate.Before(endDate) {
+		log.Printf("PostActivity: Invalid end date: %s or start date not before end date: %v\n", req.Enddate, err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "End date must be after start date"})
 		return
 	}
 
-	// Validate that StartDate is before EndDate
-	if !startDate.Before(endDate) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Start date must be before end date"})
-		return
-	}
+	log.Printf("PostActivity: StartDate: %s, EndDate: %s validated successfully\n", startDate, endDate)
 
-	proposeDateTime := time.Now()
-
-	// Prepare service params
+	// Insert activity into the database
 	params := db.InsertActivityParams{
 		Title:           req.Title,
 		Proposer:        int32(memberID),
@@ -141,62 +138,57 @@ func PostActivity(c *gin.Context, queries *db.Queries) {
 		Maxnumber:       req.Maxnumber,
 		Format:          req.Format,
 		Description:     req.Description,
-		Proposedatetime: proposeDateTime,
+		Proposedatetime: time.Now(),
 	}
+	log.Printf("PostActivity: InsertActivityParams: %+v\n", params)
 
-	// Call the service to create the activity
-	if err := services.InsertActivityService(queries, params); err != nil {
-		log.Printf("InsertActivityService failed: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create activity"})
+	err = services.InsertActivityService(queries, params)
+	if err != nil {
+		log.Printf("PostActivity: Failed to insert activity: %v\n", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create activity", "details": err.Error()})
 		return
 	}
 
-	// Retrieve the activity ID using the title
+	// Retrieve the activity ID
 	activityID, err := services.GetActivityIDByTitleService(queries, req.Title)
 	if err != nil {
-		log.Printf("GetActivityIDByTitleService failed: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve activity ID"})
+		log.Printf("PostActivity: Failed to retrieve activity ID for title %s: %v\n", req.Title, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve activity ID", "details": err.Error()})
 		return
 	}
 
-	if req.Format == "project" {
-		// Insert project
-		if req.Advisor != nil {
-			projectParams := db.InsertProjectParams{
-				Projectid: activityID,
-				Advisor:   sql.NullString{String: *req.Advisor, Valid: req.Advisor != nil},
-			}
-			if err := services.InsertProjectService(queries, projectParams); err != nil {
-				log.Printf("InsertProjectService failed: %v", err)
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert project"})
-				return
-			}
+	log.Printf("PostActivity: Retrieved activity ID: %d for title: %s\n", activityID, req.Title)
+
+	// Handle specific formats (project or workshop)
+	if req.Format == "project" && req.Advisor != nil {
+		projectParams := db.InsertProjectParams{
+			Projectid: activityID,
+			Advisor:   sql.NullString{String: *req.Advisor, Valid: true},
+		}
+		log.Printf("PostActivity: InsertProjectParams: %+v\n", projectParams)
+		if err := services.InsertProjectService(queries, projectParams); err != nil {
+			log.Printf("PostActivity: Failed to insert project: %v\n", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert project", "details": err.Error()})
+			return
 		}
 	} else if req.Format == "workshop" {
-		// Insert workshop
-		if req.Starttime != "" && req.Endtime != "" {
-			startTime, err := parseTime(req.Starttime)
-			if err != nil {
-				log.Printf("StartTime parsing failed: %v", err)
-				c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid start time format"})
-				return
-			}
-			endTime, err := parseTime(req.Endtime)
-			if err != nil {
-				log.Printf("EndTime parsing failed: %v", err)
-				c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid end time format"})
-				return
-			}
-			workshopParams := db.InsertWorkshopParams{
-				Workshopid: activityID,
-				Starttime:  startTime,
-				Endtime:    endTime,
-			}
-			if err := services.InsertWorkshopService(queries, workshopParams); err != nil {
-				log.Printf("InsertWorkshopService failed: %v", err)
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert workshop"})
-				return
-			}
+		startTime, startErr := parseTime(req.Starttime)
+		endTime, endErr := parseTime(req.Endtime)
+		if startErr != nil || endErr != nil {
+			log.Printf("PostActivity: Invalid workshop times. StartTime: %s, EndTime: %s. Errors: %v, %v\n", req.Starttime, req.Endtime, startErr, endErr)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid workshop times"})
+			return
+		}
+		workshopParams := db.InsertWorkshopParams{
+			Workshopid: activityID,
+			Starttime:  startTime,
+			Endtime:    endTime,
+		}
+		log.Printf("PostActivity: InsertWorkshopParams: %+v\n", workshopParams)
+		if err := services.InsertWorkshopService(queries, workshopParams); err != nil {
+			log.Printf("PostActivity: Failed to insert workshop: %v\n", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert workshop", "details": err.Error()})
+			return
 		}
 	}
 
@@ -206,13 +198,16 @@ func PostActivity(c *gin.Context, queries *db.Queries) {
 			Activityid:   activityID,
 			Activityrole: role,
 		}
+		log.Printf("PostActivity: InsertActivityRoleParams: %+v\n", roleParams)
 		if err := services.InsertActivityRoleService(queries, roleParams); err != nil {
-			log.Printf("InsertActivityRoleService failed: %v", err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert activity role"})
+			log.Printf("PostActivity: Failed to insert activity roles: %v\n", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert activity roles", "details": err.Error()})
 			return
 		}
 	}
 
+	// Respond with success
+	log.Println("PostActivity: Activity created successfully")
 	c.JSON(http.StatusOK, gin.H{"message": "Activity created successfully"})
 }
 

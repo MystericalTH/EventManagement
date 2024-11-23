@@ -9,3 +9,7 @@ import (
 func GetAdminIDByEmailService(queries *db.Queries, email string) (int32, error) {
 	return queries.GetAdminIDByEmail(context.Background(), email)
 }
+
+func GetMemberIDByEmailService(queries *db.Queries, email string) (int32, error) {
+	return queries.GetMemberIDByEmail(context.Background(), email)
+}
