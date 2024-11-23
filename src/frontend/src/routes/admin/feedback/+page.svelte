@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { createPagination } from '$lib/utils/pagination.svelte';
-	import type { FeedbackData } from '$lib/types/feedback';
+	import type { Feedback } from '$lib/types/feedback';
 	import type { Activity, Pagination } from '$lib/types';
 	let { data }: { data: { activities: Activity[] } } = $props();
 
 	let selectedActivity: Activity | null = $state(null);
-	let feedback: FeedbackData[] = $state([]);
-	let pagination: Pagination<FeedbackData> = $state(createPagination<FeedbackData>([], 10));
+	let feedback: Feedback[] = $state([]);
+	let pagination: Pagination<Feedback> = $state(createPagination<Feedback>([], 10));
 
 	$effect(() => {
 		if (selectedActivity != null) {
