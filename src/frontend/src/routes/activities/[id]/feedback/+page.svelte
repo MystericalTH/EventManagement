@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	let { data }: { data: PageData } = $props();
+	import type { Activity } from '$lib/types';
+	export let data: { activity: Activity };
 
 	let feedback = $state('');
 

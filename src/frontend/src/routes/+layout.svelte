@@ -9,8 +9,8 @@
 <main class="font-custom">
 	<div class="flex h-screen">
 		<Sidebar role={data.role} />
-		<div class="m-4 flex flex-1 justify-center">
-			<div class="flex w-5/6 flex-col">
+		<div class="flex w-[calc(100vw-12rem)] flex-none justify-center p-4">
+			<div class="flex w-full flex-col overflow-x-clip">
 				{@render children()}
 			</div>
 		</div>

@@ -1,4 +1,4 @@
-import type { SidebarItem } from '$lib/types/sidebar';
+import type { SidebarItem } from '$lib/types';
 
 export const defaultItems = (currentUrl: string): SidebarItem[] => {
 	return [
@@ -18,11 +18,11 @@ export const defaultItems = (currentUrl: string): SidebarItem[] => {
 
 export const adminItems: SidebarItem[] = [
 	{
-		text: 'Activity',
+		text: 'Activities',
 		subitems: [
 			{ text: 'Manage Activities', href: '/admin/activities' },
 			{ text: 'Activity Requests', href: '/admin/activities/requests' },
-			{ text: 'See Feedback', href: '/admin/activities/feedback' }
+			{ text: 'See Feedback', href: '/admin/feedback' }
 		]
 	},
 	{
@@ -35,15 +35,17 @@ export const adminItems: SidebarItem[] = [
 ];
 
 export const memberItems: SidebarItem[] = [
+	{ text: 'Home', href: '/home' },
+	{ text: 'Activities', href: '/activities' },
 	{
-		text: 'Activity',
+		text: 'Personal List',
 		subitems: [
-			{ text: 'Your Activities', href: '/member/activities' },
-			{ text: 'Your Proposals', href: '/member/activities/proposals' }
+			{ text: 'Your Engagements', href: '/member/activities' },
+			{ text: 'Your Proposals', href: '/member/activities/proposals' },
+			{
+				text: 'Propose Activity',
+				href: '/member/activities/propose'
+			}
 		]
-	},
-	{
-		text: 'Propose New Activity',
-		href: '/member/activities/propose'
 	}
 ];

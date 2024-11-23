@@ -1,57 +1,58 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	let { data }: { data: PageData } = $props();
-	
-	import Card from '$lib/components/Card.svelte';
+	import type { Activity } from '$lib/types';
+	import ActivitySlider from '$lib/components/activity/ActivitySlider.svelte';
+	import { cross } from '$lib/assets/action-button-icons';
+	import Overlay from '$lib/components/Overlay.svelte';
+	import ActivityContent from '$lib/components/ActivityContent.svelte';
+	import ActionButton from '$lib/components/ActionButton.svelte';
+
+	let { data }: { data: { activities: Array<Activity> } } = $props();
 
 	const currentDate = new Date();
 
-	const upcomingActivities = data.activities.filter((activity) => {
+	const upcomingActivities = data.activities.filter((activity: Activity) => {
 		const startDate = new Date(activity.startDate);
 		return startDate > currentDate;
 	});
 
-	const ongoingActivities = data.activities.filter((activity) => {
+	const ongoingActivities = data.activities.filter((activity: Activity) => {
 		const startDate = new Date(activity.startDate);
 		const endDate = new Date(activity.endDate);
 		return startDate <= currentDate && currentDate <= endDate;
 	});
 
-	const completedActivities = data.activities.filter((activity) => {
+	const completedActivities = data.activities.filter((activity: Activity) => {
 		const endDate = new Date(activity.endDate);
 		return endDate < currentDate;
 	});
+	let showOverlay = $state(false);
+	let selectedActivity: Activity | null = $state(null);
+
+	function viewActivity(activity: Activity) {
+		selectedActivity = activity;
+		showOverlay = true;
+	}
+	const closeOverlay = () => {
+		selectedActivity = null;
+		showOverlay = false;
+	};
 </script>
 
-<h1>Up Coming</h1>
-{#each upcomingActivities as activity}
-	<Card
-		title={activity.title}
-		startDate={new Date(activity.startDate).toISOString().split('T')[0]}
-		endDate={new Date(activity.endDate).toISOString().split('T')[0]}
-		format={activity.format}
-		href={`activity/${activity.id.toString()}`}
-	/>
-{/each}
+<div class="overflow-y-scroll">
+	<h1 class="mb-6 text-3xl font-bold">Activities</h1>
+	<h2 class="mb-2 text-xl">Upcoming</h2>
+	<ActivitySlider activities={upcomingActivities} cardOnclick={viewActivity} />
+	<h2 class="mb-2 text-xl">Ongoing</h2>
+	<ActivitySlider activities={ongoingActivities} cardOnclick={viewActivity} />
+	<h2 class="mb-2 text-xl">Completed</h2>
+	<ActivitySlider activities={completedActivities} cardOnclick={viewActivity} />
+</div>
 
-<h1>On Going</h1>
-{#each ongoingActivities as activity}
-	<Card
-		title={activity.title}
-		startDate={new Date(activity.startDate).toISOString().split('T')[0]}
-		endDate={new Date(activity.endDate).toISOString().split('T')[0]}
-		format={activity.format}
-		href={`activity/${activity.id.toString()}`}
-	/>
-{/each}
-
-<h1>Completed</h1>
-{#each completedActivities as activity}
-	<Card
-		title={activity.title}
-		startDate={new Date(activity.startDate).toISOString().split('T')[0]}
-		endDate={new Date(activity.endDate).toISOString().split('T')[0]}
-		format={activity.format}
-		href={`activity/${activity.id.toString()}`}
-	/>
-{/each}
+<Overlay {showOverlay}>
+	<div class="flex justify-end">
+		<ActionButton imgsrc={cross} action={closeOverlay} width="20px" alt="Close" />
+	</div>
+	<div class="overflow-y-scroll">
+		<ActivityContent data={selectedActivity} />
+	</div>
+</Overlay>
