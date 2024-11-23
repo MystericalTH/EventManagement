@@ -37,7 +37,7 @@ func GetRegistrationStatus(c *gin.Context, queries *db.Queries) {
 	}
 
 	// Get member ID from the service
-	memberID, err := queries.GetMemberIDByEmail(c, email)
+	memberID, err := services.GetMemberIDByEmailService(queries, email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID"})
 		return
@@ -88,7 +88,7 @@ func SubmitRegistration(c *gin.Context, queries *db.Queries) {
 	}
 
 	// Get member ID from the service
-	memberID, err := queries.GetMemberIDByEmail(c, email)
+	memberID, err := services.GetMemberIDByEmailService(queries, email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID"})
 		return
