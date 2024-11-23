@@ -43,7 +43,7 @@ export const handlers = [
 	http.get('/api/activities/:id', ({ params }) => {
 		let { id } = params;
 		console.log('enter');
-		return HttpResponse.json([activityData[parseInt(id)]]);
+		return HttpResponse.json(activityData[parseInt(id) - 1]);
 	}),
 	http.get('/api/activities/:id/registration/status', ({}) => {
 		return HttpResponse.json({ is_registered: true });

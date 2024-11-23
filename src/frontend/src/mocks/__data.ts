@@ -7,7 +7,7 @@ export const memberData = [
 		lname: 'Doe',
 		phone: '123-456-7890',
 		email: 'john.doe@example.com',
-		interest: 'Reading', // Changed to singular 
+		interest: 'Reading', // Changed to singular
 		reason: 'Looking to join a community of like-minded individuals.'
 	},
 	{
@@ -137,95 +137,7 @@ export const memberData = [
 		reason: 'Interested in travel photography.'
 	}
 ];
-
 export const activityData: Activity[] = [
-	{
-		id: 1,
-		title: 'Activity 1',
-		proposer: 'John Doe',
-		startDate: '2021-10-01',
-		endDate: '2021-10-02',
-		maxNumber: 10,
-		format: 'Project',
-		description: 'This is activity 1',
-		proposeDateTime: '2021-09-01',
-		acceptAdmin: 'Admin',
-		acceptDateTime: '2021-09-02',
-		applicationStatus: 'Approved'
-	},
-	{
-		id: 2,
-		title: 'Activity 2',
-		proposer: 'John Doe',
-		startDate: '2021-10-01',
-		endDate: '2021-10-02',
-		maxNumber: 10,
-		format: 'Project',
-		description: 'This is activity 2',
-		proposeDateTime: '2021-09-01',
-		acceptAdmin: 'Admin',
-		acceptDateTime: '2021-09-02',
-		applicationStatus: 'Approved'
-	},
-	{
-		id: 3,
-		title: 'Activity 3',
-		proposer: 'John Doe',
-		startDate: '2021-10-01',
-		endDate: '2021-10-02',
-		maxNumber: 10,
-		format: 'Workshop',
-		description: 'This is activity 3',
-		proposeDateTime: '2021-09-01',
-		acceptAdmin: 'Admin',
-		acceptDateTime: '2021-09-02',
-		applicationStatus: 'Approved'
-	},
-	{
-		id: 4,
-		title: 'Activity 1',
-		proposer: 'John Doe',
-		startDate: '2021-10-01',
-		endDate: '2021-10-02',
-		maxNumber: 10,
-		format: 'Project',
-		description: 'This is activity 1',
-		proposeDateTime: '2021-09-01',
-		acceptAdmin: 'Admin',
-		acceptDateTime: '2021-09-02',
-		applicationStatus: 'Approved'
-	},
-	{
-		id: 5,
-		title: 'Activity 2',
-		proposer: 'John Doe',
-		startDate: '2021-10-01',
-		endDate: '2021-10-02',
-		maxNumber: 10,
-		format: 'Project',
-		description: 'This is activity 2',
-		proposeDateTime: '2021-09-01',
-		acceptAdmin: 'Admin',
-		acceptDateTime: '2021-09-02',
-		applicationStatus: 'Approved'
-	},
-	{
-		id: 6,
-		title: 'Activity 3',
-		proposer: 'John Doe',
-		startDate: '2021-10-01',
-		endDate: '2021-10-02',
-		maxNumber: 10,
-		format: 'Workshop',
-		description: 'This is activity 3',
-		proposeDateTime: '2021-09-01',
-		acceptAdmin: 'Admin',
-		acceptDateTime: '2021-09-02',
-		applicationStatus: 'Approved'
-	}
-];
-
-export const activityData = [
 	{
 		id: 1,
 		title: 'Morning Yoga',
