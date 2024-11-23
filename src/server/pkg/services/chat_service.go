@@ -11,6 +11,6 @@ func CreateChatService(queries *db.Queries, params db.InsertChatParams) error {
 }
 
 // ListChatsService lists all chat entries
-func GetChatsService(queries *db.Queries) ([]db.Chatdevad, error) {
+func GetChatsService(queries *db.Queries) ([]db.ListChatRow, error) {
 	return queries.ListChat(context.Background())
 }

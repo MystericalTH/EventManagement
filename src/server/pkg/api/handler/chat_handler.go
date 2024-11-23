@@ -68,3 +68,32 @@ func CreateChat(c *gin.Context, queries *db.Queries) {
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Chat submitted successfully"})
 }
+
+// Get all chats
+func GetChats(c *gin.Context, queries *db.Queries) {
+	// Retrieve the session
+	session, err := SessionStore.Get(c.Request, SessionName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session", "details": err.Error()})
+		return
+	}
+
+	role, roleOk := session.Values["role"].(string)
+	if !roleOk {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	if role == "member" {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Members cannot access this page"})
+		return
+	}
+
+	chats, err := services.GetChatsService(queries)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get feedback entries", "details": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"chats": chats})
+}

@@ -8,6 +8,7 @@ package db
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const insertChat = `-- name: InsertChat :exec
@@ -27,22 +28,41 @@ func (q *Queries) InsertChat(ctx context.Context, arg InsertChatParams) error {
 }
 
 const listChat = `-- name: ListChat :many
-SELECT messageid, adminid, developerid, message, datetime FROM chatDevAd
+SELECT 
+    c.messageid, 
+    a.email AS admin_email, 
+    d.email AS developer_email, 
+    c.message, 
+    c.datetime 
+FROM 
+    chatDevAd c
+LEFT JOIN 
+    Admin a ON c.adminid = a.adminID
+LEFT JOIN 
+    Developer d ON c.developerid = d.developerID
 `
 
-func (q *Queries) ListChat(ctx context.Context) ([]Chatdevad, error) {
+type ListChatRow struct {
+	Messageid      int32          `json:"messageid"`
+	AdminEmail     sql.NullString `json:"admin_email"`
+	DeveloperEmail sql.NullString `json:"developer_email"`
+	Message        string         `json:"message"`
+	Datetime       time.Time      `json:"datetime"`
+}
+
+func (q *Queries) ListChat(ctx context.Context) ([]ListChatRow, error) {
 	rows, err := q.db.QueryContext(ctx, listChat)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Chatdevad
+	var items []ListChatRow
 	for rows.Next() {
-		var i Chatdevad
+		var i ListChatRow
 		if err := rows.Scan(
 			&i.Messageid,
-			&i.Adminid,
-			&i.Developerid,
+			&i.AdminEmail,
+			&i.DeveloperEmail,
 			&i.Message,
 			&i.Datetime,
 		); err != nil {
