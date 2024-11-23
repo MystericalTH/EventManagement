@@ -48,3 +48,49 @@ func (q *Queries) InsertRegistration(ctx context.Context, arg InsertRegistration
 	)
 	return err
 }
+
+const listActivityRegistration = `-- name: ListActivityRegistration :many
+SELECT Member.fname, Member.lname, role, Member.email, Member.phone, expectation
+FROM ActivityRegistration
+JOIN Member ON ActivityRegistration.memberID = Member.memberID
+WHERE activityID = ?
+`
+
+type ListActivityRegistrationRow struct {
+	Fname       string `json:"fname"`
+	Lname       string `json:"lname"`
+	Role        string `json:"role"`
+	Email       string `json:"email"`
+	Phone       string `json:"phone"`
+	Expectation string `json:"expectation"`
+}
+
+func (q *Queries) ListActivityRegistration(ctx context.Context, activityid int32) ([]ListActivityRegistrationRow, error) {
+	rows, err := q.db.QueryContext(ctx, listActivityRegistration, activityid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListActivityRegistrationRow
+	for rows.Next() {
+		var i ListActivityRegistrationRow
+		if err := rows.Scan(
+			&i.Fname,
+			&i.Lname,
+			&i.Role,
+			&i.Email,
+			&i.Phone,
+			&i.Expectation,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

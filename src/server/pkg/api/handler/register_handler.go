@@ -126,3 +126,24 @@ func SubmitRegistration(c *gin.Context, queries *db.Queries) {
 	// Return a success response
 	c.JSON(http.StatusCreated, gin.H{"message": "Registration submitted successfully"})
 }
+
+// GetActivityRegistration handles retrieving all registrations for an activity
+func GetActivityRegistration(c *gin.Context, queries *db.Queries) {
+	// Get activity ID from URL
+	activityIDStr := c.Param("activityId")
+	activityID, err := strconv.ParseInt(activityIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})
+		return
+	}
+
+	// Get all registrations for this activity
+	registrations, err := services.GetActivityRegistrationService(queries, int32(activityID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get registrations"})
+		return
+	}
+
+	// Return JSON response
+	c.JSON(http.StatusOK, registrations)
+}

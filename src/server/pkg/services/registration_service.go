@@ -18,3 +18,8 @@ func GetRegistrationStatusService(queries *db.Queries, activityID int32, memberI
 	}
 	return queries.GetRegistrationStatus(context.Background(), params)
 }
+
+// GetActivityRegistrationService retrieves all registrations for an activity
+func GetActivityRegistrationService(queries *db.Queries, activityID int32) ([]db.ListActivityRegistrationRow, error) {
+	return queries.ListActivityRegistration(context.Background(), activityID)
+}
