@@ -13,7 +13,7 @@ import (
 
 const approveActivityRegistration = `-- name: ApproveActivityRegistration :exec
 UPDATE Activity
-SET acceptDateTime = LOCALTIME(),
+SET acceptDateTime = CONVERT_TZ(NOW(), 'UTC', '+07:00'), -- Store acceptDateTime in GMT+07:00
     acceptAdmin = ?, -- Include the admin responsible for the approval
     applicationStatus = "approved"
 WHERE activityID = ?
@@ -27,6 +27,59 @@ type ApproveActivityRegistrationParams struct {
 func (q *Queries) ApproveActivityRegistration(ctx context.Context, arg ApproveActivityRegistrationParams) error {
 	_, err := q.db.ExecContext(ctx, approveActivityRegistration, arg.Acceptadmin, arg.Activityid)
 	return err
+}
+
+const checkProjectDateConflict = `-- name: CheckProjectDateConflict :one
+SELECT COUNT(1)
+FROM Activity a
+WHERE a.format = 'project' AND
+      a.startDate = ? AND
+      a.endDate = ?
+`
+
+type CheckProjectDateConflictParams struct {
+	Startdate time.Time `json:"startdate"`
+	Enddate   time.Time `json:"enddate"`
+}
+
+func (q *Queries) CheckProjectDateConflict(ctx context.Context, arg CheckProjectDateConflictParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, checkProjectDateConflict, arg.Startdate, arg.Enddate)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const checkWorkshopDateConflict = `-- name: CheckWorkshopDateConflict :one
+SELECT COUNT(1)
+FROM Workshop w
+JOIN Activity a ON w.workshopID = a.activityID
+WHERE a.format = 'workshop' AND
+      a.startDate = ? AND
+      a.endDate = ? AND
+      ((w.startTime < ? AND w.endTime > ?) OR (a.startDate < ? AND a.endDate > ?))
+`
+
+type CheckWorkshopDateConflictParams struct {
+	Startdate   time.Time `json:"startdate"`
+	Enddate     time.Time `json:"enddate"`
+	Starttime   string    `json:"starttime"`
+	Endtime     string    `json:"endtime"`
+	Startdate_2 time.Time `json:"startdate_2"`
+	Enddate_2   time.Time `json:"enddate_2"`
+}
+
+func (q *Queries) CheckWorkshopDateConflict(ctx context.Context, arg CheckWorkshopDateConflictParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, checkWorkshopDateConflict,
+		arg.Startdate,
+		arg.Enddate,
+		arg.Starttime,
+		arg.Endtime,
+		arg.Startdate_2,
+		arg.Enddate_2,
+	)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
 }
 
 const deleteActivity = `-- name: DeleteActivity :exec
@@ -54,18 +107,17 @@ func (q *Queries) GetActivityIDByTitle(ctx context.Context, title string) (int32
 
 const insertActivity = `-- name: InsertActivity :exec
 INSERT INTO Activity (title, proposer, startDate, endDate, maxParticipant, format, description, proposeDateTime, applicationStatus
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, "pending")
+) VALUES (?, ?, ?, ?, ?, ?, ?, CONVERT_TZ(NOW(), 'UTC', '+07:00'), "pending")
 `
 
 type InsertActivityParams struct {
-	Title           string    `json:"title"`
-	Proposer        int32     `json:"proposer"`
-	Startdate       time.Time `json:"startdate"`
-	Enddate         time.Time `json:"enddate"`
-	Maxparticipant  int32     `json:"maxparticipant"`
-	Format          string    `json:"format"`
-	Description     string    `json:"description"`
-	Proposedatetime time.Time `json:"proposedatetime"`
+	Title          string    `json:"title"`
+	Proposer       int32     `json:"proposer"`
+	Startdate      time.Time `json:"startdate"`
+	Enddate        time.Time `json:"enddate"`
+	Maxparticipant int32     `json:"maxparticipant"`
+	Format         string    `json:"format"`
+	Description    string    `json:"description"`
 }
 
 func (q *Queries) InsertActivity(ctx context.Context, arg InsertActivityParams) error {
@@ -77,7 +129,6 @@ func (q *Queries) InsertActivity(ctx context.Context, arg InsertActivityParams) 
 		arg.Maxparticipant,
 		arg.Format,
 		arg.Description,
-		arg.Proposedatetime,
 	)
 	return err
 }
