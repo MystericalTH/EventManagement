@@ -5,15 +5,15 @@ import (
 	"time"
 )
 
-type DevChannelInitialMessage struct {
-	DeveloperID    int        `json:"developerID"`
-	DeveloperFname string     `json:"developer_fname"`
-	DeveloperLname string     `json:"developer_lname"`
-	Message        *string    `json:"message"`
-	Timesent       *time.Time `json:"timesent"`
+type ChatChannelInfo struct {
+	ID       int        `json:"id"`
+	Fname    string     `json:"fname"`
+	Lname    string     `json:"lname"`
+	Message  *string    `json:"message"`
+	Timesent *time.Time `json:"timesent"`
 }
 
-func ConvertListInitialAdminChatToDevRow(row db.ListInitialAdminChatToDevRow) DevChannelInitialMessage {
+func ConvertListInitialAdminChatToDevRow(row db.ListInitialAdminChatToDevRow) ChatChannelInfo {
 	var message *string
 	if row.Message.Valid {
 		messageStr := row.Message.String
@@ -26,24 +26,16 @@ func ConvertListInitialAdminChatToDevRow(row db.ListInitialAdminChatToDevRow) De
 		timesent = &timesentTime
 	}
 
-	return DevChannelInitialMessage{
-		DeveloperID:    int(row.Developerid),
-		DeveloperFname: row.DeveloperFname,
-		DeveloperLname: row.DeveloperLname,
-		Message:        message,
-		Timesent:       timesent,
+	return ChatChannelInfo{
+		ID:       int(row.Developerid),
+		Fname:    row.DeveloperFname,
+		Lname:    row.DeveloperLname,
+		Message:  message,
+		Timesent: timesent,
 	}
 }
 
-type AdminChannelInitialMessage struct {
-	AdminID    int        `json:"adminID"`
-	AdminFname string     `json:"admin_fname"`
-	AdminLname string     `json:"admin_lname"`
-	Message    *string    `json:"message"`
-	Timesent   *time.Time `json:"timesent"`
-}
-
-func ConvertListInitialDevChatToAdminRow(row db.ListInitialDevChatToAdminRow) AdminChannelInitialMessage {
+func ConvertListInitialDevChatToAdminRow(row db.ListInitialDevChatToAdminRow) ChatChannelInfo {
 	var message *string
 	if row.Message.Valid {
 		messageStr := row.Message.String
@@ -56,11 +48,11 @@ func ConvertListInitialDevChatToAdminRow(row db.ListInitialDevChatToAdminRow) Ad
 		timesent = &timesentTime
 	}
 
-	return AdminChannelInitialMessage{
-		AdminID:    int(row.Adminid),
-		AdminFname: row.AdminFname,
-		AdminLname: row.AdminLname,
-		Message:    message,
-		Timesent:   timesent,
+	return ChatChannelInfo{
+		ID:       int(row.Adminid),
+		Fname:    row.AdminFname,
+		Lname:    row.AdminLname,
+		Message:  message,
+		Timesent: timesent,
 	}
 }

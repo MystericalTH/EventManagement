@@ -162,7 +162,7 @@ func ListInitialAdminDevChat(c *gin.Context, queries *db.Queries) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot retrieve chat", "details": err.Error()})
 			return
 		}
-		var response = []typing.DevChannelInitialMessage{}
+		var response = []typing.ChatChannelInfo{}
 		for _, d := range data {
 			response = append(response, typing.ConvertListInitialAdminChatToDevRow(d))
 		}
@@ -178,7 +178,7 @@ func ListInitialAdminDevChat(c *gin.Context, queries *db.Queries) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot retrieve chat", "details": err.Error()})
 			return
 		}
-		var response = []typing.AdminChannelInitialMessage{}
+		var response = []typing.ChatChannelInfo{}
 		for _, d := range data {
 			response = append(response, typing.ConvertListInitialDevChatToAdminRow(d))
 		}
