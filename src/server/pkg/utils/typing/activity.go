@@ -31,9 +31,19 @@ func ConvertToActivity(row db.ListActivityRow) (Activity, error) {
 
 	if row.Starttime.Valid {
 		startTime = &row.Starttime.String
+		parsedTime, err := time.Parse("15:04:05", *startTime)
+		if err == nil {
+			formattedTime := parsedTime.Format("15:04")
+			startTime = &formattedTime
+		}
 	}
 	if row.Endtime.Valid {
 		endTime = &row.Endtime.String
+		parsedTime, err := time.Parse("15:04:05", *endTime)
+		if err == nil {
+			formattedTime := parsedTime.Format("15:04")
+			endTime = &formattedTime
+		}
 	}
 	if row.Acceptadmin.Valid {
 		acceptAdminStr := fmt.Sprintf("%d", row.Acceptadmin.Int32)
