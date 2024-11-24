@@ -48,7 +48,7 @@ func (q *Queries) GetRegistrationStatus(ctx context.Context, arg GetRegistration
 
 const insertRegistration = `-- name: InsertRegistration :exec
 INSERT INTO ActivityRegistration (activityID, memberID, role, expectation, datetime)
-VALUES (?, ?, ?, ?, NOW())
+VALUES (?, ?, ?, ?, CONVERT_TZ(NOW(), 'UTC', '+07:00'))
 `
 
 type InsertRegistrationParams struct {

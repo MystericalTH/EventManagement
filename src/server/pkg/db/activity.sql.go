@@ -13,7 +13,7 @@ import (
 
 const approveActivityRegistration = `-- name: ApproveActivityRegistration :exec
 UPDATE Activity
-SET acceptDateTime = LOCALTIME(),
+SET acceptDateTime = CONVERT_TZ(NOW(), 'UTC', '+07:00'), -- Store acceptDateTime in GMT+07:00
     acceptAdmin = ?, -- Include the admin responsible for the approval
     applicationStatus = "approved"
 WHERE activityID = ?
@@ -107,18 +107,17 @@ func (q *Queries) GetActivityIDByTitle(ctx context.Context, title string) (int32
 
 const insertActivity = `-- name: InsertActivity :exec
 INSERT INTO Activity (title, proposer, startDate, endDate, maxParticipant, format, description, proposeDateTime, applicationStatus
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, "pending")
+) VALUES (?, ?, ?, ?, ?, ?, ?, CONVERT_TZ(NOW(), 'UTC', '+07:00'), "pending")
 `
 
 type InsertActivityParams struct {
-	Title           string    `json:"title"`
-	Proposer        int32     `json:"proposer"`
-	Startdate       time.Time `json:"startdate"`
-	Enddate         time.Time `json:"enddate"`
-	Maxparticipant  int32     `json:"maxparticipant"`
-	Format          string    `json:"format"`
-	Description     string    `json:"description"`
-	Proposedatetime time.Time `json:"proposedatetime"`
+	Title          string    `json:"title"`
+	Proposer       int32     `json:"proposer"`
+	Startdate      time.Time `json:"startdate"`
+	Enddate        time.Time `json:"enddate"`
+	Maxparticipant int32     `json:"maxparticipant"`
+	Format         string    `json:"format"`
+	Description    string    `json:"description"`
 }
 
 func (q *Queries) InsertActivity(ctx context.Context, arg InsertActivityParams) error {
@@ -130,7 +129,6 @@ func (q *Queries) InsertActivity(ctx context.Context, arg InsertActivityParams) 
 		arg.Maxparticipant,
 		arg.Format,
 		arg.Description,
-		arg.Proposedatetime,
 	)
 	return err
 }

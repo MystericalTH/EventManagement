@@ -227,32 +227,49 @@ func PostActivity(c *gin.Context, queries *db.Queries) {
 	// Validate and handle workshop-specific timing
 	var startTime, endTime time.Time
 	if req.Format == "workshop" {
-		startTime, err = parseTime(req.Starttime)
+		// Parse start and end times
+		workshopStartTime, err := parseTime(req.Starttime)
 		if err != nil {
 			log.Printf("PostActivity: Invalid workshop start time: %s. Error: %v\n", req.Starttime, err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid workshop start time format"})
 			return
 		}
-		endTime, err = parseTime(req.Endtime)
-		if err != nil || !startTime.Before(endTime) {
-			log.Printf("PostActivity: Invalid workshop end time: %s or start time not before end time: %v\n", req.Endtime, err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Workshop end time must be after start time"})
+
+		workshopEndTime, err := parseTime(req.Endtime)
+		if err != nil {
+			log.Printf("PostActivity: Invalid workshop end time: %s. Error: %v\n", req.Endtime, err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid workshop end time format"})
 			return
 		}
-		log.Printf("PostActivity: Workshop times validated successfully: StartTime: %s, EndTime: %s\n", startTime, endTime)
+
+		// Combine date and time
+		startDateTime := time.Date(startDate.Year(), startDate.Month(), startDate.Day(),
+			workshopStartTime.Hour(), workshopStartTime.Minute(), 0, 0, startDate.Location())
+		endDateTime := time.Date(endDate.Year(), endDate.Month(), endDate.Day(),
+			workshopEndTime.Hour(), workshopEndTime.Minute(), 0, 0, endDate.Location())
+
+		// Validate combined date-time values
+		if !endDateTime.After(startDateTime) {
+			log.Printf("PostActivity: Workshop end time must be after start time. StartDateTime: %s, EndDateTime: %s\n", startDateTime, endDateTime)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Workshop end time must be after start time, even across different dates"})
+			return
+		}
+
+		startTime = startDateTime
+		endTime = endDateTime
+
+		log.Printf("PostActivity: Workshop times validated successfully: StartDateTime: %s, EndDateTime: %s\n", startTime, endTime)
 	}
 
 	// Insert activity into the database
-	// Insert activity into the database
 	params := db.InsertActivityParams{
-		Title:           req.Title,
-		Proposer:        int32(memberID),
-		Startdate:       startDate,
-		Enddate:         endDate,
-		Maxparticipant:  req.Maxparticipant,
-		Format:          req.Format,
-		Description:     req.Description,
-		Proposedatetime: time.Now(),
+		Title:          req.Title,
+		Proposer:       int32(memberID),
+		Startdate:      startDate,
+		Enddate:        endDate,
+		Maxparticipant: req.Maxparticipant,
+		Format:         req.Format,
+		Description:    req.Description,
 	}
 	log.Printf("PostActivity: InsertActivityParams: %+v\n", params)
 

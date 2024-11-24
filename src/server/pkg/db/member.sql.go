@@ -12,7 +12,7 @@ import (
 
 const acceptMember = `-- name: AcceptMember :exec
 UPDATE MEMBER
-SET acceptDateTime = LOCALTIME(),
+SET acceptDateTime = CONVERT_TZ(NOW(), 'UTC', '+07:00'),
     acceptAdmin = ? -- Include the admin responsible for the approval
 WHERE memberID = ?
 `
