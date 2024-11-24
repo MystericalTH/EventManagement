@@ -2,11 +2,8 @@
 	import { onMount, onDestroy } from 'svelte';
 	let channels: ChatChannelInfo[] = $state([]);
 	import ChannelBox from '$lib/components/chat/ChannelBox.svelte';
-	import ChatPanel from '$lib/components/chat/ChatPanel.svelte';
 	import type { ChatChannelInfo } from '$lib/types';
 	let selected: number = $state(-1);
-	let newMessage: string = $state('');
-
 	let loadData = () => {
 		fetch('/api/chats')
 			.then((res) => {
@@ -24,33 +21,6 @@
 			.catch((err) => console.error(err));
 		return;
 	};
-
-	let sendMessage = (chatid: number, message: string) => {
-        if (message.trim() === '') return;
-
-        fetch('/api/chats', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ chatid, message })
-        })
-            .then((res) => res.json())
-            .then((resJson) => {
-                if (resJson.message === 'Chat submitted successfully') {
-                    loadData();
-                    newMessage = '';
-                } else {
-                    console.error('Failed to send message');
-                }
-            })
-            .catch((err) => console.error(err));
-    };
-
-    let sendMessageWithId = (message: string) => {
-        sendMessage(selected, message);
-    };
-
 	onMount(loadData);
 	$effect(() => {
 		const interval = setInterval(() => {
@@ -79,7 +49,4 @@
 			{/key}
 		{/each}
 	</div>
-	{#if selected !== -1}
-		<ChatPanel chatid={selected} sendMessage={() => sendMessage(selected, newMessage)} />
-    {/if}
 </div>

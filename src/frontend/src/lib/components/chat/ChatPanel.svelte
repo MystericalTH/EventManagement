@@ -1,15 +1,13 @@
-<script>
-	let messages = [];
+<script lang="ts">
+	let { chatid, sendMessage }: { chatid: number; sendMessage: () => void } = $props();
+	let messages = $state<string[]>([]);
 	let newMessage = $state('');
-	export let chatid: number;
-	export let sendMessage();
 	function sendMessageCache() {
 		if (newMessage.trim() !== '') {
 			messages = [...messages, newMessage];
 			newMessage = '';
 		}
 	}
-	function sendMessageCache() {}
 </script>
 
 <div class="chat-panel">
@@ -22,10 +20,10 @@
 		<input
 			type="text"
 			bind:value={newMessage}
-			on:keydown={(e) => e.key === 'Enter' && sendMessage()}
+			onkeydown={(e) => e.key === 'Enter' && sendMessage()}
 			placeholder="Type your message..."
 		/>
-		<button on:click={sendMessage}>Send</button>
+		<button onclick={sendMessage}>Send</button>
 	</div>
 </div>
 
