@@ -134,6 +134,12 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 			handler.DeleteActivity(c, queries) // Pass queries to the handler
 		})
 
+		// GET /proposer's proposals
+
+		api.GET("member/activities/proposals", func(c *gin.Context) {
+			handler.GetProposerProposals(c, queries)
+		})
+
 		//! MEMBERS AND ACTIVITIES !//
 
 	}
