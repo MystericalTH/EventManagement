@@ -1,4 +1,4 @@
-import type { PageLoad } from './engagements/$types';
+import type { PageLoad } from './$types';
 import type { Activity } from '$lib/types';
 
 export const load: PageLoad = async ({ fetch }) => {

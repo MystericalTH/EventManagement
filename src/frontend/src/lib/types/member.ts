@@ -1,5 +1,5 @@
 export type Member = {
-	id: number;
+	memberid: number;
 	fname: string;
 	lname: string;
 	phone: string;

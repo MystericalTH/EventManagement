@@ -6,6 +6,8 @@ import (
 	"sinno-server/pkg/services"
 	"strconv"
 
+	"log"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,7 +40,11 @@ func GetMemberByID(c *gin.Context, queries *db.Queries) {
 // Handler for creating a new member
 func CreateMember(c *gin.Context, queries *db.Queries) {
 	var params db.InsertMemberParams
+
+	log.Printf("Params: %+v", params)
+
 	if err := c.ShouldBindJSON(&params); err != nil {
+		log.Printf("JSON binding error: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
 		return
 	}
@@ -53,18 +59,42 @@ func CreateMember(c *gin.Context, queries *db.Queries) {
 
 // Handler for accepting a member
 func AcceptMember(c *gin.Context, queries *db.Queries) {
-	id, err := strconv.Atoi(c.Param("id"))
+	// Retrieve user email from session
+	session, err := SessionStore.Get(c.Request, SessionName)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid member ID"})
+		c.String(http.StatusUnauthorized, "Session retrieval failed")
 		return
 	}
 
-	err = services.AcceptMemberService(queries, int32(id))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	userEmail, ok := session.Values["user_email"].(string)
+	if !ok || userEmail == "" {
+		c.String(http.StatusUnauthorized, "Unauthorized: User email not found in session")
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "Member accepted"})
+
+	// Fetch adminID using the email
+	adminID, err := services.GetAdminIDByEmailService(queries, userEmail)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Failed to fetch admin ID: %s", err.Error())
+		return
+	}
+
+	// Parse memberID from URL parameters
+	memberIDParam := c.Param("id")
+	memberID, err := strconv.Atoi(memberIDParam)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Invalid member ID: %s", err.Error())
+		return
+	}
+
+	// Call service to accept the member
+	err = services.AcceptMemberService(queries, int32(memberID), adminID)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Failed to accept member: %s", err.Error())
+		return
+	}
+
+	c.JSON(http.StatusNoContent, gin.H{"message": "Member accepted successfully"})
 }
 
 func GetAllMemberRequests(c *gin.Context, queries *db.Queries) {
@@ -74,4 +104,48 @@ func GetAllMemberRequests(c *gin.Context, queries *db.Queries) {
 		return
 	}
 	c.JSON(http.StatusOK, memberRequests)
+}
+
+func DeleteMember(c *gin.Context, queries *db.Queries) {
+	memberID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid member ID"})
+		return
+	}
+
+	err = services.DeleteMemberService(queries, int32(memberID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusNoContent, gin.H{"message": "Member deleted successfully"})
+}
+
+func UpdateMember(c *gin.Context, queries *db.Queries) {
+	log.Println("UpdateMember handler called") // Debugging log
+
+	var params db.UpdateMemberParams
+	if err := c.ShouldBindJSON(&params); err != nil {
+		log.Println("Error binding JSON:", err) // Debugging log
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	log.Println("Params:", params) // Debugging log
+
+	memberID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		log.Println("Invalid member ID:", err) // Debugging log
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid member ID"})
+		return
+	}
+
+	params.Memberid = int32(memberID)
+	if err := services.UpdateMemberService(queries, params); err != nil {
+		log.Println("Error updating member:", err) // Debugging log
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Member updated successfully"})
 }

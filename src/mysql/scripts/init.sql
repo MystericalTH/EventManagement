@@ -2,10 +2,6 @@ CREATE DATABASE IF NOT EXISTS ClubManagement;
 USE ClubManagement;
 GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%';
 
--- Drop unnecessary tables if they exist
-DROP TABLE IF EXISTS wsRegist;
-DROP TABLE IF EXISTS pjRegist;
-
 -- Table structure for Admin
 CREATE TABLE Admin (
   adminID int(11) NOT NULL AUTO_INCREMENT,
@@ -18,15 +14,16 @@ CREATE TABLE Member (
   memberID int(11) NOT NULL AUTO_INCREMENT,
   fName varchar(255) NOT NULL,
   lName varchar(255) NOT NULL,
-  email varchar(320) NOT NULL,
-  phone varchar(20) NOT NULL,
-  githubUrl varchar(320) NOT NULL,
+  email varchar(320) UNIQUE NOT NULL,
+  phone varchar(20) UNIQUE NOT NULL,
+  githubUrl varchar(320) UNIQUE NOT NULL,
   interest text NOT NULL,
   reason text NOT NULL,
   acceptDateTime datetime,
   acceptAdmin int(11),
   PRIMARY KEY (memberID),
   CONSTRAINT member_ibfk_1 FOREIGN KEY (acceptAdmin) REFERENCES Admin (adminID)
+  ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- Table structure for Activity (superclass)
@@ -36,7 +33,7 @@ CREATE TABLE Activity (
   proposer int(11) NOT NULL,
   startDate date NOT NULL,
   endDate date NOT NULL,
-  maxNumber int(11) NOT NULL,
+  maxParticipant int(11) NOT NULL,
   format varchar(10) NOT NULL,
   description text NOT NULL,
   proposeDateTime datetime NOT NULL,
@@ -44,8 +41,9 @@ CREATE TABLE Activity (
   acceptDateTime datetime,
   applicationStatus varchar(20),
   PRIMARY KEY (activityID),
-  CONSTRAINT activity_proposer_fk FOREIGN KEY (proposer) REFERENCES Member (memberID),
+  CONSTRAINT activity_proposer_fk FOREIGN KEY (proposer) REFERENCES Member (memberID), -- to do set null if have time to do
   CONSTRAINT activity_acceptAdmin_fk FOREIGN KEY (acceptAdmin) REFERENCES Admin (adminID)
+  ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- Subclass: Table structure for Project
@@ -54,15 +52,17 @@ CREATE TABLE Project (
   advisor varchar(255) DEFAULT NULL,
   PRIMARY KEY (projectID),
   CONSTRAINT project_fk FOREIGN KEY (projectID) REFERENCES Activity (activityID)
+  ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Subclass: Table structure for Workshop
 CREATE TABLE Workshop (
   workshopID int(11) NOT NULL,
-  startTime time NOT NULL,
-  endTime time NOT NULL,
+  startTime varchar(255) NOT NULL,
+  endTime varchar(255) NOT NULL,
   PRIMARY KEY (workshopID),
   CONSTRAINT workshop_fk FOREIGN KEY (workshopID) REFERENCES Activity (activityID)
+  ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table structure for ActivityRoles
@@ -71,6 +71,7 @@ CREATE TABLE ActivityRoles (
   activityRole varchar(50) NOT NULL,
   PRIMARY KEY (activityID, activityRole),
   CONSTRAINT activityroles_fk FOREIGN KEY (activityID) REFERENCES Activity (activityID)
+  ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table structure for Developer
@@ -90,8 +91,10 @@ CREATE TABLE chatDevAd (
   PRIMARY KEY (messageID),
   KEY adminID (adminID),
   KEY developerID (developerID),
-  CONSTRAINT chatdevad_admin_fk FOREIGN KEY (adminID) REFERENCES Admin (adminID),
+  CONSTRAINT chatdevad_admin_fk FOREIGN KEY (adminID) REFERENCES Admin (adminID)
+  ON DELETE RESTRICT ON UPDATE  CASCADE,
   CONSTRAINT chatdevad_dev_fk FOREIGN KEY (developerID) REFERENCES Developer (developerID)
+  ON DELETE RESTRICT ON UPDATE  CASCADE
 );
 
 -- Table structure for Feedback
@@ -104,8 +107,9 @@ CREATE TABLE Feedback (
   PRIMARY KEY (feedbackID),
   KEY activityID (activityID),
   KEY memberID (memberID),
-  CONSTRAINT feedback_activity_fk FOREIGN KEY (activityID) REFERENCES Activity (activityID),
+  CONSTRAINT feedback_activity_fk FOREIGN KEY (activityID) REFERENCES Activity (activityID), -- to do set null if have time to do ,
   CONSTRAINT feedback_member_fk FOREIGN KEY (memberID) REFERENCES Member (memberID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT
 );
 
 -- Table structure for associative entity ActivityRegistration
@@ -117,6 +121,21 @@ CREATE TABLE ActivityRegistration (
   datetime datetime NOT NULL,
   PRIMARY KEY (memberID, activityID),
   KEY activityID (activityID),
-  CONSTRAINT activityRegist_member_fk FOREIGN KEY (memberID) REFERENCES Member (memberID),
+  CONSTRAINT activityRegist_member_fk FOREIGN KEY (memberID) REFERENCES Member (memberID)
+  ON DELETE CASCADE ON UPDATE CASCADE
+  ,
   CONSTRAINT activityRegist_activity_fk FOREIGN KEY (activityID) REFERENCES Activity (activityID)
+  ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE UNIQUE INDEX index_member_email
+ON Member (email);
+
+CREATE UNIQUE INDEX index_admin_email
+ON Admin (email);
+
+CREATE UNIQUE INDEX index_developer_email
+ON Developer (email);
+
+CREATE UNIQUE INDEX index_activity_title
+ON Activity (title);

@@ -39,7 +39,7 @@
 			</thead>
 			<tbody class="divide-y divide-gray-200">
 				{#each pagination.displayPage() as row}
-					{#key row.memberid}
+					{#key row.id}
 						<tr>
 							<td class="h-12 w-36 whitespace-nowrap px-3 py-3 text-sm"
 								>{row.fname + ' ' + row.lname}</td
