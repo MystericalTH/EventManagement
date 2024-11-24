@@ -80,5 +80,13 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		api.GET("/health", func(c *gin.Context) {
 			handler.Healthchecks(c)
 		})
+
+		// Chat routes
+		api.POST("/chats", func(c *gin.Context) {
+			handler.CreateChat(c, queries)
+		})
+		api.GET("/chats", func(c *gin.Context) {
+			handler.GetChats(c, queries)
+		})
 	}
 }
