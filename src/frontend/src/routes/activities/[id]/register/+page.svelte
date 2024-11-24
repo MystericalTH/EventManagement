@@ -2,6 +2,7 @@
 	import type { Activity } from '$lib/types';
 
 	let { data }: { data: { activity: Activity } } = $props();
+	let activity = data.activity;
 
 	let expectation = $state('');
 	let selectedRole = $state('');
@@ -34,7 +35,7 @@
 	};
 </script>
 
-<h1 class="my-10 text-2xl font-semibold">{data.activity.title}</h1>
+<h1 class="my-10 text-2xl font-semibold">{activity.title}</h1>
 
 <form onsubmit={handleRegisterSubmit} class="mx-auto flex w-72 flex-col">
 	<label for="role" class="mb-2 font-bold">Select Role:</label>
@@ -45,7 +46,7 @@
 		class="mb-4 rounded border border-gray-300 p-2 text-lg"
 	>
 		<option value="" disabled selected>Select a role</option>
-		{#each data.activity.activityRoles as role}
+		{#each activity.activityRoles as role}
 			<option value={role}>{role}</option>
 		{/each}
 	</select>
