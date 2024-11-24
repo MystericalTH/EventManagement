@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
@@ -83,30 +84,30 @@ SELECT
     d.lname AS developer_lname, 
     c.message, 
     c.timesent 
-FROM 
-    chatDevAd c
-JOIN 
+FROM developer d 
+LEFT JOIN 
     (SELECT 
          developerid, 
          MAX(timesent) AS latest_time
      FROM
-         chatDevAd
+         chatDevAd ch
+     WHERE ch.adminid=?
      GROUP BY
-         developerid, adminid) latest
+         developerid, adminid
+    ) latest
+ON d.developerID = latest.developerID
+
+LEFT JOIN chatDevAd c
 ON 
-    c.developerid = latest.developerid 
-    AND c.timesent = latest.latest_time
-JOIN 
-    developer d ON c.developerid = d.developerid
-WHERE 
-    c.adminid = ?
+     c.timesent = latest.latest_time
+AND c.developerid = latest.developerid
 `
 
 type ListInitialAdminChatToDevRow struct {
-	DeveloperFname string    `json:"developer_fname"`
-	DeveloperLname string    `json:"developer_lname"`
-	Message        string    `json:"message"`
-	Timesent       time.Time `json:"timesent"`
+	DeveloperFname string         `json:"developer_fname"`
+	DeveloperLname string         `json:"developer_lname"`
+	Message        sql.NullString `json:"message"`
+	Timesent       sql.NullTime   `json:"timesent"`
 }
 
 func (q *Queries) ListInitialAdminChatToDev(ctx context.Context, adminid int32) ([]ListInitialAdminChatToDevRow, error) {
@@ -143,31 +144,29 @@ SELECT
     a.lname AS admin_lname,
     c.message, 
     c.timesent 
-FROM 
-    chatDevAd c
-JOIN 
-  (SELECT 
-        adminid,
-        MAX(timesent) AS latest_time
-    FROM 
-        chatDevAd
-    GROUP BY 
-        adminid, developerid
-  ) latest
+FROM admin a
+LEFT JOIN 
+    (SELECT 
+         adminid, 
+         MAX(timesent) AS latest_time
+     FROM
+         chatDevAd ch
+     WHERE ch.developerid=?
+     GROUP BY
+         adminid, developerid
+    ) latest
+ON a.adminID = latest.adminID
+LEFT JOIN chatDevAd c
 ON 
-  c.adminid = latest.adminid 
-  AND c.timesent = latest.latest_time
-JOIN 
-  admin a ON c.adminid = a.adminid
-WHERE 
-  c.developerid = ?
+     c.timesent = latest.latest_time
+AND c.adminID = latest.adminID
 `
 
 type ListInitialDevChatToAdminRow struct {
-	AdminFname string    `json:"admin_fname"`
-	AdminLname string    `json:"admin_lname"`
-	Message    string    `json:"message"`
-	Timesent   time.Time `json:"timesent"`
+	AdminFname string         `json:"admin_fname"`
+	AdminLname string         `json:"admin_lname"`
+	Message    sql.NullString `json:"message"`
+	Timesent   sql.NullTime   `json:"timesent"`
 }
 
 func (q *Queries) ListInitialDevChatToAdmin(ctx context.Context, developerid int32) ([]ListInitialDevChatToAdminRow, error) {

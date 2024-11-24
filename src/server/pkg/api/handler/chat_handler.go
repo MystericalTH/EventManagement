@@ -84,7 +84,7 @@ func ListAdminDevChats(c *gin.Context, queries *db.Queries) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
 		return
 	}
-	userInfo, userInfoOk := session.Values["userInfo"].(UserInfo)
+	userInfo, userInfoOk := session.Values["user"].(UserInfo)
 	if !userInfoOk {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot parse userInfo"})
 		return
@@ -106,7 +106,7 @@ func ListAdminDevChats(c *gin.Context, queries *db.Queries) {
 		}
 		params.Adminid = int32(adminID)
 	} else if role == "admin" {
-		params.Adminid, err = services.GetDeveloperIDByEmailService(queries, userInfo.Email)
+		params.Adminid, err = services.GetAdminIDByEmailService(queries, userInfo.Email)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot get email"})
 			return
@@ -144,7 +144,7 @@ func ListInitialAdminDevChat(c *gin.Context, queries *db.Queries) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
 		return
 	}
-	userInfo, userInfoOk := session.Values["userInfo"].(UserInfo)
+	userInfo, userInfoOk := session.Values["user"].(UserInfo)
 	if !userInfoOk {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot parse userInfo"})
 		return
@@ -158,7 +158,7 @@ func ListInitialAdminDevChat(c *gin.Context, queries *db.Queries) {
 		}
 		data, err := services.ListInitialAdminChatToDevService(queries, adminID)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot retrieve chat"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot retrieve chat", "details": err.Error()})
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"data": data})
@@ -170,7 +170,7 @@ func ListInitialAdminDevChat(c *gin.Context, queries *db.Queries) {
 		}
 		data, err := services.ListInitialDevChatToAdminService(queries, developerID)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot retrieve chat"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot retrieve chat", "details": err.Error()})
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"data": data})
