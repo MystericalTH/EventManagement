@@ -113,19 +113,20 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		api.GET("/activities/:id/registration/status", func(c *gin.Context) {
 			handler.GetRegistrationStatus(c, queries)
 		})
+    
+		api.POST("/activities/:id/registration", func(c *gin.Context) {
+      handler.SubmitRegistration(c, queries)
+		})
 
 		// Get /your proposed activities submitted response
-
-		api.GET("/activities/:id/registration/", func(c *gin.Context) {
+		api.GET("/activities/:id/registration", func(c *gin.Context) {
 			handler.GetSubmittedMembers(c, queries)
 		})
+    
+// 		api.GET("/activities/:id/registration", func(c *gin.Context) {
+// 			handler.GetActivityRegistration(c, queries)
+// 		})
 
-		// POST /registration submit
-		api.POST("/activities/:id/registration/submit", func(c *gin.Context) {
-			handler.SubmitRegistration(c, queries)
-		})
-
-		// GET /registration status
 		api.GET("/health", func(c *gin.Context) {
 			handler.Healthchecks(c)
 		})

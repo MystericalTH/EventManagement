@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Activity } from '$lib/types';
-	export let data: { activity: Activity };
+	import type { PageData } from './$types';
+	let { data }: { data: PageData } = $props();
 
 	let feedback = $state('');
 
@@ -8,11 +8,11 @@
 		event.preventDefault();
 
 		const formData = {
-			feedback
+			feedbackmessage: feedback
 		};
 
 		try {
-			const response = await fetch('/api/feedback/${activity.id}/submit', {
+			const response = await fetch(`/api/activities/${data.activity.id}/feedback`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
