@@ -2,6 +2,8 @@
 	import type { PageData } from './$types';
 	let { data }: { data: PageData } = $props();
 
+	console.log(data);
+
 	let feedback = $state('');
 
 	const handleFeedbackSubmit = async (event: Event) => {

@@ -1,19 +1,11 @@
 <script lang="ts">
-	import type { Activity } from '$lib/types';
-	import ActivityContent from '$lib/components/ActivityContent.svelte';
-	import { activityData } from '$msw/__data';
-	let {
-		data
-	}: {
-		data: {
-			activity: Activity;
-			isRegistered: boolean;
-			isEventPast: boolean;
-			hasSubmittedFeedback: boolean;
-			nextActivityId: number | null;
-		};
-	} = $props();
+	import type { PageData } from './$types';
+	let { data }: { data: PageData } = $props();
 
+	import ActivityContent from '$lib/components/ActivityContent.svelte';
+
+	console.log(data);
+	
 	const openRegisterPage = () => {
 		window.location.href = `/activities/${data.activity.id}/register`;
 	};
@@ -22,11 +14,11 @@
 		window.location.href = `/activities/${data.activity.id}/feedback`;
 	};
 
-	const navigateToActivity = (offset: number) => {
-		const currentId = data.activity.id;
-		const newId = currentId + offset;
-		window.location.href = `/activities/${newId}`;
-	};
+	// const navigateToActivity = (offset: number) => {
+	// 	const currentId = data.activity.id;
+	// 	const newId = currentId + offset;
+	// 	window.location.href = `/activities/${newId}`;
+	// };
 </script>
 
 <div class="flex justify-center">
