@@ -16,13 +16,14 @@ CREATE TABLE Member (
   lName varchar(255) NOT NULL,
   email varchar(320) UNIQUE NOT NULL,
   phone varchar(20) UNIQUE NOT NULL,
-  githubUrl varchar(320) NOT NULL,
+  githubUrl varchar(320) UNIQUE NOT NULL,
   interest text NOT NULL,
   reason text NOT NULL,
   acceptDateTime datetime,
   acceptAdmin int(11),
   PRIMARY KEY (memberID),
   CONSTRAINT member_ibfk_1 FOREIGN KEY (acceptAdmin) REFERENCES Admin (adminID)
+  ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- Table structure for Activity (superclass)
@@ -40,8 +41,10 @@ CREATE TABLE Activity (
   acceptDateTime datetime,
   applicationStatus varchar(20),
   PRIMARY KEY (activityID),
-  CONSTRAINT activity_proposer_fk FOREIGN KEY (proposer) REFERENCES Member (memberID),
+  CONSTRAINT activity_proposer_fk FOREIGN KEY (proposer) REFERENCES Member (memberID)
+  ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT activity_acceptAdmin_fk FOREIGN KEY (acceptAdmin) REFERENCES Admin (adminID)
+  ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- Subclass: Table structure for Project
@@ -50,6 +53,7 @@ CREATE TABLE Project (
   advisor varchar(255) DEFAULT NULL,
   PRIMARY KEY (projectID),
   CONSTRAINT project_fk FOREIGN KEY (projectID) REFERENCES Activity (activityID)
+  ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Subclass: Table structure for Workshop
@@ -59,6 +63,7 @@ CREATE TABLE Workshop (
   endTime varchar(255) NOT NULL,
   PRIMARY KEY (workshopID),
   CONSTRAINT workshop_fk FOREIGN KEY (workshopID) REFERENCES Activity (activityID)
+  ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table structure for ActivityRoles
@@ -67,6 +72,7 @@ CREATE TABLE ActivityRoles (
   activityRole varchar(50) NOT NULL,
   PRIMARY KEY (activityID, activityRole),
   CONSTRAINT activityroles_fk FOREIGN KEY (activityID) REFERENCES Activity (activityID)
+  ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table structure for Developer
@@ -86,8 +92,10 @@ CREATE TABLE chatDevAd (
   PRIMARY KEY (messageID),
   KEY adminID (adminID),
   KEY developerID (developerID),
-  CONSTRAINT chatdevad_admin_fk FOREIGN KEY (adminID) REFERENCES Admin (adminID),
+  CONSTRAINT chatdevad_admin_fk FOREIGN KEY (adminID) REFERENCES Admin (adminID)
+  ON DELETE RESTRICT ON UPDATE  CASCADE,
   CONSTRAINT chatdevad_dev_fk FOREIGN KEY (developerID) REFERENCES Developer (developerID)
+  ON DELETE RESTRICT ON UPDATE  CASCADE
 );
 
 -- Table structure for Feedback
@@ -100,8 +108,11 @@ CREATE TABLE Feedback (
   PRIMARY KEY (feedbackID),
   KEY activityID (activityID),
   KEY memberID (memberID),
-  CONSTRAINT feedback_activity_fk FOREIGN KEY (activityID) REFERENCES Activity (activityID),
+  CONSTRAINT feedback_activity_fk FOREIGN KEY (activityID) REFERENCES Activity (activityID)
+  ON DELETE RESTRICT ON UPDATE CASCADE
+  ,
   CONSTRAINT feedback_member_fk FOREIGN KEY (memberID) REFERENCES Member (memberID)
+  ON DELETE SET NULL ON UPDATE RESTRICT
 );
 
 -- Table structure for associative entity ActivityRegistration
@@ -113,8 +124,11 @@ CREATE TABLE ActivityRegistration (
   datetime datetime NOT NULL,
   PRIMARY KEY (memberID, activityID),
   KEY activityID (activityID),
-  CONSTRAINT activityRegist_member_fk FOREIGN KEY (memberID) REFERENCES Member (memberID),
+  CONSTRAINT activityRegist_member_fk FOREIGN KEY (memberID) REFERENCES Member (memberID)
+  ON DELETE CASCADE ON UPDATE CASCADE
+  ,
   CONSTRAINT activityRegist_activity_fk FOREIGN KEY (activityID) REFERENCES Activity (activityID)
+  ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE UNIQUE INDEX index_member_email
