@@ -39,6 +39,8 @@ type Activityrole struct {
 
 type Admin struct {
 	Adminid int32  `json:"adminid"`
+	Fname   string `json:"fname"`
+	Lname   string `json:"lname"`
 	Email   string `json:"email"`
 }
 
@@ -46,12 +48,15 @@ type Chatdevad struct {
 	Messageid   int32     `json:"messageid"`
 	Adminid     int32     `json:"adminid"`
 	Developerid int32     `json:"developerid"`
+	Sender      string    `json:"sender"`
 	Message     string    `json:"message"`
-	Datetime    time.Time `json:"datetime"`
+	Timesent    time.Time `json:"timesent"`
 }
 
 type Developer struct {
 	Developerid int32  `json:"developerid"`
+	Fname       string `json:"fname"`
+	Lname       string `json:"lname"`
 	Email       string `json:"email"`
 }
 

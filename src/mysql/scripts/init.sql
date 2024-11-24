@@ -5,6 +5,8 @@ GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%';
 -- Table structure for Admin
 CREATE TABLE Admin (
   adminID int(11) NOT NULL AUTO_INCREMENT,
+  fName varchar(255) NOT NULL,
+  lName varchar(255) NOT NULL,
   email varchar(320) NOT NULL,
   PRIMARY KEY (adminID)
 );
@@ -77,6 +79,8 @@ CREATE TABLE ActivityRoles (
 -- Table structure for Developer
 CREATE TABLE Developer (
   developerID int(11) NOT NULL AUTO_INCREMENT,
+  fName varchar(255) NOT NULL,
+  lName varchar(255) NOT NULL,
   email varchar(320) NOT NULL,
   PRIMARY KEY (developerID)
 );
@@ -86,8 +90,9 @@ CREATE TABLE chatDevAd (
   messageID int(11) NOT NULL AUTO_INCREMENT,
   adminID int(11) NOT NULL,
   developerID int(11) NOT NULL,
+  sender varchar(30) NOT NULL,
   message text NOT NULL,
-  datetime datetime NOT NULL,
+  timesent datetime NOT NULL,
   PRIMARY KEY (messageID),
   KEY adminID (adminID),
   KEY developerID (developerID),

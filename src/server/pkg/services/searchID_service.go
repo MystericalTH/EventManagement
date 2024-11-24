@@ -13,3 +13,7 @@ func GetAdminIDByEmailService(queries *db.Queries, email string) (int32, error) 
 func GetMemberIDByEmailService(queries *db.Queries, email string) (int32, error) {
 	return queries.GetMemberIDByEmail(context.Background(), email)
 }
+
+func GetDeveloperIDByEmailService(queries *db.Queries, email string) (int32, error) {
+	return queries.GetDeveloperIDByEmail(context.Background(), email)
+}

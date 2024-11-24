@@ -131,6 +131,17 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 			handler.Healthchecks(c)
 		})
 
+		// Chat routes
+		api.POST("/chats", func(c *gin.Context) {
+			handler.CreateChat(c, queries)
+		})
+		api.GET("/chats", func(c *gin.Context) {
+			handler.ListInitialAdminDevChat(c, queries)
+		})
+		api.GET("/chats/:id", func(c *gin.Context) {
+			handler.ListAdminDevChats(c, queries)
+		})
+
 		// PUT /registration status
 		api.PUT("/activities/:id/approve", func(c *gin.Context) {
 			handler.ApproveActivityRegistration(c, queries)
