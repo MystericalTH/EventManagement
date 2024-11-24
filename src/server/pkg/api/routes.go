@@ -86,7 +86,10 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 			handler.CreateChat(c, queries)
 		})
 		api.GET("/chats", func(c *gin.Context) {
-			handler.GetChats(c, queries)
+			handler.ListInitialAdminDevChat(c, queries)
+		})
+		api.GET("/chats/:id", func(c *gin.Context) {
+			handler.ListAdminDevChats(c, queries)
 		})
 	}
 }

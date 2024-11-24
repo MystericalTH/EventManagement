@@ -70,7 +70,7 @@ func CreateChat(c *gin.Context, queries *db.Queries) {
 }
 
 // Get all chats
-func GetAdminDevChats(c *gin.Context, queries *db.Queries) {
+func ListAdminDevChats(c *gin.Context, queries *db.Queries) {
 	// Retrieve the session
 
 	session, err := SessionStore.Get(c.Request, SessionName)
@@ -98,7 +98,7 @@ func GetAdminDevChats(c *gin.Context, queries *db.Queries) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot get email"})
 			return
 		}
-		adminIDStr := c.Param("adminID")
+		adminIDStr := c.Param("id")
 		adminID, err := strconv.ParseInt(adminIDStr, 10, 32)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error parsing admin ID"})
@@ -111,7 +111,7 @@ func GetAdminDevChats(c *gin.Context, queries *db.Queries) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot get email"})
 			return
 		}
-		developerIDStr := c.Param("developerID")
+		developerIDStr := c.Param("id")
 		developerID, err := strconv.ParseInt(developerIDStr, 10, 32)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error parsing admin ID"})
@@ -130,4 +130,49 @@ func GetAdminDevChats(c *gin.Context, queries *db.Queries) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"chats": chats})
+}
+
+func ListInitialAdminDevChat(c *gin.Context, queries *db.Queries) {
+	session, err := SessionStore.Get(c.Request, SessionName)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Cannot get session"})
+		return
+	}
+
+	role, roleOk := session.Values["role"].(string)
+	if !roleOk {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+	userInfo, userInfoOk := session.Values["userInfo"].(UserInfo)
+	if !userInfoOk {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot parse userInfo"})
+		return
+	}
+
+	if role == "admin" {
+		adminID, err := queries.GetAdminIDByEmail(c, userInfo.Email)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot get admin email"})
+			return
+		}
+		data, err := services.ListInitialAdminChatToDevService(queries, adminID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot retrieve chat"})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"data": data})
+	} else if role == "developer" {
+		developerID, err := queries.GetDeveloperIDByEmail(c, userInfo.Email)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot get developer email"})
+			return
+		}
+		data, err := services.ListInitialDevChatToAdminService(queries, developerID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot retrieve chat"})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"data": data})
+	}
 }
