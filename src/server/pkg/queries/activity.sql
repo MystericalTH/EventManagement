@@ -98,3 +98,20 @@ SELECT a.activityID, title, proposer, startDate, endDate, maxParticipant, format
             activityID
     ) ar ON a.activityID = ar.activityID
 WHERE proposer = ?;
+
+-- name: CheckProjectDateConflict :one
+SELECT COUNT(1)
+FROM Activity a
+WHERE a.format = 'project' AND
+      a.startDate = ? AND
+      a.endDate = ?;
+
+
+-- name: CheckWorkshopDateConflict :one
+SELECT COUNT(1)
+FROM Workshop w
+JOIN Activity a ON w.workshopID = a.activityID
+WHERE a.format = 'workshop' AND
+      a.startDate = ? AND
+      a.endDate = ? AND
+      ((w.startTime < ? AND w.endTime > ?) OR (a.startDate < ? AND a.endDate > ?));

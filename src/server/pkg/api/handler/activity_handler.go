@@ -206,14 +206,43 @@ func PostActivity(c *gin.Context, queries *db.Queries) {
 		return
 	}
 	endDate, err := parseDate(req.Enddate)
-	if err != nil || !startDate.Before(endDate) {
-		log.Printf("PostActivity: Invalid end date: %s or start date not before end date: %v\n", req.Enddate, err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "End date must be after start date"})
+	if err != nil {
+		log.Printf("PostActivity: Invalid end date: %s. Error: %v\n", req.Enddate, err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid end date format"})
 		return
 	}
 
 	log.Printf("PostActivity: StartDate: %s, EndDate: %s validated successfully\n", startDate, endDate)
 
+	// Ensure both start date and end date are in the future
+	currentTime := time.Now()
+	if !startDate.After(currentTime) || !endDate.After(currentTime) {
+		log.Printf("PostActivity: StartDate or EndDate is not in the future. StartDate: %s, EndDate: %s, CurrentTime: %s\n", startDate, endDate, currentTime)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Start date and end date must be in the future"})
+		return
+	}
+
+	log.Printf("PostActivity: StartDate and EndDate are valid and in the future\n")
+
+	// Validate and handle workshop-specific timing
+	var startTime, endTime time.Time
+	if req.Format == "workshop" {
+		startTime, err = parseTime(req.Starttime)
+		if err != nil {
+			log.Printf("PostActivity: Invalid workshop start time: %s. Error: %v\n", req.Starttime, err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid workshop start time format"})
+			return
+		}
+		endTime, err = parseTime(req.Endtime)
+		if err != nil || !startTime.Before(endTime) {
+			log.Printf("PostActivity: Invalid workshop end time: %s or start time not before end time: %v\n", req.Endtime, err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Workshop end time must be after start time"})
+			return
+		}
+		log.Printf("PostActivity: Workshop times validated successfully: StartTime: %s, EndTime: %s\n", startTime, endTime)
+	}
+
+	// Insert activity into the database
 	// Insert activity into the database
 	params := db.InsertActivityParams{
 		Title:           req.Title,
@@ -259,8 +288,8 @@ func PostActivity(c *gin.Context, queries *db.Queries) {
 	} else if req.Format == "workshop" {
 		workshopParams := db.InsertWorkshopParams{
 			Workshopid: activityID,
-			Starttime:  req.Starttime,
-			Endtime:    req.Endtime,
+			Starttime:  startTime.Format("15:04"), // Convert time.Time to string in HH:MM format
+			Endtime:    endTime.Format("15:04"),   // Convert time.Time to string in HH:MM format
 		}
 		log.Printf("PostActivity: InsertWorkshopParams: %+v\n", workshopParams)
 		if err := services.InsertWorkshopService(queries, workshopParams); err != nil {

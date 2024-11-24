@@ -29,6 +29,59 @@ func (q *Queries) ApproveActivityRegistration(ctx context.Context, arg ApproveAc
 	return err
 }
 
+const checkProjectDateConflict = `-- name: CheckProjectDateConflict :one
+SELECT COUNT(1)
+FROM Activity a
+WHERE a.format = 'project' AND
+      a.startDate = ? AND
+      a.endDate = ?
+`
+
+type CheckProjectDateConflictParams struct {
+	Startdate time.Time `json:"startdate"`
+	Enddate   time.Time `json:"enddate"`
+}
+
+func (q *Queries) CheckProjectDateConflict(ctx context.Context, arg CheckProjectDateConflictParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, checkProjectDateConflict, arg.Startdate, arg.Enddate)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const checkWorkshopDateConflict = `-- name: CheckWorkshopDateConflict :one
+SELECT COUNT(1)
+FROM Workshop w
+JOIN Activity a ON w.workshopID = a.activityID
+WHERE a.format = 'workshop' AND
+      a.startDate = ? AND
+      a.endDate = ? AND
+      ((w.startTime < ? AND w.endTime > ?) OR (a.startDate < ? AND a.endDate > ?))
+`
+
+type CheckWorkshopDateConflictParams struct {
+	Startdate   time.Time `json:"startdate"`
+	Enddate     time.Time `json:"enddate"`
+	Starttime   string    `json:"starttime"`
+	Endtime     string    `json:"endtime"`
+	Startdate_2 time.Time `json:"startdate_2"`
+	Enddate_2   time.Time `json:"enddate_2"`
+}
+
+func (q *Queries) CheckWorkshopDateConflict(ctx context.Context, arg CheckWorkshopDateConflictParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, checkWorkshopDateConflict,
+		arg.Startdate,
+		arg.Enddate,
+		arg.Starttime,
+		arg.Endtime,
+		arg.Startdate_2,
+		arg.Enddate_2,
+	)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const deleteActivity = `-- name: DeleteActivity :exec
 DELETE FROM Activity
 WHERE ActivityID = ?
