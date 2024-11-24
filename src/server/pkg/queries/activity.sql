@@ -50,8 +50,8 @@ SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, des
 WHERE acceptAdmin IS NOT NULL AND acceptDateTime IS NOT NULL AND applicationStatus IS NOT NULL;
 
 -- name: InsertActivity :exec
-INSERT INTO Activity (title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+INSERT INTO Activity (title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, applicationStatus
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, "pending");
 
 -- name: InsertProject :exec
 INSERT INTO Project (projectID, advisor) VALUES (?, ?);
@@ -77,6 +77,7 @@ WHERE ActivityID = ?;
 -- name: ApproveActivityRegistration :exec
 UPDATE Activity
 SET acceptDateTime = LOCALTIME(),
-    acceptAdmin = ? -- Include the admin responsible for the approval
+    acceptAdmin = ?, -- Include the admin responsible for the approval
+    applicationStatus = "approved"
 WHERE activityID = ?;
 

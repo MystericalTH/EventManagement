@@ -14,7 +14,8 @@ import (
 const approveActivityRegistration = `-- name: ApproveActivityRegistration :exec
 UPDATE Activity
 SET acceptDateTime = LOCALTIME(),
-    acceptAdmin = ? -- Include the admin responsible for the approval
+    acceptAdmin = ?, -- Include the admin responsible for the approval
+    applicationStatus = "approved"
 WHERE activityID = ?
 `
 
@@ -52,8 +53,8 @@ func (q *Queries) GetActivityIDByTitle(ctx context.Context, title string) (int32
 }
 
 const insertActivity = `-- name: InsertActivity :exec
-INSERT INTO Activity (title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+INSERT INTO Activity (title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, applicationStatus
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, "pending")
 `
 
 type InsertActivityParams struct {
