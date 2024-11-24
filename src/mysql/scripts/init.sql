@@ -33,7 +33,7 @@ CREATE TABLE Activity (
   proposer int(11) NOT NULL,
   startDate date NOT NULL,
   endDate date NOT NULL,
-  maxNumber int(11) NOT NULL,
+  maxParticipant int(11) NOT NULL,
   format varchar(10) NOT NULL,
   description text NOT NULL,
   proposeDateTime datetime NOT NULL,

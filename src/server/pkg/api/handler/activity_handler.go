@@ -10,8 +10,9 @@ import (
 	"sinno-server/pkg/db"
 	"sinno-server/pkg/services"
 
-	"github.com/gin-gonic/gin"
 	"sinno-server/pkg/utils/typing"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Handler for getting all activities
@@ -75,16 +76,16 @@ func GetActivityRoles(c *gin.Context, queries *db.Queries) {
 }
 
 type CreateActivityRequest struct {
-	Title         string   `json:"title" binding:"required"`
-	Startdate     string   `json:"startDate" binding:"required"`
-	Enddate       string   `json:"endDate" binding:"required"`
-	Maxnumber     int32    `json:"maxNumber" binding:"required"` // Updated to match frontend
-	Format        string   `json:"format" binding:"required"`
-	Description   string   `json:"description" binding:"required"`
-	Advisor       *string  `json:"advisor"`
-	Starttime     string   `json:"startTime"`
-	Endtime       string   `json:"endTime"`
-	Activityroles []string `json:"activityRole" binding:"required"`
+	Title          string   `json:"title" binding:"required"`
+	Startdate      string   `json:"startDate" binding:"required"`
+	Enddate        string   `json:"endDate" binding:"required"`
+	Maxparticipant int32    `json:"maxParticipant" binding:"required"` // Updated to match frontend
+	Format         string   `json:"format" binding:"required"`
+	Description    string   `json:"description" binding:"required"`
+	Advisor        *string  `json:"advisor"`
+	Starttime      string   `json:"startTime"`
+	Endtime        string   `json:"endTime"`
+	Activityroles  []string `json:"activityRole" binding:"required"`
 }
 
 func PostActivity(c *gin.Context, queries *db.Queries) {
@@ -150,7 +151,7 @@ func PostActivity(c *gin.Context, queries *db.Queries) {
 		Proposer:        int32(memberID),
 		Startdate:       startDate,
 		Enddate:         endDate,
-		Maxnumber:       req.Maxnumber,
+		Maxparticipant:  req.Maxparticipant,
 		Format:          req.Format,
 		Description:     req.Description,
 		Proposedatetime: time.Now(),

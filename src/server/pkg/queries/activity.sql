@@ -1,5 +1,5 @@
 -- name: ListRequestingActivities :many
-SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
+SELECT a.activityID, title, proposer, startDate, endDate, maxParticipant, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
   FROM Activity a 
   LEFT JOIN Workshop w ON a.activityID = w.workshopID
   LEFT JOIN Project p ON a.activityID = p.projectID
@@ -16,7 +16,7 @@ SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, des
 WHERE acceptAdmin IS NULL AND acceptDateTime IS NULL;
 
 -- name: ListActivity :one
-SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
+SELECT a.activityID, title, proposer, startDate, endDate, maxParticipant, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
   FROM Activity a 
   LEFT JOIN Workshop w ON a.activityID = w.workshopID
   LEFT JOIN Project p ON a.activityID = p.projectID
@@ -33,7 +33,7 @@ SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, des
 WHERE a.activityID = ?;
 
 -- name: ListAcceptedActivities :many
-SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
+SELECT a.activityID, title, proposer, startDate, endDate, maxParticipant, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
   FROM Activity a 
   LEFT JOIN Workshop w ON a.activityID = w.workshopID
   LEFT JOIN Project p ON a.activityID = p.projectID
@@ -50,7 +50,7 @@ SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, des
 WHERE acceptAdmin IS NOT NULL AND acceptDateTime IS NOT NULL AND applicationStatus IS NOT NULL;
 
 -- name: InsertActivity :exec
-INSERT INTO Activity (title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, applicationStatus
+INSERT INTO Activity (title, proposer, startDate, endDate, maxParticipant, format, description, proposeDateTime, applicationStatus
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, "pending");
 
 -- name: InsertProject :exec

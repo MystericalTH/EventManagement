@@ -18,7 +18,7 @@ type Activity struct {
 	MaxParticipant    int      `json:"maxParticipant"`
 	Format            string   `json:"format"`
 	Description       string   `json:"description"`
-	Roles             []string `json:"roles"`
+	Roles             []string `json:"activityRoles"`
 	ProposeDateTime   string   `json:"proposeDateTime"`
 	AcceptAdmin       *string  `json:"acceptAdmin,omitempty"`
 	AcceptDateTime    *string  `json:"acceptDateTime,omitempty"`
@@ -72,7 +72,7 @@ func ConvertToActivity(row db.ListActivityRow) (Activity, error) {
 		StartTime:         startTime,
 		EndDate:           row.Enddate.Format("2006-01-02"),
 		EndTime:           endTime,
-		MaxParticipant:    int(row.Maxnumber),
+		MaxParticipant:    int(row.Maxparticipant),
 		Format:            row.Format,
 		Description:       row.Description,
 		Roles:             rolesArray,

@@ -14,5 +14,5 @@ export interface Activity {
 	acceptAdmin?: string;
 	acceptDateTime?: string;
 	applicationStatus?: string;
-	roles: string[];
+	activityRoles: string[];
 }

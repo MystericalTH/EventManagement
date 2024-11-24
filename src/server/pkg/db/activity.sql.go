@@ -53,7 +53,7 @@ func (q *Queries) GetActivityIDByTitle(ctx context.Context, title string) (int32
 }
 
 const insertActivity = `-- name: InsertActivity :exec
-INSERT INTO Activity (title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, applicationStatus
+INSERT INTO Activity (title, proposer, startDate, endDate, maxParticipant, format, description, proposeDateTime, applicationStatus
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, "pending")
 `
 
@@ -62,7 +62,7 @@ type InsertActivityParams struct {
 	Proposer        int32     `json:"proposer"`
 	Startdate       time.Time `json:"startdate"`
 	Enddate         time.Time `json:"enddate"`
-	Maxnumber       int32     `json:"maxnumber"`
+	Maxparticipant  int32     `json:"maxparticipant"`
 	Format          string    `json:"format"`
 	Description     string    `json:"description"`
 	Proposedatetime time.Time `json:"proposedatetime"`
@@ -74,7 +74,7 @@ func (q *Queries) InsertActivity(ctx context.Context, arg InsertActivityParams) 
 		arg.Proposer,
 		arg.Startdate,
 		arg.Enddate,
-		arg.Maxnumber,
+		arg.Maxparticipant,
 		arg.Format,
 		arg.Description,
 		arg.Proposedatetime,
@@ -126,7 +126,7 @@ func (q *Queries) InsertWorkshop(ctx context.Context, arg InsertWorkshopParams) 
 }
 
 const listAcceptedActivities = `-- name: ListAcceptedActivities :many
-SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
+SELECT a.activityID, title, proposer, startDate, endDate, maxParticipant, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
   FROM Activity a 
   LEFT JOIN Workshop w ON a.activityID = w.workshopID
   LEFT JOIN Project p ON a.activityID = p.projectID
@@ -149,7 +149,7 @@ type ListAcceptedActivitiesRow struct {
 	Proposer          int32          `json:"proposer"`
 	Startdate         time.Time      `json:"startdate"`
 	Enddate           time.Time      `json:"enddate"`
-	Maxnumber         int32          `json:"maxnumber"`
+	Maxparticipant    int32          `json:"maxparticipant"`
 	Format            string         `json:"format"`
 	Description       string         `json:"description"`
 	Proposedatetime   time.Time      `json:"proposedatetime"`
@@ -177,7 +177,7 @@ func (q *Queries) ListAcceptedActivities(ctx context.Context) ([]ListAcceptedAct
 			&i.Proposer,
 			&i.Startdate,
 			&i.Enddate,
-			&i.Maxnumber,
+			&i.Maxparticipant,
 			&i.Format,
 			&i.Description,
 			&i.Proposedatetime,
@@ -203,7 +203,7 @@ func (q *Queries) ListAcceptedActivities(ctx context.Context) ([]ListAcceptedAct
 }
 
 const listActivity = `-- name: ListActivity :one
-SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
+SELECT a.activityID, title, proposer, startDate, endDate, maxParticipant, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
   FROM Activity a 
   LEFT JOIN Workshop w ON a.activityID = w.workshopID
   LEFT JOIN Project p ON a.activityID = p.projectID
@@ -226,7 +226,7 @@ type ListActivityRow struct {
 	Proposer          int32          `json:"proposer"`
 	Startdate         time.Time      `json:"startdate"`
 	Enddate           time.Time      `json:"enddate"`
-	Maxnumber         int32          `json:"maxnumber"`
+	Maxparticipant    int32          `json:"maxparticipant"`
 	Format            string         `json:"format"`
 	Description       string         `json:"description"`
 	Proposedatetime   time.Time      `json:"proposedatetime"`
@@ -248,7 +248,7 @@ func (q *Queries) ListActivity(ctx context.Context, activityid int32) (ListActiv
 		&i.Proposer,
 		&i.Startdate,
 		&i.Enddate,
-		&i.Maxnumber,
+		&i.Maxparticipant,
 		&i.Format,
 		&i.Description,
 		&i.Proposedatetime,
@@ -291,7 +291,7 @@ func (q *Queries) ListActivityRoles(ctx context.Context, activityid int32) ([]st
 }
 
 const listRequestingActivities = `-- name: ListRequestingActivities :many
-SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
+SELECT a.activityID, title, proposer, startDate, endDate, maxParticipant, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
   FROM Activity a 
   LEFT JOIN Workshop w ON a.activityID = w.workshopID
   LEFT JOIN Project p ON a.activityID = p.projectID
@@ -314,7 +314,7 @@ type ListRequestingActivitiesRow struct {
 	Proposer          int32          `json:"proposer"`
 	Startdate         time.Time      `json:"startdate"`
 	Enddate           time.Time      `json:"enddate"`
-	Maxnumber         int32          `json:"maxnumber"`
+	Maxparticipant    int32          `json:"maxparticipant"`
 	Format            string         `json:"format"`
 	Description       string         `json:"description"`
 	Proposedatetime   time.Time      `json:"proposedatetime"`
@@ -342,7 +342,7 @@ func (q *Queries) ListRequestingActivities(ctx context.Context) ([]ListRequestin
 			&i.Proposer,
 			&i.Startdate,
 			&i.Enddate,
-			&i.Maxnumber,
+			&i.Maxparticipant,
 			&i.Format,
 			&i.Description,
 			&i.Proposedatetime,
