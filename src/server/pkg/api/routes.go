@@ -161,7 +161,7 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		//! MEMBERS AND ACTIVITIES !//
 
 		api.GET("member/activities", func(c *gin.Context) {
-			handler.GetMemberActivities(c, queries)
+			handler.GetEngagements(c, queries)
 		})
 
 	}

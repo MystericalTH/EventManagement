@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
@@ -116,50 +117,84 @@ func (q *Queries) ListActivityRegistration(ctx context.Context, activityid int32
 	return items, nil
 }
 
-const listMemberActivities = `-- name: ListMemberActivities :many
+const listEngagements = `-- name: ListEngagements :many
 SELECT 
     a.activityID, 
     a.title, 
+    a.startDate, 
+    a.endDate, 
+    a.maxParticipant, 
+    a.format, 
     a.description, 
-    ar.datetime, 
-    a.proposer, 
+    a.proposeDateTime, 
+    a.acceptAdmin, 
+    a.acceptDateTime, 
+    a.applicationStatus, 
+    w.startTime, 
+    w.endTime, 
+    p.advisor, 
     ar.role, 
-    ar.expectation
-    FROM 
-        ActivityRegistration ar
-    JOIN 
-        Activity a ON ar.activityID = a.activityID
-    WHERE 
-        ar.memberID = ?
+    ar.expectation, 
+    ar.datetime
+FROM 
+    Activity a
+LEFT JOIN 
+    Workshop w ON a.activityID = w.workshopID
+LEFT JOIN 
+    Project p ON a.activityID = p.projectID
+JOIN 
+    ActivityRegistration ar ON a.activityID = ar.activityID
+WHERE 
+    ar.memberID = ?
 `
 
-type ListMemberActivitiesRow struct {
-	Activityid  int32     `json:"activityid"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Datetime    time.Time `json:"datetime"`
-	Proposer    int32     `json:"proposer"`
-	Role        string    `json:"role"`
-	Expectation string    `json:"expectation"`
+type ListEngagementsRow struct {
+	Activityid        int32          `json:"activityid"`
+	Title             string         `json:"title"`
+	Startdate         time.Time      `json:"startdate"`
+	Enddate           time.Time      `json:"enddate"`
+	Maxparticipant    int32          `json:"maxparticipant"`
+	Format            string         `json:"format"`
+	Description       string         `json:"description"`
+	Proposedatetime   time.Time      `json:"proposedatetime"`
+	Acceptadmin       sql.NullInt32  `json:"acceptadmin"`
+	Acceptdatetime    sql.NullTime   `json:"acceptdatetime"`
+	Applicationstatus sql.NullString `json:"applicationstatus"`
+	Starttime         sql.NullString `json:"starttime"`
+	Endtime           sql.NullString `json:"endtime"`
+	Advisor           sql.NullString `json:"advisor"`
+	Role              string         `json:"role"`
+	Expectation       string         `json:"expectation"`
+	Datetime          time.Time      `json:"datetime"`
 }
 
-func (q *Queries) ListMemberActivities(ctx context.Context, memberid int32) ([]ListMemberActivitiesRow, error) {
-	rows, err := q.db.QueryContext(ctx, listMemberActivities, memberid)
+func (q *Queries) ListEngagements(ctx context.Context, memberid int32) ([]ListEngagementsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listEngagements, memberid)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []ListMemberActivitiesRow{}
+	items := []ListEngagementsRow{}
 	for rows.Next() {
-		var i ListMemberActivitiesRow
+		var i ListEngagementsRow
 		if err := rows.Scan(
 			&i.Activityid,
 			&i.Title,
+			&i.Startdate,
+			&i.Enddate,
+			&i.Maxparticipant,
+			&i.Format,
 			&i.Description,
-			&i.Datetime,
-			&i.Proposer,
+			&i.Proposedatetime,
+			&i.Acceptadmin,
+			&i.Acceptdatetime,
+			&i.Applicationstatus,
+			&i.Starttime,
+			&i.Endtime,
+			&i.Advisor,
 			&i.Role,
 			&i.Expectation,
+			&i.Datetime,
 		); err != nil {
 			return nil, err
 		}
