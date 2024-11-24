@@ -36,6 +36,75 @@ func GetActivities(c *gin.Context, queries *db.Queries) {
 	c.JSON(http.StatusOK, activities)
 }
 
+func GetProposerProposals(c *gin.Context, queries *db.Queries) {
+	// Log the start of the handler
+	log.Printf("Handler started: GetProposerProposals")
+
+	// Retrieve the session
+	session, err := SessionStore.Get(c.Request, SessionName)
+	if err != nil {
+		log.Printf("Error retrieving session: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session"})
+		return
+	}
+	log.Printf("Session retrieved successfully: %v", session.Values)
+
+	// Extract user information and role from the session
+	userInfo, userOk := session.Values["user"].(UserInfo)
+	role, roleOk := session.Values["role"].(string)
+	if !userOk || !roleOk {
+		log.Printf("Authentication failed: userOk=%v, roleOk=%v", userOk, roleOk)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+	log.Printf("User authenticated: email=%s, role=%s", userInfo.Email, role)
+
+	email := userInfo.Email
+
+	// Only allow proposers to fetch proposals
+	if role != "member" {
+		log.Printf("Access forbidden: user role is %s (expected 'member')", role)
+		c.JSON(http.StatusForbidden, gin.H{"error": "Only proposers can fetch proposals"})
+		return
+	}
+
+	// Get proposer ID from the service
+	log.Printf("Fetching proposer ID for email: %s", email)
+	proposerID, err := services.GetMemberIDByEmailService(queries, email) // Assuming "proposer" and "member" IDs are derived similarly
+	if err != nil {
+		log.Printf("Error fetching proposer ID: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get proposer ID"})
+		return
+	}
+	log.Printf("Proposer ID fetched successfully: %d", proposerID)
+
+	// Fetch proposer proposals using the service
+	log.Printf("Fetching proposer proposals for proposerID: %d", proposerID)
+	activityQueries, err := services.GetProposerProposalsService(queries, proposerID)
+	if err != nil {
+		log.Printf("Error fetching proposer proposals: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch activities"})
+		return
+	}
+	log.Printf("Proposer proposals fetched successfully: %d activities found", len(activityQueries))
+
+	// Convert query results to activities
+	activities := []typing.Activity{}
+	for _, query := range activityQueries {
+		activity, err := typing.ConvertToActivity(db.ListActivityRow(query))
+		if err != nil {
+			log.Printf("Error converting query result to activity: %v", err)
+			continue
+		}
+		activities = append(activities, activity)
+	}
+	log.Printf("Activities converted successfully: %d activities", len(activities))
+
+	// Respond with the activities
+	log.Printf("Responding with activities: %v", activities)
+	c.JSON(http.StatusOK, activities)
+}
+
 // Handler for getting an activity by ID
 func GetActivityByID(c *gin.Context, queries *db.Queries) {
 	activityIDStr := c.Param("id")

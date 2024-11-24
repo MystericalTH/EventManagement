@@ -114,6 +114,12 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 			handler.GetRegistrationStatus(c, queries)
 		})
 
+		// Get /your proposed activities submitted response
+
+		api.GET("/activities/:id/registration/", func(c *gin.Context) {
+			handler.GetSubmittedMembers(c, queries)
+		})
+
 		// POST /registration submit
 		api.POST("/activities/:id/registration/submit", func(c *gin.Context) {
 			handler.SubmitRegistration(c, queries)
@@ -134,7 +140,17 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 			handler.DeleteActivity(c, queries) // Pass queries to the handler
 		})
 
+		// GET /proposer's proposals
+
+		api.GET("member/activities/proposals", func(c *gin.Context) {
+			handler.GetProposerProposals(c, queries)
+		})
+
 		//! MEMBERS AND ACTIVITIES !//
+
+		api.GET("member/activities", func(c *gin.Context) {
+			handler.GetMemberActivities(c, queries)
+		})
 
 	}
 }

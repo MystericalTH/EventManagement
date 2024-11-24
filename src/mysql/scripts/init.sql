@@ -39,7 +39,7 @@ CREATE TABLE Activity (
   proposeDateTime datetime NOT NULL,
   acceptAdmin int(11),
   acceptDateTime datetime,
-  applicationStatus varchar(20),
+  applicationStatus varchar(20) ,
   PRIMARY KEY (activityID),
   CONSTRAINT activity_proposer_fk FOREIGN KEY (proposer) REFERENCES Member (memberID), -- to do set null if have time to do
   CONSTRAINT activity_acceptAdmin_fk FOREIGN KEY (acceptAdmin) REFERENCES Admin (adminID)

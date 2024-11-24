@@ -290,6 +290,83 @@ func (q *Queries) ListActivityRoles(ctx context.Context, activityid int32) ([]st
 	return items, nil
 }
 
+const listAllProposedActivity = `-- name: ListAllProposedActivity :many
+SELECT a.activityID, title, proposer, startDate, endDate, maxParticipant, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
+  FROM Activity a 
+  LEFT JOIN Workshop w ON a.activityID = w.workshopID
+  LEFT JOIN Project p ON a.activityID = p.projectID
+  LEFT JOIN 
+    (
+        SELECT 
+            activityID, 
+            GROUP_CONCAT(activityRole) AS roles
+        FROM 
+            ActivityRoles
+        GROUP BY 
+            activityID
+    ) ar ON a.activityID = ar.activityID
+WHERE proposer = ?
+`
+
+type ListAllProposedActivityRow struct {
+	Activityid        int32          `json:"activityid"`
+	Title             string         `json:"title"`
+	Proposer          int32          `json:"proposer"`
+	Startdate         time.Time      `json:"startdate"`
+	Enddate           time.Time      `json:"enddate"`
+	Maxparticipant    int32          `json:"maxparticipant"`
+	Format            string         `json:"format"`
+	Description       string         `json:"description"`
+	Proposedatetime   time.Time      `json:"proposedatetime"`
+	Acceptadmin       sql.NullInt32  `json:"acceptadmin"`
+	Acceptdatetime    sql.NullTime   `json:"acceptdatetime"`
+	Applicationstatus sql.NullString `json:"applicationstatus"`
+	Starttime         sql.NullString `json:"starttime"`
+	Endtime           sql.NullString `json:"endtime"`
+	Advisor           sql.NullString `json:"advisor"`
+	Roles             sql.NullString `json:"roles"`
+}
+
+func (q *Queries) ListAllProposedActivity(ctx context.Context, proposer int32) ([]ListAllProposedActivityRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAllProposedActivity, proposer)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListAllProposedActivityRow{}
+	for rows.Next() {
+		var i ListAllProposedActivityRow
+		if err := rows.Scan(
+			&i.Activityid,
+			&i.Title,
+			&i.Proposer,
+			&i.Startdate,
+			&i.Enddate,
+			&i.Maxparticipant,
+			&i.Format,
+			&i.Description,
+			&i.Proposedatetime,
+			&i.Acceptadmin,
+			&i.Acceptdatetime,
+			&i.Applicationstatus,
+			&i.Starttime,
+			&i.Endtime,
+			&i.Advisor,
+			&i.Roles,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listRequestingActivities = `-- name: ListRequestingActivities :many
 SELECT a.activityID, title, proposer, startDate, endDate, maxParticipant, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
   FROM Activity a 
