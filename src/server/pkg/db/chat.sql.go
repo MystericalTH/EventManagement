@@ -12,18 +12,24 @@ import (
 )
 
 const insertChat = `-- name: InsertChat :exec
-INSERT INTO chatDevAd (adminID, developerID, message, datetime) 
-VALUES (?, ?, ?, NOW())
+INSERT INTO chatDevAd (adminID, developerID, role, message, datetime) 
+VALUES (?, ?, ?, ?, NOW())
 `
 
 type InsertChatParams struct {
-	Adminid     int32  `json:"adminid"`
-	Developerid int32  `json:"developerid"`
-	Message     string `json:"message"`
+	Adminid     sql.NullInt32 `json:"adminid"`
+	Developerid sql.NullInt32 `json:"developerid"`
+	Role        string        `json:"role"`
+	Message     string        `json:"message"`
 }
 
 func (q *Queries) InsertChat(ctx context.Context, arg InsertChatParams) error {
-	_, err := q.db.ExecContext(ctx, insertChat, arg.Adminid, arg.Developerid, arg.Message)
+	_, err := q.db.ExecContext(ctx, insertChat,
+		arg.Adminid,
+		arg.Developerid,
+		arg.Role,
+		arg.Message,
+	)
 	return err
 }
 
