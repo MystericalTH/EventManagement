@@ -13,7 +13,7 @@ SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, des
         GROUP BY 
             activityID
     ) ar ON a.activityID = ar.activityID
-WHERE acceptAdmin IS NULL AND acceptDateTime IS NULL AND applicationStatus IS NULL;
+WHERE acceptAdmin IS NULL AND acceptDateTime IS NULL;
 
 -- name: ListActivity :one
 SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
