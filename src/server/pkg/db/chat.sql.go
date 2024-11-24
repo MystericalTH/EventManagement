@@ -56,7 +56,7 @@ func (q *Queries) ListAdminDevChat(ctx context.Context, arg ListAdminDevChatPara
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListAdminDevChatRow
+	items := []ListAdminDevChatRow{}
 	for rows.Next() {
 		var i ListAdminDevChatRow
 		if err := rows.Scan(
@@ -80,6 +80,7 @@ func (q *Queries) ListAdminDevChat(ctx context.Context, arg ListAdminDevChatPara
 
 const listInitialAdminChatToDev = `-- name: ListInitialAdminChatToDev :many
 SELECT 
+    d.developerID AS 'developerID',
     d.fname AS developer_fname, 
     d.lname AS developer_lname, 
     c.message, 
@@ -104,6 +105,7 @@ AND c.developerid = latest.developerid
 `
 
 type ListInitialAdminChatToDevRow struct {
+	Developerid    int32          `json:"developerid"`
 	DeveloperFname string         `json:"developer_fname"`
 	DeveloperLname string         `json:"developer_lname"`
 	Message        sql.NullString `json:"message"`
@@ -116,10 +118,11 @@ func (q *Queries) ListInitialAdminChatToDev(ctx context.Context, adminid int32) 
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListInitialAdminChatToDevRow
+	items := []ListInitialAdminChatToDevRow{}
 	for rows.Next() {
 		var i ListInitialAdminChatToDevRow
 		if err := rows.Scan(
+			&i.Developerid,
 			&i.DeveloperFname,
 			&i.DeveloperLname,
 			&i.Message,
@@ -140,6 +143,7 @@ func (q *Queries) ListInitialAdminChatToDev(ctx context.Context, adminid int32) 
 
 const listInitialDevChatToAdmin = `-- name: ListInitialDevChatToAdmin :many
 SELECT 
+    a.adminid AS 'adminID',
     a.fname AS admin_fname,
     a.lname AS admin_lname,
     c.message, 
@@ -163,6 +167,7 @@ AND c.adminID = latest.adminID
 `
 
 type ListInitialDevChatToAdminRow struct {
+	Adminid    int32          `json:"adminid"`
 	AdminFname string         `json:"admin_fname"`
 	AdminLname string         `json:"admin_lname"`
 	Message    sql.NullString `json:"message"`
@@ -175,10 +180,11 @@ func (q *Queries) ListInitialDevChatToAdmin(ctx context.Context, developerid int
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListInitialDevChatToAdminRow
+	items := []ListInitialDevChatToAdminRow{}
 	for rows.Next() {
 		var i ListInitialDevChatToAdminRow
 		if err := rows.Scan(
+			&i.Adminid,
 			&i.AdminFname,
 			&i.AdminLname,
 			&i.Message,

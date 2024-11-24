@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"sinno-server/pkg/utils/typing"
 )
 
 // Create a new chat entry
@@ -161,7 +162,11 @@ func ListInitialAdminDevChat(c *gin.Context, queries *db.Queries) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot retrieve chat", "details": err.Error()})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"data": data})
+		var response = []typing.DevChannelInitialMessage{}
+		for _, d := range data {
+			response = append(response, typing.ConvertListInitialAdminChatToDevRow(d))
+		}
+		c.JSON(http.StatusOK, gin.H{"data": response})
 	} else if role == "developer" {
 		developerID, err := queries.GetDeveloperIDByEmail(c, userInfo.Email)
 		if err != nil {
@@ -173,6 +178,10 @@ func ListInitialAdminDevChat(c *gin.Context, queries *db.Queries) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot retrieve chat", "details": err.Error()})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"data": data})
+		var response = []typing.AdminChannelInitialMessage{}
+		for _, d := range data {
+			response = append(response, typing.ConvertListInitialDevChatToAdminRow(d))
+		}
+		c.JSON(http.StatusOK, gin.H{"data": response})
 	}
 }
