@@ -15,7 +15,7 @@ type Activity struct {
 	Proposer          int32          `json:"proposer"`
 	Startdate         time.Time      `json:"startdate"`
 	Enddate           time.Time      `json:"enddate"`
-	Maxnumber         int32          `json:"maxnumber"`
+	Maxparticipant    int32          `json:"maxparticipant"`
 	Format            string         `json:"format"`
 	Description       string         `json:"description"`
 	Proposedatetime   time.Time      `json:"proposedatetime"`
@@ -87,7 +87,7 @@ type Project struct {
 }
 
 type Workshop struct {
-	Workshopid int32     `json:"workshopid"`
-	Starttime  time.Time `json:"starttime"`
-	Endtime    time.Time `json:"endtime"`
+	Workshopid int32  `json:"workshopid"`
+	Starttime  string `json:"starttime"`
+	Endtime    string `json:"endtime"`
 }

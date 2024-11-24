@@ -60,13 +60,13 @@
 								<ActionButton
 									imgsrc={edit}
 									action={() => {}}
-									alt={`Edit member ${row.id}`}
+									alt={`Edit member ${row.memberid}`}
 									width={'20px'}
 								></ActionButton>
 								<ActionButton
 									imgsrc={trash}
-									action={() => removeMember(row.id, pagination)}
-									alt={`Remove member ${row.id}`}
+									action={() => removeMember(row.memberid, pagination)}
+									alt={`Remove member ${row.memberid}`}
 									width={'20px'}
 								></ActionButton>
 							</div></td

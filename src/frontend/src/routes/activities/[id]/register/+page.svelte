@@ -1,9 +1,7 @@
 <script lang="ts">
 	import type { Activity } from '$lib/types';
 
-	export let data: { activity: Activity; activityRoles: string[] };
-
-	let { activity, activityRoles } = data;
+	let { data }: { data: { activity: Activity } } = $props();
 	let expectation = $state('');
 	let selectedRole = $state('');
 
@@ -16,7 +14,7 @@
 		};
 
 		try {
-			const response = await fetch(`/api/activities/${activity.id}/registration/submit`, {
+			const response = await fetch(`/api/activities/${data.activity.id}/registration/submit`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -46,7 +44,7 @@
 		class="mb-4 rounded border border-gray-300 p-2 text-lg"
 	>
 		<option value="" disabled selected>Select a role</option>
-		{#each activityRoles as role}
+		{#each data.activity.activityRoles as role}
 			<option value={role}>{role}</option>
 		{/each}
 	</select>

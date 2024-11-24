@@ -2,7 +2,7 @@
 	let title = $state('');
 	let startDate = $state('');
 	let endDate = $state('');
-	let maxNumber = $state(1);
+	let maxParticipant = $state(1);
 	let format = $state('');
 	let description = $state('');
 	let advisor = $state('');
@@ -28,7 +28,7 @@
 			title,
 			startDate,
 			endDate,
-			maxNumber,
+			maxParticipant,
 			format,
 			description,
 			advisor,
@@ -56,7 +56,7 @@
 		}
 	};
 	$effect(() => {
-		if (maxNumber < 0) maxNumber = 0;
+		if (maxParticipant < 0) maxParticipant = 0;
 	});
 </script>
 
@@ -184,15 +184,15 @@
 							</div>
 						{/if}
 						<div class=" content-center text-right">
-							<label for="maxNumber" class="font-bold">Number of participant</label>
+							<label for="maxParticipant" class="font-bold">Number of participant</label>
 						</div>
 						<div>
 							<input
 								type="number"
-								id="maxNumber"
-								bind:value={maxNumber}
+								id="maxParticipant"
+								bind:value={maxParticipant}
 								onchange={() => {
-									if (maxNumber < 1) maxNumber = 1;
+									if (maxParticipant < 1) maxParticipant = 1;
 								}}
 								required
 								class="w-28 rounded border border-gray-300 p-2 text-base"
