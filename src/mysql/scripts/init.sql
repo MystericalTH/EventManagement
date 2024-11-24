@@ -41,8 +41,7 @@ CREATE TABLE Activity (
   acceptDateTime datetime,
   applicationStatus varchar(20),
   PRIMARY KEY (activityID),
-  CONSTRAINT activity_proposer_fk FOREIGN KEY (proposer) REFERENCES Member (memberID)
-  ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT activity_proposer_fk FOREIGN KEY (proposer) REFERENCES Member (memberID), -- to do set null if have time to do
   CONSTRAINT activity_acceptAdmin_fk FOREIGN KEY (acceptAdmin) REFERENCES Admin (adminID)
   ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -108,11 +107,9 @@ CREATE TABLE Feedback (
   PRIMARY KEY (feedbackID),
   KEY activityID (activityID),
   KEY memberID (memberID),
-  CONSTRAINT feedback_activity_fk FOREIGN KEY (activityID) REFERENCES Activity (activityID)
-  ON DELETE RESTRICT ON UPDATE CASCADE
-  ,
+  CONSTRAINT feedback_activity_fk FOREIGN KEY (activityID) REFERENCES Activity (activityID), -- to do set null if have time to do ,
   CONSTRAINT feedback_member_fk FOREIGN KEY (memberID) REFERENCES Member (memberID)
-  ON DELETE SET NULL ON UPDATE RESTRICT
+  ON DELETE RESTRICT ON UPDATE RESTRICT
 );
 
 -- Table structure for associative entity ActivityRegistration
