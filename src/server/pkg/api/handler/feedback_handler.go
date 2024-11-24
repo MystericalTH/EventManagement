@@ -14,7 +14,7 @@ func GetFeedbackStatus(c *gin.Context, queries *db.Queries) {
 	// Retrieve the session
 	session, err := SessionStore.Get(c.Request, SessionName)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session", "details": err.Error()})
 		return
 	}
 
@@ -37,7 +37,7 @@ func GetFeedbackStatus(c *gin.Context, queries *db.Queries) {
 	// Get member ID from the service
 	memberID, err := services.GetMemberIDByEmailService(queries, email)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID", "details": err.Error()})
 		return
 	}
 
@@ -45,14 +45,14 @@ func GetFeedbackStatus(c *gin.Context, queries *db.Queries) {
 	activityIDStr := c.Param("activityId")
 	activityID, err := strconv.ParseInt(activityIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID", "details": err.Error()})
 		return
 	}
 
 	// Check if the user has submitted feedback for this activity
 	hasSubmitted, err := services.HasSubmittedFeedbackService(queries, int32(activityID), memberID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check feedback status"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check feedback status", "details": err.Error()})
 		return
 	}
 
@@ -70,7 +70,7 @@ func SubmitFeedback(c *gin.Context, queries *db.Queries) {
 
 	session, err := SessionStore.Get(c.Request, SessionName)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session", "details": err.Error()})
 		return
 	}
 
@@ -92,7 +92,7 @@ func SubmitFeedback(c *gin.Context, queries *db.Queries) {
 
 	memberID, err := services.GetMemberIDByEmailService(queries, email)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID", "details": err.Error()})
 		return
 	}
 
@@ -100,14 +100,14 @@ func SubmitFeedback(c *gin.Context, queries *db.Queries) {
 	activityIDStr := c.Param("activityId")
 	activityID, err := strconv.ParseInt(activityIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID", "details": err.Error()})
 		return
 	}
 
 	// Decode the request body
 	var feedbackData db.Feedback
 	if err := c.ShouldBindJSON(&feedbackData); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body", "details": err.Error()})
 		return
 	}
 
@@ -120,7 +120,7 @@ func SubmitFeedback(c *gin.Context, queries *db.Queries) {
 
 	// Insert the feedback using the service
 	if err := services.CreateFeedbackService(queries, params); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to submit feedback"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to submit feedback", "details": err.Error()})
 		return
 	}
 
@@ -140,7 +140,7 @@ func GetFeedbacksByActivity(c *gin.Context, queries *db.Queries) {
 	// Get feedback entries using the service
 	feedbacks, err := services.GetFeedbacksByActivityService(queries, int32(activityID))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get feedback entries"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get feedback entries", "details": err.Error()})
 		return
 	}
 

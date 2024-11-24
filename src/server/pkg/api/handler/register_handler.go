@@ -16,7 +16,7 @@ func GetRegistrationStatus(c *gin.Context, queries *db.Queries) {
 	// Retrieve the session
 	session, err := SessionStore.Get(c.Request, SessionName)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session", "details": err.Error()})
 		return
 	}
 
@@ -39,7 +39,7 @@ func GetRegistrationStatus(c *gin.Context, queries *db.Queries) {
 	// Get member ID from the service
 	memberID, err := services.GetMemberIDByEmailService(queries, email)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID", "details": err.Error()})
 		return
 	}
 
@@ -47,14 +47,14 @@ func GetRegistrationStatus(c *gin.Context, queries *db.Queries) {
 	activityIDStr := c.Param("activityId")
 	activityID, err := strconv.ParseInt(activityIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID", "details": err.Error()})
 		return
 	}
 
 	// Check if the user is registered for this activity
 	isRegistered, err := services.GetRegistrationStatusService(queries, int32(activityID), memberID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check registration status"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check registration status", "details": err.Error()})
 		return
 	}
 
@@ -67,7 +67,7 @@ func SubmitRegistration(c *gin.Context, queries *db.Queries) {
 	// Retrieve the session
 	session, err := SessionStore.Get(c.Request, SessionName)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session", "details": err.Error()})
 		return
 	}
 
@@ -90,7 +90,7 @@ func SubmitRegistration(c *gin.Context, queries *db.Queries) {
 	// Get member ID from the service
 	memberID, err := services.GetMemberIDByEmailService(queries, email)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID", "details": err.Error()})
 		return
 	}
 
@@ -98,14 +98,14 @@ func SubmitRegistration(c *gin.Context, queries *db.Queries) {
 	activityIDStr := c.Param("activityId")
 	activityID, err := strconv.ParseInt(activityIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID", "details": err.Error()})
 		return
 	}
 
 	// Bind JSON to CreateRegistrationParams
 	var registrationData db.InsertRegistrationParams
 	if err := c.ShouldBindJSON(&registrationData); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body", "details": err.Error()})
 		return
 	}
 
@@ -119,7 +119,7 @@ func SubmitRegistration(c *gin.Context, queries *db.Queries) {
 
 	// Insert the registration using the service
 	if err := services.CreateRegistrationService(queries, params); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to submit registration"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to submit registration", "details": err.Error()})
 		return
 	}
 
@@ -133,7 +133,7 @@ func GetActivityRegistration(c *gin.Context, queries *db.Queries) {
 	activityIDStr := c.Param("activityId")
 	activityID, err := strconv.ParseInt(activityIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID", "details": err.Error()})
 		return
 	}
 
