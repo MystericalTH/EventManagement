@@ -28,3 +28,20 @@ SELECT
 SELECT COUNT(1) > 0 AS isProposer
     FROM Activity
     WHERE activityID = ? AND proposer = ?;
+
+
+-- name: ListMemberActivities :many
+SELECT 
+    a.activityID, 
+    a.title, 
+    a.description, 
+    ar.datetime, 
+    a.proposer, 
+    ar.role, 
+    ar.expectation
+    FROM 
+        ActivityRegistration ar
+    JOIN 
+        Activity a ON ar.activityID = a.activityID
+    WHERE 
+        ar.memberID = ?;

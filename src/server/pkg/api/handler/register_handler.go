@@ -181,3 +181,39 @@ func GetSubmittedMembers(c *gin.Context, queries *db.Queries) {
 	// Return the registered members
 	c.JSON(http.StatusOK, members)
 }
+
+func GetMemberActivities(c *gin.Context, queries *db.Queries) {
+	// Retrieve the session
+	session, err := SessionStore.Get(c.Request, SessionName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session"})
+		return
+	}
+
+	// Get user information and role from session
+	userInfo, userOk := session.Values["user"].(UserInfo)
+	_, roleOk := session.Values["role"].(string)
+	if !userOk || !roleOk {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	email := userInfo.Email
+
+	// Get member ID from the service
+	memberID, err := services.GetMemberIDByEmailService(queries, email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID"})
+		return
+	}
+
+	// Fetch activities for the member
+	activities, err := services.GetMemberActivitiesService(queries, memberID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch member activities"})
+		return
+	}
+
+	// Return the member's activities
+	c.JSON(http.StatusOK, activities)
+}

@@ -17,12 +17,12 @@ SELECT COUNT(1) > 0 AS isProposer
 `
 
 type CheckProposerParams struct {
-	ActivityID int32 `json:"activityid"`
+	Activityid int32 `json:"activityid"`
 	Proposer   int32 `json:"proposer"`
 }
 
 func (q *Queries) CheckProposer(ctx context.Context, arg CheckProposerParams) (bool, error) {
-	row := q.db.QueryRowContext(ctx, checkProposer, arg.ActivityID, arg.Proposer)
+	row := q.db.QueryRowContext(ctx, checkProposer, arg.Activityid, arg.Proposer)
 	var isproposer bool
 	err := row.Scan(&isproposer)
 	return isproposer, err
@@ -66,6 +66,64 @@ func (q *Queries) InsertRegistration(ctx context.Context, arg InsertRegistration
 		arg.Expectation,
 	)
 	return err
+}
+
+const listMemberActivities = `-- name: ListMemberActivities :many
+SELECT 
+    a.activityID, 
+    a.title, 
+    a.description, 
+    ar.datetime, 
+    a.proposer, 
+    ar.role, 
+    ar.expectation
+    FROM 
+        ActivityRegistration ar
+    JOIN 
+        Activity a ON ar.activityID = a.activityID
+    WHERE 
+        ar.memberID = ?
+`
+
+type ListMemberActivitiesRow struct {
+	Activityid  int32     `json:"activityid"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Datetime    time.Time `json:"datetime"`
+	Proposer    int32     `json:"proposer"`
+	Role        string    `json:"role"`
+	Expectation string    `json:"expectation"`
+}
+
+func (q *Queries) ListMemberActivities(ctx context.Context, memberid int32) ([]ListMemberActivitiesRow, error) {
+	rows, err := q.db.QueryContext(ctx, listMemberActivities, memberid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListMemberActivitiesRow{}
+	for rows.Next() {
+		var i ListMemberActivitiesRow
+		if err := rows.Scan(
+			&i.Activityid,
+			&i.Title,
+			&i.Description,
+			&i.Datetime,
+			&i.Proposer,
+			&i.Role,
+			&i.Expectation,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listSubmittedMembers = `-- name: ListSubmittedMembers :many
