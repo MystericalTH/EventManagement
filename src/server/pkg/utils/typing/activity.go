@@ -26,28 +26,7 @@ type Activity struct {
 	Advisor           *string  `json:"advisor,omitempty"`
 }
 
-func ConvertToActivity(input interface{}) (Activity, error) {
-	var row db.ListActivityRow
-	var ok bool
-
-	switch v := input.(type) {
-	case db.ListActivityRow:
-		row = v
-		ok = true
-	case db.ListAcceptedActivitiesRow:
-		row = db.ListActivityRow(v)
-		ok = true
-	case db.Activity:
-		row = db.ListActivityRow(v)
-		ok = true
-	default:
-		return Activity{}, fmt.Errorf("unsupported type")
-	}
-
-	if !ok {
-		return Activity{}, fmt.Errorf("type assertion failed")
-	}
-
+func ConvertToActivity(row db.ListActivityRow) (Activity, error) {
 	var startTime, endTime, acceptAdmin, acceptDateTime, applicationStatus, advisor *string
 
 	if row.Starttime.Valid {
@@ -93,16 +72,4 @@ func ConvertToActivity(input interface{}) (Activity, error) {
 		ApplicationStatus: applicationStatus,
 		Advisor:           advisor,
 	}, nil
-}
-
-func ConvertToActivities(inputs []interface{}) ([]Activity, error) {
-	var activities []Activity
-	for _, input := range inputs {
-		activity, err := ConvertToActivity(input)
-		if err != nil {
-			return nil, err
-		}
-		activities = append(activities, activity)
-	}
-	return activities, nil
 }

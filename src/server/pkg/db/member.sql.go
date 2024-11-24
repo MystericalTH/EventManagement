@@ -88,7 +88,7 @@ func (q *Queries) ListAcceptedMembers(ctx context.Context) ([]ListAcceptedMember
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListAcceptedMembersRow
+	items := []ListAcceptedMembersRow{}
 	for rows.Next() {
 		var i ListAcceptedMembersRow
 		if err := rows.Scan(
@@ -203,7 +203,7 @@ func (q *Queries) ListRequestingMembers(ctx context.Context) ([]ListRequestingMe
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListRequestingMembersRow
+	items := []ListRequestingMembersRow{}
 	for rows.Next() {
 		var i ListRequestingMembersRow
 		if err := rows.Scan(

@@ -76,7 +76,7 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 			handler.GetActivities(c, queries)
 		})
 
-		// GET /activities/:activityId get an activity by ID
+		// GET /activities/:activityID get an activity by ID
 		api.GET("/activities/:activityID", func(c *gin.Context) {
 			handler.GetActivityByID(c, queries)
 		})
@@ -86,7 +86,7 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 			handler.PostActivity(c, queries)
 		})
 
-		// POST /activities/:activityId/roles create an activity role
+		// POST /activities/:activityID/roles create an activity role
 		api.GET("/activities/:activityID/roles", func(c *gin.Context) {
 			handler.GetActivityRoles(c, queries)
 		})
@@ -105,7 +105,7 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		api.POST("/activities/:activityID/feedback/submit", func(c *gin.Context) {
 			handler.SubmitFeedback(c, queries)
 		})
-		api.GET("/activities/:activityId/feedback", func(c *gin.Context) {
+		api.GET("/activities/:activityID/feedback", func(c *gin.Context) {
 			handler.GetFeedbacksByActivity(c, queries)
 		})
 

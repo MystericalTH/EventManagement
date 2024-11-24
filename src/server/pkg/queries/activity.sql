@@ -1,6 +1,18 @@
 -- name: ListRequestingActivities :many
-SELECT activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus
-FROM Activity
+SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
+  FROM Activity a 
+  LEFT JOIN Workshop w ON a.activityID = w.workshopID
+  LEFT JOIN Project p ON a.activityID = p.projectID
+  LEFT JOIN 
+    (
+        SELECT 
+            activityID, 
+            GROUP_CONCAT(activityRole) AS roles
+        FROM 
+            ActivityRoles
+        GROUP BY 
+            activityID
+    ) ar ON a.activityID = ar.activityID
 WHERE acceptAdmin IS NULL AND acceptDateTime IS NULL AND applicationStatus IS NULL;
 
 -- name: ListActivity :one
@@ -12,7 +24,7 @@ SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, des
     (
         SELECT 
             activityID, 
-            GROUP_CONCAT(role) AS roles
+            GROUP_CONCAT(activityRole) AS roles
         FROM 
             ActivityRoles
         GROUP BY 
@@ -29,7 +41,7 @@ SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, des
     (
         SELECT 
             activityID, 
-            GROUP_CONCAT(role) AS roles
+            group_concat(activityRole) AS roles
         FROM 
             ActivityRoles
         GROUP BY 

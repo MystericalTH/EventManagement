@@ -133,7 +133,7 @@ SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, des
     (
         SELECT 
             activityID, 
-            GROUP_CONCAT(role) AS roles
+            group_concat(activityRole) AS roles
         FROM 
             ActivityRoles
         GROUP BY 
@@ -167,7 +167,7 @@ func (q *Queries) ListAcceptedActivities(ctx context.Context) ([]ListAcceptedAct
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListAcceptedActivitiesRow
+	items := []ListAcceptedActivitiesRow{}
 	for rows.Next() {
 		var i ListAcceptedActivitiesRow
 		if err := rows.Scan(
@@ -210,7 +210,7 @@ SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, des
     (
         SELECT 
             activityID, 
-            GROUP_CONCAT(role) AS roles
+            GROUP_CONCAT(activityRole) AS roles
         FROM 
             ActivityRoles
         GROUP BY 
@@ -272,7 +272,7 @@ func (q *Queries) ListActivityRoles(ctx context.Context, activityid int32) ([]st
 		return nil, err
 	}
 	defer rows.Close()
-	var items []string
+	items := []string{}
 	for rows.Next() {
 		var activityrole string
 		if err := rows.Scan(&activityrole); err != nil {
@@ -290,20 +290,51 @@ func (q *Queries) ListActivityRoles(ctx context.Context, activityid int32) ([]st
 }
 
 const listRequestingActivities = `-- name: ListRequestingActivities :many
-SELECT activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus
-FROM Activity
+SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus, startTime, endTime, advisor, roles
+  FROM Activity a 
+  LEFT JOIN Workshop w ON a.activityID = w.workshopID
+  LEFT JOIN Project p ON a.activityID = p.projectID
+  LEFT JOIN 
+    (
+        SELECT 
+            activityID, 
+            GROUP_CONCAT(activityRole) AS roles
+        FROM 
+            ActivityRoles
+        GROUP BY 
+            activityID
+    ) ar ON a.activityID = ar.activityID
 WHERE acceptAdmin IS NULL AND acceptDateTime IS NULL AND applicationStatus IS NULL
 `
 
-func (q *Queries) ListRequestingActivities(ctx context.Context) ([]Activity, error) {
+type ListRequestingActivitiesRow struct {
+	Activityid        int32          `json:"activityid"`
+	Title             string         `json:"title"`
+	Proposer          int32          `json:"proposer"`
+	Startdate         time.Time      `json:"startdate"`
+	Enddate           time.Time      `json:"enddate"`
+	Maxnumber         int32          `json:"maxnumber"`
+	Format            string         `json:"format"`
+	Description       string         `json:"description"`
+	Proposedatetime   time.Time      `json:"proposedatetime"`
+	Acceptadmin       sql.NullInt32  `json:"acceptadmin"`
+	Acceptdatetime    sql.NullTime   `json:"acceptdatetime"`
+	Applicationstatus sql.NullString `json:"applicationstatus"`
+	Starttime         sql.NullString `json:"starttime"`
+	Endtime           sql.NullString `json:"endtime"`
+	Advisor           sql.NullString `json:"advisor"`
+	Roles             sql.NullString `json:"roles"`
+}
+
+func (q *Queries) ListRequestingActivities(ctx context.Context) ([]ListRequestingActivitiesRow, error) {
 	rows, err := q.db.QueryContext(ctx, listRequestingActivities)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Activity
+	items := []ListRequestingActivitiesRow{}
 	for rows.Next() {
-		var i Activity
+		var i ListRequestingActivitiesRow
 		if err := rows.Scan(
 			&i.Activityid,
 			&i.Title,
@@ -317,6 +348,10 @@ func (q *Queries) ListRequestingActivities(ctx context.Context) ([]Activity, err
 			&i.Acceptadmin,
 			&i.Acceptdatetime,
 			&i.Applicationstatus,
+			&i.Starttime,
+			&i.Endtime,
+			&i.Advisor,
+			&i.Roles,
 		); err != nil {
 			return nil, err
 		}

@@ -43,7 +43,7 @@ func GetActivityRolesService(queries *db.Queries, activityID int32) ([]string, e
 }
 
 // Get all activities service
-func GetAllActivitiesService(queries *db.Queries) ([]db.Activity, error) {
+func GetAllActivitiesService(queries *db.Queries) ([]db.ListRequestingActivitiesRow, error) {
 	return queries.ListRequestingActivities(context.Background())
 }
 
