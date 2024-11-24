@@ -4,7 +4,7 @@ export const defaultItems = (currentUrl: string): SidebarItem[] => {
 	return [
 		{
 			text: 'Signup',
-			href: '/api/signup'
+			href: '/signup'
 		},
 		{
 			text: 'Login',
