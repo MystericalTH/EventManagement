@@ -114,6 +114,12 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 			handler.GetRegistrationStatus(c, queries)
 		})
 
+		// Get /your proposed activities submitted response
+
+		api.GET("/activities/:id/registration/", func(c *gin.Context) {
+			handler.GetSubmittedMembers(c, queries)
+		})
+
 		// POST /registration submit
 		api.POST("/activities/:id/registration/submit", func(c *gin.Context) {
 			handler.SubmitRegistration(c, queries)

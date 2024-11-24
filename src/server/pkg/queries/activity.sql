@@ -98,4 +98,3 @@ SELECT a.activityID, title, proposer, startDate, endDate, maxParticipant, format
             activityID
     ) ar ON a.activityID = ar.activityID
 WHERE proposer = ?;
-

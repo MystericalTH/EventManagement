@@ -18,3 +18,18 @@ func GetRegistrationStatusService(queries *db.Queries, activityID int32, memberI
 	}
 	return queries.GetRegistrationStatus(context.Background(), params)
 }
+
+func CheckProposerService(queries *db.Queries, activityID, memberID int32) (bool, error) {
+	result, err := queries.CheckProposer(context.Background(), db.CheckProposerParams{
+		ActivityID: activityID,
+		Proposer:   memberID,
+	})
+	if err != nil {
+		return false, err
+	}
+	return result, nil
+}
+
+func GetSubmittedMembersService(queries *db.Queries, activityID int32) ([]db.ListSubmittedMembersRow, error) {
+	return queries.ListSubmittedMembers(context.Background(), activityID)
+}

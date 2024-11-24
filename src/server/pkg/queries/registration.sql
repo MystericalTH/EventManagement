@@ -6,3 +6,25 @@ VALUES (?, ?, ?, ?, NOW());
 SELECT COUNT(*) > 0 AS is_registered
 FROM ActivityRegistration
 WHERE activityID = ? AND memberID = ?;
+
+-- name: ListSubmittedMembers :many
+SELECT 
+    m.memberID, 
+    m.fName, 
+    m.lName, 
+    m.email, 
+    m.phone, 
+    ar.role, 
+    ar.expectation, 
+    ar.datetime
+    FROM 
+        ActivityRegistration ar
+    JOIN 
+        Member m ON ar.memberID = m.memberID
+    WHERE 
+        ar.activityID = ?;
+
+-- name: CheckProposer :one
+SELECT COUNT(1) > 0 AS isProposer
+    FROM Activity
+    WHERE activityID = ? AND proposer = ?;

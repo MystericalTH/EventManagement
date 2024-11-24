@@ -126,3 +126,58 @@ func SubmitRegistration(c *gin.Context, queries *db.Queries) {
 	// Return a success response
 	c.JSON(http.StatusCreated, gin.H{"message": "Registration submitted successfully"})
 }
+
+func GetSubmittedMembers(c *gin.Context, queries *db.Queries) {
+	// Retrieve the session
+	session, err := SessionStore.Get(c.Request, SessionName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session"})
+		return
+	}
+
+	// Get user information and role from session
+	userInfo, userOk := session.Values["user"].(UserInfo)
+	_, roleOk := session.Values["role"].(string)
+	if !userOk || !roleOk {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	email := userInfo.Email
+
+	// Get member ID from the service
+	memberID, err := services.GetMemberIDByEmailService(queries, email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID"})
+		return
+	}
+
+	// Get activity ID from URL params
+	activityIDStr := c.Param("id")
+	activityID, err := strconv.Atoi(activityIDStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})
+		return
+	}
+
+	// Check if the member is the proposer of the activity
+	isProposer, err := services.CheckProposerService(queries, int32(activityID), memberID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to verify proposer status"})
+		return
+	}
+	if !isProposer {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You are not authorized to view this activity's registration"})
+		return
+	}
+
+	// Fetch registered members for the activity
+	members, err := services.GetSubmittedMembersService(queries, int32(activityID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch registered members"})
+		return
+	}
+
+	// Return the registered members
+	c.JSON(http.StatusOK, members)
+}

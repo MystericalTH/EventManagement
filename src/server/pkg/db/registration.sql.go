@@ -7,7 +7,26 @@ package db
 
 import (
 	"context"
+	"time"
 )
+
+const checkProposer = `-- name: CheckProposer :one
+SELECT COUNT(1) > 0 AS isProposer
+    FROM Activity
+    WHERE activityID = ? AND proposer = ?
+`
+
+type CheckProposerParams struct {
+	ActivityID int32 `json:"activityid"`
+	Proposer   int32 `json:"proposer"`
+}
+
+func (q *Queries) CheckProposer(ctx context.Context, arg CheckProposerParams) (bool, error) {
+	row := q.db.QueryRowContext(ctx, checkProposer, arg.ActivityID, arg.Proposer)
+	var isproposer bool
+	err := row.Scan(&isproposer)
+	return isproposer, err
+}
 
 const getRegistrationStatus = `-- name: GetRegistrationStatus :one
 SELECT COUNT(*) > 0 AS is_registered
@@ -47,4 +66,65 @@ func (q *Queries) InsertRegistration(ctx context.Context, arg InsertRegistration
 		arg.Expectation,
 	)
 	return err
+}
+
+const listSubmittedMembers = `-- name: ListSubmittedMembers :many
+SELECT 
+    m.memberID, 
+    m.fName, 
+    m.lName, 
+    m.email, 
+    m.phone, 
+    ar.role, 
+    ar.expectation, 
+    ar.datetime
+    FROM 
+        ActivityRegistration ar
+    JOIN 
+        Member m ON ar.memberID = m.memberID
+    WHERE 
+        ar.activityID = ?
+`
+
+type ListSubmittedMembersRow struct {
+	Memberid    int32     `json:"memberid"`
+	Fname       string    `json:"fname"`
+	Lname       string    `json:"lname"`
+	Email       string    `json:"email"`
+	Phone       string    `json:"phone"`
+	Role        string    `json:"role"`
+	Expectation string    `json:"expectation"`
+	Datetime    time.Time `json:"datetime"`
+}
+
+func (q *Queries) ListSubmittedMembers(ctx context.Context, activityid int32) ([]ListSubmittedMembersRow, error) {
+	rows, err := q.db.QueryContext(ctx, listSubmittedMembers, activityid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListSubmittedMembersRow{}
+	for rows.Next() {
+		var i ListSubmittedMembersRow
+		if err := rows.Scan(
+			&i.Memberid,
+			&i.Fname,
+			&i.Lname,
+			&i.Email,
+			&i.Phone,
+			&i.Role,
+			&i.Expectation,
+			&i.Datetime,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
