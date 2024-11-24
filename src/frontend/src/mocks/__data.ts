@@ -1,4 +1,4 @@
-import type { Activity, Feedback MemberRegistration, Member } from '$lib/types';
+import type { Activity, Feedback, MemberRegistration, Member } from '$lib/types';
 
 export const memberData: Member[] = [
 	{
