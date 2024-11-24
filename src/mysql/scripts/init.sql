@@ -9,6 +9,8 @@ DROP TABLE IF EXISTS pjRegist;
 -- Table structure for Admin
 CREATE TABLE Admin (
   adminID int(11) NOT NULL AUTO_INCREMENT,
+  fName varchar(255) NOT NULL,
+  lName varchar(255) NOT NULL,
   email varchar(320) NOT NULL,
   PRIMARY KEY (adminID)
 );
@@ -76,6 +78,8 @@ CREATE TABLE ActivityRoles (
 -- Table structure for Developer
 CREATE TABLE Developer (
   developerID int(11) NOT NULL AUTO_INCREMENT,
+  fName varchar(255) NOT NULL,
+  lName varchar(255) NOT NULL,
   email varchar(320) NOT NULL,
   PRIMARY KEY (developerID)
 );

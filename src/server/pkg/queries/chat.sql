@@ -5,8 +5,10 @@ VALUES (?, ?, ?, ?, NOW());
 -- name: ListChat :many
 SELECT 
     c.messageid, 
-    a.email AS admin_email, 
-    d.email AS developer_email, 
+    a.fname AS admin_fname,
+    a.lname AS admin_lname,
+    d.fname AS developer_fname, 
+    d.lname AS developer_lname, 
     c.message, 
     c.datetime 
 FROM 

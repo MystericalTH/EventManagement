@@ -36,8 +36,10 @@ func (q *Queries) InsertChat(ctx context.Context, arg InsertChatParams) error {
 const listChat = `-- name: ListChat :many
 SELECT 
     c.messageid, 
-    a.email AS admin_email, 
-    d.email AS developer_email, 
+    a.fname AS admin_fname,
+    a.lname AS admin_lname,
+    d.fname AS developer_fname, 
+    d.lname AS developer_lname, 
     c.message, 
     c.datetime 
 FROM 
@@ -50,8 +52,10 @@ LEFT JOIN
 
 type ListChatRow struct {
 	Messageid      int32          `json:"messageid"`
-	AdminEmail     sql.NullString `json:"admin_email"`
-	DeveloperEmail sql.NullString `json:"developer_email"`
+	AdminFname     sql.NullString `json:"admin_fname"`
+	AdminLname     sql.NullString `json:"admin_lname"`
+	DeveloperFname sql.NullString `json:"developer_fname"`
+	DeveloperLname sql.NullString `json:"developer_lname"`
 	Message        string         `json:"message"`
 	Datetime       time.Time      `json:"datetime"`
 }
@@ -67,8 +71,10 @@ func (q *Queries) ListChat(ctx context.Context) ([]ListChatRow, error) {
 		var i ListChatRow
 		if err := rows.Scan(
 			&i.Messageid,
-			&i.AdminEmail,
-			&i.DeveloperEmail,
+			&i.AdminFname,
+			&i.AdminLname,
+			&i.DeveloperFname,
+			&i.DeveloperLname,
 			&i.Message,
 			&i.Datetime,
 		); err != nil {
