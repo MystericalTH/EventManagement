@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 	"sinno-server/pkg/db"
