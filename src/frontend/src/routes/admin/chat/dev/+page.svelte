@@ -19,7 +19,7 @@
 					else if (b == null) return 1;
 					return a.timesent.getTime() - b.timesent.getTime();
 				});
-				console.log(channels);
+				console.log($state.snapshot(channels));
 			})
 			.catch((err) => console.error(err));
 		return;
