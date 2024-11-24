@@ -32,7 +32,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			nextActivityId = id + 1;
 		}
 		// Check if the event has already passed
-		const isEventPast = new Date(activity.date) < new Date();
+		const isEventPast = new Date(activity.endDate) < new Date();
 
 		// Fetch the next activity ID
 		let data = {

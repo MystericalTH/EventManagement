@@ -25,7 +25,7 @@
 	{#if data.activity}
 		<div class="w-5/6 items-center text-center">
 			<ActivityContent data={data.activity} />
-			{#if data.isEventPast && data.isRegistered.isRegistered}
+			{#if data.isEventPast && data.isRegistered}
 				{#if data.hasSubmittedFeedback}
 					<button class="rounded bg-gray-500 px-4 py-2 text-white" disabled
 						>Feedback Submitted</button
@@ -35,7 +35,7 @@
 						>Submit Feedback</button
 					>
 				{/if}
-			{:else if data.isRegistered.isRegistered}
+			{:else if data.isRegistered}
 				<button class="rounded bg-gray-500 px-4 py-2 text-white" disabled>Registered</button>
 			{:else}
 				<button class="rounded bg-blue-500 px-4 py-2 text-white" onclick={openRegisterPage}
