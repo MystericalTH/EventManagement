@@ -2,9 +2,6 @@
 	import type { Activity } from '$lib/types';
 	// export let data: { activity: Activity; activityRoles: string[] };
 	import type { PageData } from './$types';
-// 	let { data }: { data: PageData } = $props();
-
-	let { activity, activityRoles } = data;
 
 	let { data }: { data: { activity: Activity } } = $props();
 
