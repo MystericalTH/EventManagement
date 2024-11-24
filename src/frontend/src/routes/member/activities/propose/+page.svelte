@@ -1,4 +1,7 @@
 <script lang="ts">
+	import Overlay from '$lib/components/Overlay.svelte';
+	import ActionButton from '$lib/components/ActionButton.svelte';
+	import { cross } from '$lib/assets/action-button-icons';
 	let title = $state('');
 	let startDate = $state('');
 	let endDate = $state('');
@@ -10,7 +13,17 @@
 	let endTime = $state('');
 	let activityRole: string[] = $state([]);
 	let newActivityRole = $state('');
+	import { checkCircle } from '$lib/assets/action-button-icons';
+	import caution from '$lib/assets/caution.png';
 
+	let showOverlay = $state(false);
+	const closeOverlay = () => {
+		showOverlay = false;
+	};
+	const closeOverlayAndExit = () => {
+		closeOverlay();
+		window.location.href = '/home';
+	};
 	const addActivityRole = () => {
 		if (newActivityRole.trim() !== '' && !activityRole.includes(newActivityRole.trim())) {
 			activityRole = [...activityRole, newActivityRole.trim()];
@@ -20,7 +33,8 @@
 	const deleteActivityRole = (roleToDelete: string) => {
 		activityRole = activityRole.filter((role) => role !== roleToDelete);
 	};
-
+	let statusCode: number = $state(-1);
+	let message: string = $state('');
 	const handleProposalSubmit = async (event: Event) => {
 		event.preventDefault();
 
@@ -46,11 +60,16 @@
 				body: JSON.stringify(formData)
 			});
 
+			statusCode = response.status;
+			let resJson = await response.json();
 			if (response.ok) {
+				message = resJson.message;
 				console.log('Form submitted successfully');
 			} else {
+				message = resJson.error;
 				console.error('Form submission failed');
 			}
+			showOverlay = true;
 		} catch (error) {
 			console.error('Error submitting form:', error);
 		}
@@ -60,14 +79,14 @@
 	});
 </script>
 
-<div class="flex justify-center">
-	<div class="min-w-[900px] border-2 border-gray-100 p-5 shadow-md">
+<div class="flex justify-center overflow-y-scroll">
+	<div class="h-fit border-2 border-gray-100 p-5 shadow-md lg:h-auto">
 		<h1 class="my-5 text-center text-4xl font-bold">Activity Proposal</h1>
 		<form onsubmit={handleProposalSubmit} class="py-4">
 			<!-- Left column -->
-			<div class="flex flex-row text-sm">
+			<div class="flex flex-col text-sm lg:flex-row">
 				<div class="flex-initial">
-					<div class="grid grid-cols-[30%_70%] gap-4 pr-2">
+					<div class="grid grid-cols-[120px_auto] gap-4 pr-2 lg:grid-cols-[30%_70%]">
 						<div class="content-center text-right">
 							<label for="title" class="font-bold">Title</label>
 						</div>
@@ -202,7 +221,7 @@
 				</div>
 				<!-- Right column -->
 				<div class="flex-1">
-					<div class="grid flex-1 grid-cols-[120px_auto] gap-4 pr-2">
+					<div class="mt-4 grid flex-1 grid-cols-[120px_auto] gap-4 pr-2 lg:mt-0">
 						<div class="mt-4 content-start text-right">
 							<label for="description" class="block font-bold">Description</label>
 						</div>
@@ -260,3 +279,24 @@
 		</form>
 	</div>
 </div>
+
+<Overlay {showOverlay}>
+	<div class="flex h-full flex-col">
+		<div class="flex flex-none justify-end">
+			<ActionButton
+				imgsrc={cross}
+				action={statusCode == 200 ? closeOverlayAndExit : closeOverlay}
+				width="20px"
+				alt="Close"
+			/>
+		</div>
+		<div class="flex flex-col items-center justify-center text-center">
+			<img
+				src={statusCode == 200 ? checkCircle.click : caution}
+				width="64px"
+				alt={statusCode == 200 ? 'successful' : 'caution'}
+			/>
+			<span class="mt-4 text-base">{message}</span>
+		</div>
+	</div></Overlay
+>
