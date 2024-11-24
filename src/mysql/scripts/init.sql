@@ -23,7 +23,6 @@ CREATE TABLE Member (
   acceptAdmin int(11),
   PRIMARY KEY (memberID),
   CONSTRAINT member_ibfk_1 FOREIGN KEY (acceptAdmin) REFERENCES Admin (adminID)
-
 );
 
 -- Table structure for Activity (superclass)
