@@ -27,6 +27,7 @@ func GetActivities(c *gin.Context, queries *db.Queries) {
 		activity, err := typing.ConvertToActivity(db.ListActivityRow(query))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to format activity"})
+			return
 		}
 		activities = append(activities, activity)
 	}
@@ -36,7 +37,7 @@ func GetActivities(c *gin.Context, queries *db.Queries) {
 
 // Handler for getting an activity by ID
 func GetActivityByID(c *gin.Context, queries *db.Queries) {
-	activityIDStr := c.Param("activityID")
+	activityIDStr := c.Param("id")
 	activityID, err := strconv.Atoi(activityIDStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})
@@ -57,7 +58,7 @@ func GetActivityByID(c *gin.Context, queries *db.Queries) {
 
 // Handler for getting activity roles
 func GetActivityRoles(c *gin.Context, queries *db.Queries) {
-	activityIDStr := c.Param("activityID")
+	activityIDStr := c.Param("id")
 	activityID, err := strconv.Atoi(activityIDStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})
@@ -247,7 +248,7 @@ func ApproveActivityRegistration(c *gin.Context, queries *db.Queries) {
 		return
 	}
 
-	activityIDStr := c.Param("activityID")
+	activityIDStr := c.Param("id")
 	activityID, err := strconv.Atoi(activityIDStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})

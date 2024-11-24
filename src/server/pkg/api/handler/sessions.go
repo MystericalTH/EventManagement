@@ -135,7 +135,7 @@ func LoginInfoRetrieval(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Authentication successful",
-		"user":    session.Values["user_name"],
+		"user":    session.Values["user"],
 		"role":    session.Values["role"], // You may want to store and retrieve this as needed
 	})
 }

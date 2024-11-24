@@ -76,8 +76,8 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 			handler.GetActivities(c, queries)
 		})
 
-		// GET /activities/:activityID get an activity by ID
-		api.GET("/activities/:activityID", func(c *gin.Context) {
+		// GET /activities/:id get an activity by ID
+		api.GET("/activities/:id", func(c *gin.Context) {
 			handler.GetActivityByID(c, queries)
 		})
 
@@ -86,8 +86,8 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 			handler.PostActivity(c, queries)
 		})
 
-		// POST /activities/:activityID/roles create an activity role
-		api.GET("/activities/:activityID/roles", func(c *gin.Context) {
+		// POST /activities/:id/roles create an activity role
+		api.GET("/activities/:id/roles", func(c *gin.Context) {
 			handler.GetActivityRoles(c, queries)
 		})
 
@@ -97,25 +97,25 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 			handler.GetAcceptedActivities(c, queries)
 		})
 		// GET /feedback get a feedback
-		api.GET("/activities/:activityID/feedback/status", func(c *gin.Context) {
+		api.GET("/activities/:id/feedback/status", func(c *gin.Context) {
 			handler.GetFeedbackStatus(c, queries)
 		})
 
 		// POST /feedback submit a feedback
-		api.POST("/activities/:activityID/feedback/submit", func(c *gin.Context) {
+		api.POST("/activities/:id/feedback/submit", func(c *gin.Context) {
 			handler.SubmitFeedback(c, queries)
 		})
-		api.GET("/activities/:activityID/feedback", func(c *gin.Context) {
+		api.GET("/activities/:id/feedback", func(c *gin.Context) {
 			handler.GetFeedbacksByActivity(c, queries)
 		})
 
 		// GET /registration status
-		api.GET("/activities/:activityID/registration/status", func(c *gin.Context) {
+		api.GET("/activities/:id/registration/status", func(c *gin.Context) {
 			handler.GetRegistrationStatus(c, queries)
 		})
 
 		// POST /registration submit
-		api.POST("/activities/:activityID/registration/submit", func(c *gin.Context) {
+		api.POST("/activities/:id/registration/submit", func(c *gin.Context) {
 			handler.SubmitRegistration(c, queries)
 		})
 
@@ -125,12 +125,12 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		})
 
 		// PUT /registration status
-		api.PUT("/activities/:activityID/approve", func(c *gin.Context) {
+		api.PUT("/activities/:id/approve", func(c *gin.Context) {
 			handler.ApproveActivityRegistration(c, queries)
 		})
 
 		// DELETE /registration
-		api.DELETE("activities/:activityID", func(c *gin.Context) {
+		api.DELETE("activities/:id", func(c *gin.Context) {
 			handler.DeleteActivity(c, queries) // Pass queries to the handler
 		})
 
