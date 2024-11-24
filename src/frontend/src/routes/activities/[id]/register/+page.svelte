@@ -1,10 +1,13 @@
 <script lang="ts">
-	// import type { Activity } from '$lib/types';
+	import type { Activity } from '$lib/types';
 	// export let data: { activity: Activity; activityRoles: string[] };
 	import type { PageData } from './$types';
-	let { data }: { data: PageData } = $props();
+// 	let { data }: { data: PageData } = $props();
 
 	let { activity, activityRoles } = data;
+
+	let { data }: { data: { activity: Activity } } = $props();
+
 	let expectation = $state('');
 	let selectedRole = $state('');
 
@@ -47,7 +50,7 @@
 		class="mb-4 rounded border border-gray-300 p-2 text-lg"
 	>
 		<option value="" disabled selected>Select a role</option>
-		{#each activityRoles as role}
+		{#each data.activity.activityRoles as role}
 			<option value={role}>{role}</option>
 		{/each}
 	</select>

@@ -44,7 +44,7 @@ func GetRegistrationStatus(c *gin.Context, queries *db.Queries) {
 	}
 
 	// Get activity ID from URL
-	activityIDStr := c.Param("activityId")
+	activityIDStr := c.Param("id")
 	activityID, err := strconv.ParseInt(activityIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID", "details": err.Error()})
@@ -95,7 +95,7 @@ func SubmitRegistration(c *gin.Context, queries *db.Queries) {
 	}
 
 	// Get activity ID from URL
-	activityIDStr := c.Param("activityId")
+	activityIDStr := c.Param("id")
 	activityID, err := strconv.ParseInt(activityIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID", "details": err.Error()})

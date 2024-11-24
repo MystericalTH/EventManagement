@@ -56,7 +56,7 @@
 			class="align-center flex flex-wrap content-center"
 			style="column-gap: 10px; row-gap: 10px;"
 		>
-			{#each data.roles as role}
+			{#each data.activityRoles as role}
 				<div class="rounded-lg bg-indigo-500 p-2 text-base text-white">
 					{role}
 				</div>

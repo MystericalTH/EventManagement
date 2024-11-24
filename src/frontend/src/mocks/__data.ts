@@ -1,4 +1,4 @@
-import type { Activity, FeedbackData, MemberRegistration, Member } from '$lib/types';
+import type { Activity, Feedback, MemberRegistration, Member } from '$lib/types';
 
 export const memberData: Member[] = [
 	{
@@ -225,7 +225,7 @@ export const activityData: Activity[] = [
 		applicationStatus: 'Approved'
 	}
 ];
-export const mockFeedbackData: FeedbackData[] = [
+export const mockFeedbackData: Feedback[] = [
 	{
 		feedbackid: 1,
 		activityid: 101,

@@ -64,7 +64,7 @@ func (q *Queries) ListFeedbacks(ctx context.Context, activityid int32) ([]ListFe
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListFeedbacksRow
+	items := []ListFeedbacksRow{}
 	for rows.Next() {
 		var i ListFeedbacksRow
 		if err := rows.Scan(

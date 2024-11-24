@@ -4,7 +4,7 @@ import type { Member, MemberRegistration } from './member';
 import type { SidebarItem } from './sidebar';
 import type { Activity } from './activity';
 import type { ImageSource } from './actionButtonIcons';
-import type { FeedbackData } from './feedback';
+import type { Feedback } from './feedback';
 
 export type {
 	Pagination,
@@ -13,5 +13,5 @@ export type {
 	Activity,
 	SidebarItem,
 	ImageSource,
-	FeedbackData
+	Feedback
 };
