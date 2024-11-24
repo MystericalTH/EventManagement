@@ -90,19 +90,19 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		api.GET("/activities/:id/roles", func(c *gin.Context) {
 			handler.GetActivityRoles(c, queries)
 		})
-
-		//! FEEDBACK ROUTES !//
-
 		api.GET("/activities/", func(c *gin.Context) {
 			handler.GetAcceptedActivities(c, queries)
 		})
+
+		//! FEEDBACK ROUTES !//
+
 		// GET /feedback get a feedback
 		api.GET("/activities/:id/feedback/status", func(c *gin.Context) {
 			handler.GetFeedbackStatus(c, queries)
 		})
 
 		// POST /feedback submit a feedback
-		api.POST("/activities/:id/feedback/submit", func(c *gin.Context) {
+		api.POST("/activities/:id/feedback", func(c *gin.Context) {
 			handler.SubmitFeedback(c, queries)
 		})
 		api.GET("/activities/:id/feedback", func(c *gin.Context) {
@@ -113,19 +113,19 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		api.GET("/activities/:id/registration/status", func(c *gin.Context) {
 			handler.GetRegistrationStatus(c, queries)
 		})
-    
+
 		api.POST("/activities/:id/registration", func(c *gin.Context) {
-      handler.SubmitRegistration(c, queries)
+			handler.SubmitRegistration(c, queries)
 		})
 
 		// Get /your proposed activities submitted response
 		api.GET("/activities/:id/registration", func(c *gin.Context) {
 			handler.GetSubmittedMembers(c, queries)
 		})
-    
-// 		api.GET("/activities/:id/registration", func(c *gin.Context) {
-// 			handler.GetActivityRegistration(c, queries)
-// 		})
+
+		// 		api.GET("/activities/:id/registration", func(c *gin.Context) {
+		// 			handler.GetActivityRegistration(c, queries)
+		// 		})
 
 		api.GET("/health", func(c *gin.Context) {
 			handler.Healthchecks(c)

@@ -1,9 +1,11 @@
 <script lang="ts">
 	// import type { Activity } from '$lib/types';
-
 	// let { data }: { data: { activity: Activity } } = $props();
+	
 	import type { PageData } from './$types';
 	let { data }: { data: PageData } = $props();
+	console.log(data);
+
 	let activity = data.activity;
 
 	let expectation = $state('');

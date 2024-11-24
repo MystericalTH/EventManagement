@@ -2,20 +2,7 @@
 	import type { PageData } from './$types';
 	let { data }: { data: PageData } = $props();
 
-	// import type { Activity } from '$lib/types';
 	import ActivityContent from '$lib/components/ActivityContent.svelte';
-	// import { activityData } from '$msw/__data';
-	// let {
-	// 	data
-	// }: {
-	// 	data: {
-	// 		activity: Activity;
-	// 		isRegistered: boolean;
-	// 		isEventPast: boolean;
-	// 		hasSubmittedFeedback: boolean;
-	// 		nextActivityId: number | null;
-	// 	};
-	// } = $props();
 
 	console.log(data);
 	
@@ -38,7 +25,7 @@
 	{#if data.activity}
 		<div class="w-5/6 items-center text-center">
 			<ActivityContent data={data.activity} />
-			{#if data.isEventPast && data.isRegistered}
+			{#if data.isEventPast && data.isRegistered.isRegistered}
 				{#if data.hasSubmittedFeedback}
 					<button class="rounded bg-gray-500 px-4 py-2 text-white" disabled
 						>Feedback Submitted</button
@@ -48,7 +35,7 @@
 						>Submit Feedback</button
 					>
 				{/if}
-			{:else if data.isRegistered}
+			{:else if data.isRegistered.isRegistered}
 				<button class="rounded bg-gray-500 px-4 py-2 text-white" disabled>Registered</button>
 			{:else}
 				<button class="rounded bg-blue-500 px-4 py-2 text-white" onclick={openRegisterPage}
