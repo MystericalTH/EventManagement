@@ -96,6 +96,11 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 			handler.GetProposedActivities(c, queries)
 		})
 
+		// GET /member/activities list of activities that registered by member
+		api.GET(("member/activities"), func(c *gin.Context) {
+			handler.GetRegisteredActivities(c, queries)
+		})
+
 		//! FEEDBACK ROUTES !//
 
 		api.GET("/activities/", func(c *gin.Context) {
