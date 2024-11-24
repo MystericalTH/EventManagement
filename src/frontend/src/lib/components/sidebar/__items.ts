@@ -33,7 +33,7 @@ export const adminItems: SidebarItem[] = [
 			{ text: 'Member Requests', href: '/admin/members/requests' }
 		]
 	},
-	{ text: 'Chat with Developer', href: '/chat' }
+	{ text: 'Chat with Developer', href: '/admin/chat/dev' }
 ];
 
 export const memberItems: SidebarItem[] = [
@@ -52,6 +52,4 @@ export const memberItems: SidebarItem[] = [
 	}
 ];
 
-export const developerItems: SidebarItem[] = [
-	{ text: 'Chat with Admin', href: '/chat' }	
-];
+export const developerItems: SidebarItem[] = [{ text: 'Chat with Admin', href: '/chat' }];
