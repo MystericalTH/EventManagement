@@ -13,6 +13,6 @@ export interface Activity {
 	advisor: string;
 	acceptAdmin?: string;
 	acceptDateTime?: string;
-	applicationStatus?: string;
+	applicationStatus: string;
 	activityRoles: string[];
 }

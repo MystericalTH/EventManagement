@@ -51,7 +51,7 @@ WHERE acceptAdmin IS NOT NULL AND acceptDateTime IS NOT NULL AND applicationStat
 
 -- name: InsertActivity :exec
 INSERT INTO Activity (title, proposer, startDate, endDate, maxParticipant, format, description, proposeDateTime, applicationStatus
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, "pending");
+) VALUES (?, ?, ?, ?, ?, ?, ?, CONVERT_TZ(NOW(), 'UTC', '+07:00'), "pending");
 
 -- name: InsertProject :exec
 INSERT INTO Project (projectID, advisor) VALUES (?, ?);
@@ -76,7 +76,7 @@ WHERE ActivityID = ?;
 
 -- name: ApproveActivityRegistration :exec
 UPDATE Activity
-SET acceptDateTime = LOCALTIME(),
+SET acceptDateTime = CONVERT_TZ(NOW(), 'UTC', '+07:00'), -- Store acceptDateTime in GMT+07:00
     acceptAdmin = ?, -- Include the admin responsible for the approval
     applicationStatus = "approved"
 WHERE activityID = ?;
@@ -98,3 +98,20 @@ SELECT a.activityID, title, proposer, startDate, endDate, maxParticipant, format
             activityID
     ) ar ON a.activityID = ar.activityID
 WHERE proposer = ?;
+
+-- name: CheckProjectDateConflict :one
+SELECT COUNT(1)
+FROM Activity a
+WHERE a.format = 'project' AND
+      a.startDate = ? AND
+      a.endDate = ?;
+
+
+-- name: CheckWorkshopDateConflict :one
+SELECT COUNT(1)
+FROM Workshop w
+JOIN Activity a ON w.workshopID = a.activityID
+WHERE a.format = 'workshop' AND
+      a.startDate = ? AND
+      a.endDate = ? AND
+      ((w.startTime < ? AND w.endTime > ?) OR (a.startDate < ? AND a.endDate > ?));

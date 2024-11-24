@@ -28,7 +28,7 @@ func (q *Queries) HasSubmittedFeedback(ctx context.Context, arg HasSubmittedFeed
 
 const insertFeedback = `-- name: InsertFeedback :exec
 INSERT INTO Feedback (activityID, memberID, feedbackMessage, feedbackDateTime)
-VALUES (?, ?, ?, NOW())
+VALUES (?, ?, ?, CONVERT_TZ(NOW(), 'UTC', '+07:00'))
 `
 
 type InsertFeedbackParams struct {

@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"sinno-server/pkg/db"
+	"time"
 )
 
 // CreateRegistrationService creates a new registration entry
@@ -41,4 +42,30 @@ func GetSubmittedMembersService(queries *db.Queries, activityID int32) ([]db.Lis
 
 func GetMemberActivitiesService(queries *db.Queries, memberID int32) ([]db.ListMemberActivitiesRow, error) {
 	return queries.ListMemberActivities(context.Background(), memberID)
+}
+
+func CheckProjectDateConflict(queries *db.Queries, startDate, endDate time.Time) (bool, error) {
+	conflictCount, err := queries.CheckProjectDateConflict(context.Background(), db.CheckProjectDateConflictParams{
+		Startdate: startDate,
+		Enddate:   endDate,
+	})
+	if err != nil {
+		return false, err // Return false with the error
+	}
+	// If conflictCount > 0, there is a conflict
+	return conflictCount > 0, nil
+}
+
+func CheckWorkshopConflict(queries *db.Queries, startDate, endDate, startTime, endTime time.Time) (bool, error) {
+	conflictCount, err := queries.CheckWorkshopDateConflict(context.Background(), db.CheckWorkshopDateConflictParams{
+		Startdate: startDate,
+		Enddate:   endDate,
+		Starttime: startTime.Format("15:04"), // Convert to HH:mm format
+		Endtime:   endTime.Format("15:04"),   // Convert to HH:mm format
+	})
+	if err != nil {
+		return false, err // Return false with the error
+	}
+	// If conflictCount > 0, there is a conflict
+	return conflictCount > 0, nil
 }
