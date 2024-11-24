@@ -18,7 +18,7 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 			handler.AuthLogin(c)
 		})
 		api.GET("/auth/google/callback", func(c *gin.Context) {
-			handler.AuthCallback(c)
+			handler.AuthCallback(c, queries)
 		})
 		api.GET("/login/callback", func(c *gin.Context) {
 			handler.LoginInfoRetrieval(c)
