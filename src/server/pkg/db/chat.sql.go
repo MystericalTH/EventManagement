@@ -17,9 +17,9 @@ VALUES (?, ?, ?, NOW())
 `
 
 type InsertChatParams struct {
-	Adminid     sql.NullInt32 `json:"adminid"`
-	Developerid sql.NullInt32 `json:"developerid"`
-	Message     string        `json:"message"`
+	Adminid     int32  `json:"adminid"`
+	Developerid int32  `json:"developerid"`
+	Message     string `json:"message"`
 }
 
 func (q *Queries) InsertChat(ctx context.Context, arg InsertChatParams) error {

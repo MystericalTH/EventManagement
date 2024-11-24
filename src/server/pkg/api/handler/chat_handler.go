@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 	"sinno-server/pkg/db"
@@ -44,8 +43,8 @@ func CreateChat(c *gin.Context, queries *db.Queries) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch admin ID", "details": err.Error()})
 			return
 		}
-		chatData.Adminid = sql.NullInt32{Int32: int32(adminID), Valid: true}
-		chatData.Developerid = sql.NullInt32{Valid: false}
+		chatData.Adminid = int32(adminID)
+		chatData.Developerid = 0
 	} else if role == "developer" {
 		developerID, err := services.GetDeveloperIDByEmailService(queries, email)
 		if err != nil {
@@ -53,8 +52,8 @@ func CreateChat(c *gin.Context, queries *db.Queries) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch admin ID", "details": err.Error()})
 			return
 		}
-		chatData.Developerid = sql.NullInt32{Int32: int32(developerID), Valid: true}
-		chatData.Adminid = sql.NullInt32{Valid: false}
+		chatData.Developerid = int32(developerID)
+		chatData.Adminid = 0
 	} else {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Members cannot submit chats"})
 		return

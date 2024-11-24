@@ -43,11 +43,11 @@ type Admin struct {
 }
 
 type Chatdevad struct {
-	Messageid   int32         `json:"messageid"`
-	Adminid     sql.NullInt32 `json:"adminid"`
-	Developerid sql.NullInt32 `json:"developerid"`
-	Message     string        `json:"message"`
-	Datetime    time.Time     `json:"datetime"`
+	Messageid   int32     `json:"messageid"`
+	Adminid     int32     `json:"adminid"`
+	Developerid int32     `json:"developerid"`
+	Message     string    `json:"message"`
+	Datetime    time.Time `json:"datetime"`
 }
 
 type Developer struct {
