@@ -146,6 +146,7 @@ func GetActivityRegistration(c *gin.Context, queries *db.Queries) {
 
 	// Return JSON response
 	c.JSON(http.StatusOK, registrations)
+}
 
 func GetSubmittedMembers(c *gin.Context, queries *db.Queries) {
 	// Retrieve the session
