@@ -10,7 +10,8 @@ export const defaultItems = (currentUrl: string): SidebarItem[] => {
 			text: 'Login',
 			subitems: [
 				{ text: 'Member', href: `/api/login?role=member\&redirect_uri=${currentUrl}` },
-				{ text: 'Admin', href: `/api/login?role=admin\&redirect_uri=${currentUrl}` }
+				{ text: 'Admin', href: `/api/login?role=admin\&redirect_uri=${currentUrl}` },
+				{ text: 'Developer', href: `/api/login?role=developer\&redirect_uri=${currentUrl}` }
 			]
 		}
 	];
@@ -31,7 +32,8 @@ export const adminItems: SidebarItem[] = [
 			{ text: 'Manage Members', href: '/admin/members' },
 			{ text: 'Member Requests', href: '/admin/members/requests' }
 		]
-	}
+	},
+	{ text: 'Chat with Developer', href: '/chat' }
 ];
 
 export const memberItems: SidebarItem[] = [
@@ -48,4 +50,8 @@ export const memberItems: SidebarItem[] = [
 			}
 		]
 	}
+];
+
+export const developerItems: SidebarItem[] = [
+	{ text: 'Chat with Admin', href: '/chat' }	
 ];
