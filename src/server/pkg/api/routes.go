@@ -113,13 +113,12 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 		api.GET("/activities/:id/registration/status", func(c *gin.Context) {
 			handler.GetRegistrationStatus(c, queries)
 		})
-		api.POST("/activities/:activityId/registration", func(c *gin.Context) {
+		api.POST("/activities/:id/registration", func(c *gin.Context) {
 			handler.SubmitRegistration(c, queries)
 		})
-		api.GET("/activities/:activityId/registration", func(c *gin.Context) {
+		api.GET("/activities/:id/registration", func(c *gin.Context) {
 			handler.GetActivityRegistration(c, queries)
 		})
-
 
 		api.GET("/health", func(c *gin.Context) {
 			handler.Healthchecks(c)
