@@ -6,7 +6,7 @@ export interface Activity {
 	startTime: string;
 	endDate: string;
 	endTime: string;
-	maxNumbert: number;
+	maxParticipant: number;
 	format: string;
 	description: string;
 	proposeDateTime: string;
@@ -14,5 +14,5 @@ export interface Activity {
 	acceptAdmin?: string;
 	acceptDateTime?: string;
 	applicationStatus?: string;
-	activityRole: string[];
+	roles: string[];
 }
