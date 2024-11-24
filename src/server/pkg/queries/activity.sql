@@ -48,3 +48,9 @@ WHERE activityID = ?;
 SELECT activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus
 FROM Activity
 WHERE acceptAdmin IS NULL AND acceptDateTime IS NULL AND applicationStatus IS NULL AND proposer = ?;
+
+-- name: ListRegisteredActivities :many
+SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus
+FROM Activity
+INNER JOIN ActivityRegistration a ON Activity.activityID = a.activityID
+WHERE a.memberID = ?;

@@ -261,6 +261,64 @@ func (q *Queries) ListActivityRoles(ctx context.Context, activityid int32) ([]st
 	return items, nil
 }
 
+const listRegisteredActivities = `-- name: ListRegisteredActivities :many
+SELECT a.activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus
+FROM Activity
+INNER JOIN ActivityRegistration a ON Activity.activityID = a.activityID
+WHERE a.memberID = ?
+`
+
+type ListRegisteredActivitiesRow struct {
+	Activityid        int32          `json:"activityid"`
+	Title             string         `json:"title"`
+	Proposer          int32          `json:"proposer"`
+	Startdate         time.Time      `json:"startdate"`
+	Enddate           time.Time      `json:"enddate"`
+	Maxnumber         int32          `json:"maxnumber"`
+	Format            string         `json:"format"`
+	Description       string         `json:"description"`
+	Proposedatetime   time.Time      `json:"proposedatetime"`
+	Acceptadmin       sql.NullInt32  `json:"acceptadmin"`
+	Acceptdatetime    sql.NullTime   `json:"acceptdatetime"`
+	Applicationstatus sql.NullString `json:"applicationstatus"`
+}
+
+func (q *Queries) ListRegisteredActivities(ctx context.Context, memberid int32) ([]ListRegisteredActivitiesRow, error) {
+	rows, err := q.db.QueryContext(ctx, listRegisteredActivities, memberid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListRegisteredActivitiesRow
+	for rows.Next() {
+		var i ListRegisteredActivitiesRow
+		if err := rows.Scan(
+			&i.Activityid,
+			&i.Title,
+			&i.Proposer,
+			&i.Startdate,
+			&i.Enddate,
+			&i.Maxnumber,
+			&i.Format,
+			&i.Description,
+			&i.Proposedatetime,
+			&i.Acceptadmin,
+			&i.Acceptdatetime,
+			&i.Applicationstatus,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listRequestingActivities = `-- name: ListRequestingActivities :many
 SELECT activityID, title, proposer, startDate, endDate, maxNumber, format, description, proposeDateTime, acceptAdmin, acceptDateTime, applicationStatus
 FROM Activity

@@ -66,3 +66,7 @@ func GetAcceptedActivitiesService(queries *db.Queries) ([]db.Activity, error) {
 func GetProposedActivitiesService(queries *db.Queries, proposerID int32) ([]db.Activity, error) {
 	return queries.ListActivitiesByProposer(context.Background(), proposerID)
 }
+
+func GetRegisteredActivitiesService(queries *db.Queries, memberID int32) ([]db.ListRegisteredActivitiesRow, error) {
+	return queries.ListRegisteredActivities(context.Background(), memberID)
+}

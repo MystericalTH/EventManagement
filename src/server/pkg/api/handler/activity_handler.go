@@ -301,3 +301,36 @@ func GetProposedActivities(c *gin.Context, queries *db.Queries) {
 	}
 	c.JSON(http.StatusOK, activities)
 }
+
+func GetRegisteredActivities(c *gin.Context, queries *db.Queries) {
+	// Retrieve user email and role from session
+	session, err := SessionStore.Get(c.Request, SessionName)
+	if err != nil {
+		log.Printf("Failed to retrieve session: %v\n", err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Session retrieval failed"})
+		return
+	}
+
+	userEmail, emailOk := session.Values["user_email"].(string)
+	role, roleOk := session.Values["role"].(string)
+	if !emailOk || !roleOk || role != "member" {
+		log.Printf("Unauthorized access. EmailOk: %v, RoleOk: %v, Role: %v\n", emailOk, roleOk, role)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized: Invalid session or insufficient privileges"})
+		return
+	}
+
+	// Fetch member ID using the email
+	memberID, err := services.GetMemberIDByEmailService(queries, userEmail)
+	if err != nil {
+		log.Printf("Failed to fetch member ID for email %s: %v\n", userEmail, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch member ID", "details": err.Error()})
+		return
+	}
+
+	activities, err := services.GetRegisteredActivitiesService(queries, memberID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch activities"})
+		return
+	}
+	c.JSON(http.StatusOK, activities)
+}
