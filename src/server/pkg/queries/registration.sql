@@ -1,6 +1,6 @@
 -- name: InsertRegistration :exec
 INSERT INTO ActivityRegistration (activityID, memberID, role, expectation, datetime)
-VALUES (?, ?, ?, ?, NOW());
+VALUES (?, ?, ?, ?, CONVERT_TZ(NOW(), 'UTC', '+07:00'));
 
 -- name: GetRegistrationStatus :one
 SELECT COUNT(*) > 0 AS is_registered

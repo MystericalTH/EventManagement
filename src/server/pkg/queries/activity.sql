@@ -51,7 +51,7 @@ WHERE acceptAdmin IS NOT NULL AND acceptDateTime IS NOT NULL AND applicationStat
 
 -- name: InsertActivity :exec
 INSERT INTO Activity (title, proposer, startDate, endDate, maxParticipant, format, description, proposeDateTime, applicationStatus
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, "pending");
+) VALUES (?, ?, ?, ?, ?, ?, ?, CONVERT_TZ(NOW(), 'UTC', '+07:00'), "pending");
 
 -- name: InsertProject :exec
 INSERT INTO Project (projectID, advisor) VALUES (?, ?);
@@ -76,7 +76,7 @@ WHERE ActivityID = ?;
 
 -- name: ApproveActivityRegistration :exec
 UPDATE Activity
-SET acceptDateTime = LOCALTIME(),
+SET acceptDateTime = CONVERT_TZ(NOW(), 'UTC', '+07:00'), -- Store acceptDateTime in GMT+07:00
     acceptAdmin = ?, -- Include the admin responsible for the approval
     applicationStatus = "approved"
 WHERE activityID = ?;
