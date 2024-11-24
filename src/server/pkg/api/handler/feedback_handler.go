@@ -129,6 +129,30 @@ func SubmitFeedback(c *gin.Context, queries *db.Queries) {
 
 // ListFeedbacksByActivity handles listing feedback entries for an activity
 func GetFeedbacksByActivity(c *gin.Context, queries *db.Queries) {
+	// Ensure the request method is POST
+	if c.Request.Method != http.MethodPost {
+		c.JSON(http.StatusMethodNotAllowed, gin.H{"error": "Method not allowed"})
+		return
+	}
+
+	session, err := SessionStore.Get(c.Request, SessionName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session", "details": err.Error()})
+		return
+	}
+
+	role, roleOk := session.Values["role"].(string)
+	if !roleOk {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	// Only allow admins to see feedback entries
+	if role != "admin" {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Only admins can access this page"})
+		return
+	}
+
 	// Get activity ID from URL
 	activityIDStr := c.Param("activityId")
 	activityID, err := strconv.ParseInt(activityIDStr, 10, 32)
