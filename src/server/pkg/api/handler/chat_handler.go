@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"sinno-server/pkg/db"
 	"sinno-server/pkg/services"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,7 +31,7 @@ func CreateChat(c *gin.Context, queries *db.Queries) {
 	email := userInfo.Email
 
 	// Decode the request body
-	var chatData db.InsertChatParams
+	var chatData db.InsertAdminDevChatParams
 	if err := c.ShouldBindJSON(&chatData); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body", "details": err.Error()})
 		return
@@ -44,9 +45,8 @@ func CreateChat(c *gin.Context, queries *db.Queries) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch admin ID", "details": err.Error()})
 			return
 		}
-		chatData.Role = "admin"
-		chatData.Adminid = sql.NullInt32{Int32: int32(adminID), Valid: true}
-		chatData.Developerid = sql.NullInt32{Int32: 0, Valid: false}
+		chatData.Sender = "admin"
+		chatData.Adminid = adminID
 	} else if role == "developer" {
 		developerID, err := services.GetDeveloperIDByEmailService(queries, email)
 		if err != nil {
@@ -54,16 +54,15 @@ func CreateChat(c *gin.Context, queries *db.Queries) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch admin ID", "details": err.Error()})
 			return
 		}
-		chatData.Role = "developer"
-		chatData.Developerid = sql.NullInt32{Int32: int32(developerID), Valid: true}
-		chatData.Adminid = sql.NullInt32{Int32: 0, Valid: false}
+		chatData.Sender = "developer"
+		chatData.Developerid = developerID
 	} else {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Members cannot submit chats"})
 		return
 	}
 
 	// Insert the chat using the service
-	if err := services.CreateChatService(queries, chatData); err != nil {
+	if err := services.InsertAdminDevChatService(queries, chatData); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to submit chat", "details": err.Error()})
 		return
 	}
@@ -72,8 +71,9 @@ func CreateChat(c *gin.Context, queries *db.Queries) {
 }
 
 // Get all chats
-func GetChats(c *gin.Context, queries *db.Queries) {
+func GetAdminDevChats(c *gin.Context, queries *db.Queries) {
 	// Retrieve the session
+
 	session, err := SessionStore.Get(c.Request, SessionName)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session", "details": err.Error()})
@@ -85,13 +85,46 @@ func GetChats(c *gin.Context, queries *db.Queries) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
 		return
 	}
-
-	if role == "member" {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Members cannot access this page"})
+	userInfo, userInfoOk := session.Values["userInfo"].(UserInfo)
+	if !userInfoOk {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot parse userInfo"})
 		return
 	}
 
-	chats, err := services.GetChatsService(queries)
+	params := db.ListAdminDevChatParams{}
+
+	if role == "developer" {
+		params.Developerid, err = services.GetDeveloperIDByEmailService(queries, userInfo.Email)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot get email"})
+			return
+		}
+		adminIDStr := c.Param("adminID")
+		adminID, err := strconv.ParseInt(adminIDStr, 10, 32)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error parsing admin ID"})
+			return
+		}
+		params.Adminid = int32(adminID)
+	} else if role == "admin" {
+		params.Adminid, err = services.GetDeveloperIDByEmailService(queries, userInfo.Email)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot get email"})
+			return
+		}
+		developerIDStr := c.Param("developerID")
+		developerID, err := strconv.ParseInt(developerIDStr, 10, 32)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error parsing admin ID"})
+			return
+		}
+		params.Developerid = int32(developerID)
+	} else {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You cannot access this page"})
+		return
+	}
+
+	chats, err := services.ListAdminDevChatService(queries, params)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get feedback entries", "details": err.Error()})
 		return

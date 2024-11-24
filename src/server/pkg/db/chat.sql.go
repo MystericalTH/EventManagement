@@ -7,76 +7,183 @@ package db
 
 import (
 	"context"
-	"database/sql"
 	"time"
 )
 
-const insertChat = `-- name: InsertChat :exec
-INSERT INTO chatDevAd (adminID, developerID, role, message, datetime) 
+const insertAdminDevChat = `-- name: InsertAdminDevChat :exec
+INSERT INTO chatDevAd (adminID, developerID, sender, message, timesent) 
 VALUES (?, ?, ?, ?, NOW())
 `
 
-type InsertChatParams struct {
-	Adminid     sql.NullInt32 `json:"adminid"`
-	Developerid sql.NullInt32 `json:"developerid"`
-	Role        string        `json:"role"`
-	Message     string        `json:"message"`
+type InsertAdminDevChatParams struct {
+	Adminid     int32  `json:"adminid"`
+	Developerid int32  `json:"developerid"`
+	Sender      string `json:"sender"`
+	Message     string `json:"message"`
 }
 
-func (q *Queries) InsertChat(ctx context.Context, arg InsertChatParams) error {
-	_, err := q.db.ExecContext(ctx, insertChat,
+func (q *Queries) InsertAdminDevChat(ctx context.Context, arg InsertAdminDevChatParams) error {
+	_, err := q.db.ExecContext(ctx, insertAdminDevChat,
 		arg.Adminid,
 		arg.Developerid,
-		arg.Role,
+		arg.Sender,
 		arg.Message,
 	)
 	return err
 }
 
-const listChat = `-- name: ListChat :many
-SELECT 
-    c.messageid, 
-    a.fname AS admin_fname,
-    a.lname AS admin_lname,
-    d.fname AS developer_fname, 
-    d.lname AS developer_lname, 
-    c.message, 
-    c.datetime 
-FROM 
-    chatDevAd c
-LEFT JOIN 
-    Admin a ON c.adminid = a.adminID
-LEFT JOIN 
-    Developer d ON c.developerid = d.developerID
+const listAdminDevChat = `-- name: ListAdminDevChat :many
+SELECT developerID, message, sender, timesent FROM chatDevAd 
+WHERE adminID = ? AND developerID = ?
 `
 
-type ListChatRow struct {
-	Messageid      int32          `json:"messageid"`
-	AdminFname     sql.NullString `json:"admin_fname"`
-	AdminLname     sql.NullString `json:"admin_lname"`
-	DeveloperFname sql.NullString `json:"developer_fname"`
-	DeveloperLname sql.NullString `json:"developer_lname"`
-	Message        string         `json:"message"`
-	Datetime       time.Time      `json:"datetime"`
+type ListAdminDevChatParams struct {
+	Adminid     int32 `json:"adminid"`
+	Developerid int32 `json:"developerid"`
 }
 
-func (q *Queries) ListChat(ctx context.Context) ([]ListChatRow, error) {
-	rows, err := q.db.QueryContext(ctx, listChat)
+type ListAdminDevChatRow struct {
+	Developerid int32     `json:"developerid"`
+	Message     string    `json:"message"`
+	Sender      string    `json:"sender"`
+	Timesent    time.Time `json:"timesent"`
+}
+
+func (q *Queries) ListAdminDevChat(ctx context.Context, arg ListAdminDevChatParams) ([]ListAdminDevChatRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAdminDevChat, arg.Adminid, arg.Developerid)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListChatRow
+	var items []ListAdminDevChatRow
 	for rows.Next() {
-		var i ListChatRow
+		var i ListAdminDevChatRow
 		if err := rows.Scan(
-			&i.Messageid,
-			&i.AdminFname,
-			&i.AdminLname,
+			&i.Developerid,
+			&i.Message,
+			&i.Sender,
+			&i.Timesent,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listInitialAdminChatToDev = `-- name: ListInitialAdminChatToDev :many
+SELECT 
+    d.fname AS developer_fname, 
+    d.lname AS developer_lname, 
+    c.message, 
+    c.timesent 
+FROM 
+    chatDevAd c
+JOIN 
+    (SELECT 
+         developerid, 
+         MAX(timesent) AS latest_time
+     FROM
+         chatDevAd
+     GROUP BY
+         developerid, adminid) latest
+ON 
+    c.developerid = latest.developerid 
+    AND c.timesent = latest.latest_time
+JOIN 
+    developer d ON c.developerid = d.developerid
+WHERE 
+    c.adminid = ?
+`
+
+type ListInitialAdminChatToDevRow struct {
+	DeveloperFname string    `json:"developer_fname"`
+	DeveloperLname string    `json:"developer_lname"`
+	Message        string    `json:"message"`
+	Timesent       time.Time `json:"timesent"`
+}
+
+func (q *Queries) ListInitialAdminChatToDev(ctx context.Context, adminid int32) ([]ListInitialAdminChatToDevRow, error) {
+	rows, err := q.db.QueryContext(ctx, listInitialAdminChatToDev, adminid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListInitialAdminChatToDevRow
+	for rows.Next() {
+		var i ListInitialAdminChatToDevRow
+		if err := rows.Scan(
 			&i.DeveloperFname,
 			&i.DeveloperLname,
 			&i.Message,
-			&i.Datetime,
+			&i.Timesent,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listInitialDevChatToAdmin = `-- name: ListInitialDevChatToAdmin :many
+SELECT 
+    a.fname AS admin_fname,
+    a.lname AS admin_lname,
+    c.message, 
+    c.timesent 
+FROM 
+    chatDevAd c
+JOIN 
+  (SELECT 
+        adminid,
+        MAX(timesent) AS latest_time
+    FROM 
+        chatDevAd
+    GROUP BY 
+        adminid, developerid
+  ) latest
+ON 
+  c.adminid = latest.adminid 
+  AND c.timesent = latest.latest_time
+JOIN 
+  admin a ON c.adminid = a.adminid
+WHERE 
+  c.developerid = ?
+`
+
+type ListInitialDevChatToAdminRow struct {
+	AdminFname string    `json:"admin_fname"`
+	AdminLname string    `json:"admin_lname"`
+	Message    string    `json:"message"`
+	Timesent   time.Time `json:"timesent"`
+}
+
+func (q *Queries) ListInitialDevChatToAdmin(ctx context.Context, developerid int32) ([]ListInitialDevChatToAdminRow, error) {
+	rows, err := q.db.QueryContext(ctx, listInitialDevChatToAdmin, developerid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListInitialDevChatToAdminRow
+	for rows.Next() {
+		var i ListInitialDevChatToAdminRow
+		if err := rows.Scan(
+			&i.AdminFname,
+			&i.AdminLname,
+			&i.Message,
+			&i.Timesent,
 		); err != nil {
 			return nil, err
 		}

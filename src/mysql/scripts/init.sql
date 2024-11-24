@@ -87,11 +87,11 @@ CREATE TABLE Developer (
 -- Table structure for chatDevAd
 CREATE TABLE chatDevAd (
   messageID int(11) NOT NULL AUTO_INCREMENT,
-  adminID int(11) DEFAULT NULL,
-  developerID int(11) DEFAULT NULL,
-  role varchar(30) NOT NULL,
+  adminID int(11) NOT NULL,
+  developerID int(11) NOT NULL,
+  sender varchar(30) NOT NULL,
   message text NOT NULL,
-  datetime datetime NOT NULL,
+  timesent datetime NOT NULL,
   PRIMARY KEY (messageID),
   KEY adminID (adminID),
   KEY developerID (developerID),
