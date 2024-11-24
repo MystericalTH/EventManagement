@@ -1,9 +1,11 @@
 import type { Member, Pagination } from '$lib/types';
 const removeItem = (id: number, pagination: Pagination<any>) => {
-	pagination.data.splice(
-		pagination.data.findIndex((e: Member) => e.memberid === id),
-		1
-	);
+	let idx: number = pagination.data.findIndex((e: any) => {
+		if (e.memberid != null) e.id = e.memberid;
+		return e.id === id;
+	});
+
+	pagination.data.splice(idx, 1);
 	if (pagination.maxPage < pagination.pageBuffer) {
 		pagination.pageBuffer = pagination.maxPage;
 		pagination.setPage();
