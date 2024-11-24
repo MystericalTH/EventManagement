@@ -3,7 +3,7 @@ INSERT INTO chatDevAd (adminID, developerID, sender, message, timesent)
 VALUES (?, ?, ?, ?, NOW());
 
 -- name: ListAdminDevChat :many
-SELECT developerID, message, sender, timesent FROM chatDevAd 
+SELECT message, sender, timesent FROM chatDevAd 
 WHERE adminID = ? AND developerID = ?;
 
 -- name: ListInitialAdminChatToDev :many
