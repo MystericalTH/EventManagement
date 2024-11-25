@@ -7,11 +7,11 @@
 	console.log(data);
 
 	const openRegisterPage = () => {
-		window.location.href = `/activities/${data.activity.id}/register`;
+		window.location.href = `/member/activities/${data.activity.id}/register`;
 	};
 
 	const openFeedbackPage = () => {
-		window.location.href = `/activities/${data.activity.id}/feedback`;
+		window.location.href = `/member/activities/${data.activity.id}/feedback`;
 	};
 </script>
 
