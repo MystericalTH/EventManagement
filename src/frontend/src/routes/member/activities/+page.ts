@@ -9,5 +9,6 @@ export const load: PageLoad = async ({ fetch }) => {
 	}
 	let fetchActivities = await response.json();
 	let activities: Activity[] = fetchActivities == null ? [] : [...fetchActivities];
+	console.log(activities);
 	return { activities };
 };
