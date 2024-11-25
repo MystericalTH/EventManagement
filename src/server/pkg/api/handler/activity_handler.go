@@ -226,7 +226,7 @@ func PostActivity(c *gin.Context, queries *db.Queries) {
 
 	// Validate and handle workshop-specific timing
 	var startTime, endTime time.Time
-	if req.Format == "workshop" {
+	if req.Format == "Workshop" {
 		// Parse start and end times
 		workshopStartTime, err := parseTime(req.Starttime)
 		if err != nil {
@@ -291,7 +291,7 @@ func PostActivity(c *gin.Context, queries *db.Queries) {
 	log.Printf("PostActivity: Retrieved activity ID: %d for title: %s\n", activityID, req.Title)
 
 	// Handle specific formats (project or workshop)
-	if req.Format == "project" && req.Advisor != nil {
+	if req.Format == "Project" && req.Advisor != nil {
 		projectParams := db.InsertProjectParams{
 			Projectid: activityID,
 			Advisor:   sql.NullString{String: *req.Advisor, Valid: true},
@@ -302,7 +302,7 @@ func PostActivity(c *gin.Context, queries *db.Queries) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert project", "details": err.Error()})
 			return
 		}
-	} else if req.Format == "workshop" {
+	} else if req.Format == "Workshop" {
 		workshopParams := db.InsertWorkshopParams{
 			Workshopid: activityID,
 			Starttime:  startTime.Format("15:04"), // Convert time.Time to string in HH:MM format

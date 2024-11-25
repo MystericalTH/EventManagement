@@ -110,11 +110,11 @@
 								class="w-56 rounded border border-gray-300 p-2 text-base"
 							>
 								<option value="" disabled selected>Select format</option>
-								<option value="project">Project</option>
-								<option value="workshop">Workshop</option>
+								<option value="Project">Project</option>
+								<option value="Workshop">Workshop</option>
 							</select>
 						</div>
-						{#if format === 'project'}
+						{#if format === 'Project'}
 							<div class=" content-center text-right">
 								<label for="startDate" class="font-bold">Start Date</label>
 							</div>
@@ -152,7 +152,7 @@
 									class="w-56 rounded border border-gray-300 p-2 text-base"
 								/>
 							</div>
-						{:else if format === 'workshop'}
+						{:else if format === 'Workshop'}
 							<div class=" content-center text-right">
 								<label for="startDate" class="font-bold">Start Date</label>
 							</div>
