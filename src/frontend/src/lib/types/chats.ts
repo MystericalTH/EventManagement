@@ -6,4 +6,10 @@ interface ChatChannelInfo {
 	timesent: Date;
 }
 
-export type { ChatChannelInfo };
+interface ChatMessage {
+	sender: string;
+	message: string;
+	timesent: Date;
+}
+
+export type { ChatChannelInfo, ChatMessage };

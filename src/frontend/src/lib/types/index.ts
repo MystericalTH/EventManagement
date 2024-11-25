@@ -5,7 +5,7 @@ import type { SidebarItem } from './sidebar';
 import type { Activity } from './activity';
 import type { ImageSource } from './actionButtonIcons';
 import type { Feedback } from './feedback';
-import type { ChatChannelInfo } from './chats';
+import type { ChatChannelInfo, ChatMessage } from './chats';
 
 export type {
 	Pagination,
@@ -15,5 +15,6 @@ export type {
 	SidebarItem,
 	ImageSource,
 	Feedback,
-	ChatChannelInfo
+	ChatChannelInfo,
+	ChatMessage
 };
