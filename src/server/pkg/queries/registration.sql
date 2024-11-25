@@ -36,19 +36,34 @@ SELECT COUNT(1) > 0 AS isProposer
     WHERE activityID = ? AND proposer = ?;
 
 
--- name: ListMemberActivities :many
+-- name: ListEngagements :many
 SELECT 
     a.activityID, 
     a.title, 
+    a.startDate, 
+    a.endDate, 
+    a.maxParticipant, 
+    a.format, 
     a.description, 
-    ar.datetime, 
-    a.proposer, 
+    a.proposeDateTime, 
+    a.acceptAdmin, 
+    a.acceptDateTime, 
+    a.applicationStatus, 
+    w.startTime, 
+    w.endTime, 
+    p.advisor, 
     ar.role, 
-    ar.expectation
-    FROM 
-        ActivityRegistration ar
-    JOIN 
-        Activity a ON ar.activityID = a.activityID
-    WHERE 
-        ar.memberID = ?;
+    ar.expectation, 
+    ar.datetime
+FROM 
+    Activity a
+LEFT JOIN 
+    Workshop w ON a.activityID = w.workshopID
+LEFT JOIN 
+    Project p ON a.activityID = p.projectID
+JOIN 
+    ActivityRegistration ar ON a.activityID = ar.activityID
+WHERE 
+    ar.memberID = ?;
+
 

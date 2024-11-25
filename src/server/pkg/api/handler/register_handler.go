@@ -8,6 +8,8 @@ import (
 	"sinno-server/pkg/services"
 	"strconv"
 
+	"sinno-server/pkg/utils/typing"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -203,7 +205,7 @@ func GetSubmittedMembers(c *gin.Context, queries *db.Queries) {
 	c.JSON(http.StatusOK, members)
 }
 
-func GetMemberActivities(c *gin.Context, queries *db.Queries) {
+func GetEngagements(c *gin.Context, queries *db.Queries) {
 	// Retrieve the session
 	session, err := SessionStore.Get(c.Request, SessionName)
 	if err != nil {
@@ -229,12 +231,23 @@ func GetMemberActivities(c *gin.Context, queries *db.Queries) {
 	}
 
 	// Fetch activities for the member
-	activities, err := services.GetMemberActivitiesService(queries, memberID)
+	engagements, err := services.GetEngagements(queries, memberID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch member activities"})
 		return
 	}
 
-	// Return the member's activities
-	c.JSON(http.StatusOK, activities)
+	// Convert each engagement to the correct structure using ConvertToEngagement
+	engagementList := []typing.Engagement{}
+	for _, query := range engagements {
+		engagement, err := typing.ConvertToEngagement(db.ListEngagementsRow(query))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to format engagement"})
+			return
+		}
+		engagementList = append(engagementList, engagement)
+	}
+
+	// Return the member's engagements
+	c.JSON(http.StatusOK, engagementList)
 }

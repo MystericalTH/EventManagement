@@ -40,8 +40,8 @@ func GetSubmittedMembersService(queries *db.Queries, activityID int32) ([]db.Lis
 	return queries.ListSubmittedMembers(context.Background(), activityID)
 }
 
-func GetMemberActivitiesService(queries *db.Queries, memberID int32) ([]db.ListMemberActivitiesRow, error) {
-	return queries.ListMemberActivities(context.Background(), memberID)
+func GetEngagements(queries *db.Queries, memberID int32) ([]db.ListEngagementsRow, error) {
+	return queries.ListEngagements(context.Background(), memberID)
 }
 
 func CheckProjectDateConflict(queries *db.Queries, startDate, endDate time.Time) (bool, error) {
