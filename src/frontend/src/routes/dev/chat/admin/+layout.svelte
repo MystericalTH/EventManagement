@@ -46,7 +46,7 @@
 		{#each channels as channel}
 			{#key channel.id}
 				<ChannelBox
-					href={`/admin/chat/dev/${channel.id}`}
+					href={`/dev/chat/admin/${channel.id}`}
 					text={channel.message}
 					data={channel}
 					onclick={() => {

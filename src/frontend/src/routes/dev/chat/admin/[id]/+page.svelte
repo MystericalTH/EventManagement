@@ -38,6 +38,6 @@
 </script>
 
 {#key $page.url.pathname}
-	<ChatPanel {sendMessage} {messages} channelid={id} sender="Admin" recipient="Developer"
+	<ChatPanel {sendMessage} {messages} channelid={id} sender="Developer" recipient="Admin"
 	></ChatPanel>
 {/key}
