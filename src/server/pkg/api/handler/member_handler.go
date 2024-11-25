@@ -120,32 +120,3 @@ func DeleteMember(c *gin.Context, queries *db.Queries) {
 	}
 	c.JSON(http.StatusNoContent, gin.H{"message": "Member deleted successfully"})
 }
-
-func UpdateMember(c *gin.Context, queries *db.Queries) {
-	log.Println("UpdateMember handler called") // Debugging log
-
-	var params db.UpdateMemberParams
-	if err := c.ShouldBindJSON(&params); err != nil {
-		log.Println("Error binding JSON:", err) // Debugging log
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
-		return
-	}
-
-	log.Println("Params:", params) // Debugging log
-
-	memberID, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		log.Println("Invalid member ID:", err) // Debugging log
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid member ID"})
-		return
-	}
-
-	params.Memberid = int32(memberID)
-	if err := services.UpdateMemberService(queries, params); err != nil {
-		log.Println("Error updating member:", err) // Debugging log
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "Member updated successfully"})
-}
