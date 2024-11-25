@@ -106,7 +106,7 @@ func AuthCallback(c *gin.Context, queries *db.Queries) {
 	role := stateparts[1]
 	redirectUri := stateparts[2]
 
-	// Role-based checks
+	// Role-based checks for specific cases
 	switch role {
 	case "member":
 		if _, err := queries.GetMemberIDByEmail(context.Background(), userInfo.Email); err != nil {
@@ -124,8 +124,7 @@ func AuthCallback(c *gin.Context, queries *db.Queries) {
 			return
 		}
 	default:
-		c.String(http.StatusBadRequest, "Invalid role")
-		return
+		// If role is not one of the above, proceed without a check
 	}
 
 	// Save user info in session
@@ -141,6 +140,7 @@ func AuthCallback(c *gin.Context, queries *db.Queries) {
 	session.Values["user_name"] = userInfo.Name
 	session.Save(c.Request, c.Writer)
 
+	// Redirect to the specified URI
 	c.Redirect(http.StatusFound, redirectUri)
 }
 
