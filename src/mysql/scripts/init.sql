@@ -17,7 +17,7 @@ CREATE TABLE Member (
   fName varchar(255) NOT NULL,
   lName varchar(255) NOT NULL,
   email varchar(320) UNIQUE NOT NULL,
-  phone varchar(20) UNIQUE NOT NULL,
+  phone varchar(255) UNIQUE NOT NULL,
   githubUrl varchar(320) UNIQUE NOT NULL,
   interest text NOT NULL,
   reason text NOT NULL,
