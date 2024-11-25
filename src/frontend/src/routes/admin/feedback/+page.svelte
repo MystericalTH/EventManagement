@@ -33,7 +33,7 @@
 		}
 	}
 </script>
-<div class="p-4">
+
 <h1 class="mb-4 text-2xl">Feedback</h1>
 <!-- Dropdown to select an activity -->
 <div class="mb-4 flex flex-row">
