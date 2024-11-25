@@ -12,6 +12,8 @@ import (
 
 	"sinno-server/pkg/db"
 
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
@@ -63,25 +65,33 @@ func AuthCallback(c *gin.Context, queries *db.Queries) {
 	code := c.Query("code")
 	state, err := url.QueryUnescape(c.Query("state"))
 	if err != nil {
+		log.Printf("Error unescaping state: %v", err)
 		c.String(http.StatusInternalServerError, "Failed to unescape state: %s", err.Error())
 		return
 	}
 
 	if code == "" {
+		log.Println("Authorization code not found")
 		c.String(http.StatusBadRequest, "Authorization code not found")
 		return
 	}
 
+	log.Printf("Authorization code received: %s, State: %s", code, state)
+
 	// Exchange the code for a token
 	token, err := oauthConfig.Exchange(context.Background(), code)
 	if err != nil {
+		log.Printf("Error exchanging token: %v", err)
 		c.String(http.StatusInternalServerError, "Failed to exchange token: %s", err.Error())
 		return
 	}
 
+	log.Printf("Token successfully exchanged: %s", token.AccessToken)
+
 	// Fetch user info
 	req, err := http.NewRequest("GET", "https://www.googleapis.com/oauth2/v3/userinfo", nil)
 	if err != nil {
+		log.Printf("Error creating request for user info: %v", err)
 		c.String(http.StatusInternalServerError, "Failed to create request: %s", err.Error())
 		return
 	}
@@ -90,6 +100,7 @@ func AuthCallback(c *gin.Context, queries *db.Queries) {
 	client := oauthConfig.Client(context.Background(), token)
 	userInfoResp, err := client.Do(req)
 	if err != nil {
+		log.Printf("Error fetching user info: %v", err)
 		c.String(http.StatusInternalServerError, "Failed to get user info: %s", err.Error())
 		return
 	}
@@ -97,61 +108,69 @@ func AuthCallback(c *gin.Context, queries *db.Queries) {
 
 	var userInfo UserInfo
 	if err := json.NewDecoder(userInfoResp.Body).Decode(&userInfo); err != nil {
+		log.Printf("Error decoding user info: %v", err)
 		c.String(http.StatusInternalServerError, "Failed to decode user info: %s", err.Error())
 		return
 	}
 
+	log.Printf("User info retrieved: %+v", userInfo)
+
 	// Split the state to get role and redirectUri
 	stateparts := strings.SplitN(state, "__", 3)
+	if len(stateparts) < 3 {
+		log.Printf("Invalid state format: %s", state)
+		c.String(http.StatusBadRequest, "Invalid state parameter")
+		return
+	}
+
 	role := stateparts[1]
 	redirectUri := stateparts[2]
+	log.Printf("Role: %s, Redirect URI: %s", role, redirectUri)
 
-	fmt.Println("Role: ", role)
-
-	// Role-based checks for specific cases
+	// Role-based checks
 	switch role {
 	case "member":
-		// Case 1: Check if the user exists in the Members table
 		memberID, err := queries.GetMemberIDByEmail(context.Background(), userInfo.Email)
 		if err != nil {
-			// If Case 1 fails, return an unauthorized response
-			c.String(http.StatusUnauthorized, "User not found for role: member, Please go to signup page")
+			log.Printf("Member not found: %s", userInfo.Email)
+			c.String(http.StatusUnauthorized, "User not found for role: member, please go to signup page")
 			return
 		}
 
-		// Case 2: Check if the user exists in Members but is waiting for acceptance
 		_, err = queries.GetMemberIDByEmailWaitingAccept(context.Background(), userInfo.Email)
 		if err != nil {
-			// If Case 2 fails, return an unauthorized response
-			c.String(http.StatusUnauthorized, "Please wait until admin accept your request")
+			log.Printf("Member waiting for acceptance: %s", userInfo.Email)
+			c.String(http.StatusUnauthorized, "Please wait until admin accepts your request")
 			return
 		}
 
-		// If both cases succeed, continue processing
-		fmt.Printf("Member validated with ID: %d\n", memberID)
+		log.Printf("Member validated with ID: %d", memberID)
 
 	case "admin":
 		if _, err := queries.GetAdminIDByEmail(context.Background(), userInfo.Email); err != nil {
+			log.Printf("Admin not found: %s", userInfo.Email)
 			c.String(http.StatusUnauthorized, "User not found for role: admin")
 			return
 		}
+		log.Printf("Admin validated: %s", userInfo.Email)
+
 	case "developer":
 		if _, err := queries.GetDeveloperIDByEmail(context.Background(), userInfo.Email); err != nil {
+			log.Printf("Developer not found: %s", userInfo.Email)
 			c.String(http.StatusUnauthorized, "User not found for role: developer")
 			return
 		}
-	case "default":
-		{
+		log.Printf("Developer validated: %s", userInfo.Email)
 
-		}
 	default:
-		c.String(http.StatusUnauthorized, "Unauthorized")
-		return
+		log.Printf("Invalid role: %s", role)
+
 	}
 
 	// Save user info in session
 	session, err := SessionStore.Get(c.Request, SessionName)
 	if err != nil {
+		log.Printf("Error retrieving session: %v", err)
 		c.String(http.StatusInternalServerError, "Failed to retrieve session: %s", err.Error())
 		return
 	}
@@ -160,9 +179,16 @@ func AuthCallback(c *gin.Context, queries *db.Queries) {
 	session.Values["role"] = role
 	session.Values["user_email"] = userInfo.Email
 	session.Values["user_name"] = userInfo.Name
-	session.Save(c.Request, c.Writer)
+	if err := session.Save(c.Request, c.Writer); err != nil {
+		log.Printf("Error saving session: %v", err)
+		c.String(http.StatusInternalServerError, "Failed to save session: %s", err.Error())
+		return
+	}
+
+	log.Printf("Session saved successfully for user: %s", userInfo.Email)
 
 	// Redirect to the specified URI
+	log.Printf("Redirecting to: %s", redirectUri)
 	c.Redirect(http.StatusFound, redirectUri)
 }
 
