@@ -18,8 +18,10 @@
 		try {
 			const response = await fetch(`/api/activities/${activityId}/feedback`);
 			if (response.ok) {
-				feedback = await response.json();
-				pagination = createPagination(feedback, 10);
+				const result = await response.json();
+				feedback = result.feedbacks;
+				feedback = [...result.feedbacks];
+				// pagination = createPagination(feedback, 10);
 			} else if (response.status === 404) {
 				console.error('Activity not found');
 				feedback = [];
@@ -31,6 +33,7 @@
 			console.error('Error fetching feedback:', error);
 			feedback = [];
 		}
+		console.log(feedback);
 	}
 </script>
 
@@ -84,15 +87,6 @@
 						</th>
 					</tr>
 				</thead>
-				<!-- <tbody class="divide-y divide-gray-200">
-                {#each feedback as item}
-                  <tr>
-                    <td class="h-12 w-36 whitespace-nowrap px-3 py-3 text-xs">{item.memberID || 'Anonymous'}</td>
-                    <td class="h-12 w-64 overflow-scroll whitespace-nowrap px-3 py-3 text-xs">{item.feedbackMessage}</td>
-                    <td class="h-12 w-48 px-3 py-3 text-xs">{new Date(item.feedbackDateTime).toLocaleDateString()}</td>
-                  </tr>
-                {/each}
-              </tbody> -->
 				<tbody class="divide-y divide-gray-200">
 					{#each pagination.displayPage() as row}
 						{#key row.feedbackid}
