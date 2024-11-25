@@ -11,7 +11,7 @@
 {#if data != null}
 	<div class="text-left">
 		<h1 class="text-3xl">{data.title}</h1>
-		<p class="mb-4 mt-2 text-sm italic text-gray-400">Submitted by {data.proposer}</p>
+		<!-- <p class="mb-4 mt-2 text-sm italic text-gray-400">Submitted by {data.proposer}</p> -->
 		<div>
 			<h2 class="mb-2 text-xl">Activity Details</h2>
 			<ul class="flex flex-col space-y-2">
