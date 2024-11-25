@@ -5,6 +5,7 @@
 	import project from '$lib/assets/project.png';
 	import workshop from '$lib/assets/workshop.png';
 	import people from '$lib/assets/people.png';
+	import advisor from '$lib/assets/advisor.png';
 	export let data: Activity | null;
 </script>
 
@@ -45,6 +46,13 @@
 						/>{data.maxParticipant}
 					</span>
 				</li>
+				{#if data.format.toLowerCase() == 'project'}
+					<li>
+						<span class="inline-flex items-center text-center align-middle"
+							><img src={advisor} width="20px" alt="Advisor" class="mr-[15px]" />{data.advisor}
+						</span>
+					</li>
+				{/if}
 			</ul>
 		</div>
 		<div class="my-4">
