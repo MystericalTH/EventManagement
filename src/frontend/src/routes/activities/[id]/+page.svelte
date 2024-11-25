@@ -5,7 +5,7 @@
 	import ActivityContent from '$lib/components/ActivityContent.svelte';
 
 	console.log(data);
-	
+
 	const openRegisterPage = () => {
 		window.location.href = `/activities/${data.activity.id}/register`;
 	};
@@ -13,12 +13,6 @@
 	const openFeedbackPage = () => {
 		window.location.href = `/activities/${data.activity.id}/feedback`;
 	};
-
-	// const navigateToActivity = (offset: number) => {
-	// 	const currentId = data.activity.id;
-	// 	const newId = currentId + offset;
-	// 	window.location.href = `/activities/${newId}`;
-	// };
 </script>
 
 <div class="flex justify-center">
@@ -27,7 +21,7 @@
 			<ActivityContent data={data.activity} />
 			{#if data.isEventPast && data.isRegistered}
 				{#if data.hasSubmittedFeedback}
-					<button class="rounded bg-gray-500 px-4 py-2 text-white" disabled
+					<button class="rounded bg-gray-300 px-4 py-2 text-white" disabled
 						>Feedback Submitted</button
 					>
 				{:else}
@@ -36,7 +30,11 @@
 					>
 				{/if}
 			{:else if data.isRegistered}
-				<button class="rounded bg-gray-500 px-4 py-2 text-white" disabled>Registered</button>
+				<button class="rounded bg-gray-300 px-4 py-2 text-white" disabled>Registered</button>
+			{:else if data.isEventPast}
+				<button class="rounded bg-gray-300 px-4 py-2 text-white" disabled
+					>Registration Closed</button
+				>
 			{:else}
 				<button class="rounded bg-blue-500 px-4 py-2 text-white" onclick={openRegisterPage}
 					>Register</button
