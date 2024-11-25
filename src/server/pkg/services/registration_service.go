@@ -2,7 +2,10 @@ package services
 
 import (
 	"context"
+	"fmt"
+	"log"
 	"sinno-server/pkg/db"
+	secure "sinno-server/pkg/utils/dbsecure"
 	"time"
 )
 
@@ -37,7 +40,45 @@ func CheckProposerService(queries *db.Queries, activityID, memberID int32) (bool
 }
 
 func GetSubmittedMembersService(queries *db.Queries, activityID int32) ([]db.ListSubmittedMembersRow, error) {
-	return queries.ListSubmittedMembers(context.Background(), activityID)
+	// Fetch submitted members from the database
+	members, err := queries.ListSubmittedMembers(context.Background(), activityID)
+	if err != nil {
+		log.Printf("Error fetching submitted members for activity ID %d: %v", activityID, err)
+		return nil, err
+	}
+
+	// Iterate through the result set to decrypt sensitive fields
+	for i, member := range members {
+		// Decrypt first name
+		decryptedFName, err := secure.DecryptFromString(member.Fname, "database_present")
+		if err != nil {
+			log.Printf("Error decrypting first name for member ID %d: %v", member.Memberid, err)
+			return nil, fmt.Errorf("failed to decrypt first name for member ID %d: %v", member.Memberid, err)
+		}
+
+		// Decrypt last name
+		decryptedLName, err := secure.DecryptFromString(member.Lname, "database_present")
+		if err != nil {
+			log.Printf("Error decrypting last name for member ID %d: %v", member.Memberid, err)
+			return nil, fmt.Errorf("failed to decrypt last name for member ID %d: %v", member.Memberid, err)
+		}
+
+		// Decrypt phone
+		decryptedPhone, err := secure.DecryptFromString(member.Phone, "database_present")
+		if err != nil {
+			log.Printf("Error decrypting phone number for member ID %d: %v", member.Memberid, err)
+			return nil, fmt.Errorf("failed to decrypt phone number for member ID %d: %v", member.Memberid, err)
+		}
+
+		// Update the member struct with decrypted values
+		members[i].Fname = decryptedFName
+		members[i].Lname = decryptedLName
+		members[i].Phone = decryptedPhone
+	}
+
+	// Log successful operation
+	log.Printf("Successfully decrypted %d submitted members for activity ID %d", len(members), activityID)
+	return members, nil
 }
 
 func GetEngagements(queries *db.Queries, memberID int32) ([]db.ListEngagementsRow, error) {
