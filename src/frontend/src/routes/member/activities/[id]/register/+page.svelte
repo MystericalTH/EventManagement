@@ -1,4 +1,4 @@
-<script lang="ts">	
+<script lang="ts">
 	import type { PageData } from './$types';
 	let { data }: { data: PageData } = $props();
 	import Overlay from '$lib/components/Overlay.svelte';
