@@ -41,3 +41,14 @@ func (q *Queries) GetMemberIDByEmail(ctx context.Context, email string) (int32, 
 	err := row.Scan(&memberid)
 	return memberid, err
 }
+
+const getMemberIDByEmailWaitingAccept = `-- name: GetMemberIDByEmailWaitingAccept :one
+SELECT memberID FROM Member WHERE email = ?  AND acceptAdmin is NOT NULL and acceptdatatime is not null
+`
+
+func (q *Queries) GetMemberIDByEmailWaitingAccept(ctx context.Context, email string) (int32, error) {
+	row := q.db.QueryRowContext(ctx, getMemberIDByEmailWaitingAccept, email)
+	var memberid int32
+	err := row.Scan(&memberid)
+	return memberid, err
+}

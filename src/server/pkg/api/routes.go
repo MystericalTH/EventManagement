@@ -64,11 +64,6 @@ func RegisterRoutes(router *gin.Engine, queries *db.Queries) {
 			handler.AcceptMember(c, queries)
 		})
 
-		// PUT /members/:id update a member
-		api.PUT("/members/:id", func(c *gin.Context) {
-			handler.UpdateMember(c, queries)
-		})
-
 		//! ACTIVITY ROUTES !//
 
 		// GET /activities get all requesting activities

@@ -20,8 +20,8 @@ services:
       - ./src/server/:/usr/src/app/
       - server-tmp:/usr/src/app/tmp/
     environment:
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=admin
+      - MYSQL_USER=server
+      - MYSQL_PASSWORD=noJroUpnmr6J4I5VJOZUtdrhdjqY96i7UJsSMA5oIxk=
       - MYSQL_CONN=mysql:3306
       - MYSQL_DATABASE_NAME=ClubManagement
     develop:

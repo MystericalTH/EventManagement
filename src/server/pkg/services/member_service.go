@@ -34,10 +34,6 @@ func GetAllMemberRequestsService(queries *db.Queries) ([]db.ListRequestingMember
 	return queries.ListRequestingMembers(context.Background())
 }
 
-func UpdateMemberService(queries *db.Queries, params db.UpdateMemberParams) error {
-	return queries.UpdateMember(context.Background(), params)
-}
-
 func DeleteMemberService(queries *db.Queries, memberID int32) error {
 	return queries.DeleteMember(context.Background(), memberID)
 }

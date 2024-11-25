@@ -17,3 +17,7 @@ func GetMemberIDByEmailService(queries *db.Queries, email string) (int32, error)
 func GetDeveloperIDByEmailService(queries *db.Queries, email string) (int32, error) {
 	return queries.GetDeveloperIDByEmail(context.Background(), email)
 }
+
+func GetMemberIDByEmailWaitingAcceptService(queries *db.Queries, email string) (int32, error) {
+	return queries.GetMemberIDByEmailWaitingAccept(context.Background(), email)
+}
