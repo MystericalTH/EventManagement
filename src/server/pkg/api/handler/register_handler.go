@@ -190,8 +190,11 @@ func GetSubmittedMembers(c *gin.Context, queries *db.Queries) {
 		return
 	}
 	if !isProposer {
-		c.JSON(http.StatusForbidden, gin.H{"error": "You are not authorized to view this activity's registration"})
-		return
+		_, err := services.GetAdminIDByEmailService(queries, email)
+		if err != nil {
+			c.JSON(http.StatusForbidden, gin.H{"error": "You are not authorized to view this activity's registration"})
+			return
+		}
 	}
 
 	// Fetch registered members for the activity
