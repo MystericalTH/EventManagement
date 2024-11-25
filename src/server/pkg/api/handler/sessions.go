@@ -10,6 +10,8 @@ import (
 	"os"
 	"strings"
 
+	"sinno-server/pkg/db"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
@@ -56,7 +58,7 @@ func AuthLogin(c *gin.Context) {
 }
 
 // AuthCallback is called after OAuth2 authentication with Google
-func AuthCallback(c *gin.Context) {
+func AuthCallback(c *gin.Context, queries *db.Queries) {
 	// Retrieve the authorization code from Google
 	code := c.Query("code")
 	state, err := url.QueryUnescape(c.Query("state"))
@@ -77,16 +79,14 @@ func AuthCallback(c *gin.Context) {
 		return
 	}
 
-	// Create a new HTTP request to fetch user info from the OAuth provider
+	// Fetch user info
 	req, err := http.NewRequest("GET", "https://www.googleapis.com/oauth2/v3/userinfo", nil)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Failed to create request: %s", err.Error())
 		return
 	}
 
-	// Set the Authorization header with the access token
 	req.Header.Set("Authorization", "Bearer "+token.AccessToken)
-	// Execute the request
 	client := oauthConfig.Client(context.Background(), token)
 	userInfoResp, err := client.Do(req)
 	if err != nil {
@@ -95,16 +95,44 @@ func AuthCallback(c *gin.Context) {
 	}
 	defer userInfoResp.Body.Close()
 
-	// Parse the user info
 	var userInfo UserInfo
 	if err := json.NewDecoder(userInfoResp.Body).Decode(&userInfo); err != nil {
 		c.String(http.StatusInternalServerError, "Failed to decode user info: %s", err.Error())
 		return
 	}
 
+	// Split the state to get role and redirectUri
 	stateparts := strings.SplitN(state, "__", 3)
 	role := stateparts[1]
 	redirectUri := stateparts[2]
+
+	fmt.Println("Role: ", role)
+
+	// Role-based checks for specific cases
+	switch role {
+	case "member":
+		if _, err := queries.GetMemberIDByEmail(context.Background(), userInfo.Email); err != nil {
+			c.String(http.StatusUnauthorized, "User not found for role: member, Please go to signup page")
+			return
+		}
+	case "admin":
+		if _, err := queries.GetAdminIDByEmail(context.Background(), userInfo.Email); err != nil {
+			c.String(http.StatusUnauthorized, "User not found for role: admin")
+			return
+		}
+	case "developer":
+		if _, err := queries.GetDeveloperIDByEmail(context.Background(), userInfo.Email); err != nil {
+			c.String(http.StatusUnauthorized, "User not found for role: developer")
+			return
+		}
+	case "default":
+		{
+
+		}
+	default:
+		c.String(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
 
 	// Save user info in session
 	session, err := SessionStore.Get(c.Request, SessionName)
@@ -112,13 +140,14 @@ func AuthCallback(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "Failed to retrieve session: %s", err.Error())
 		return
 	}
+
 	session.Values["user"] = userInfo
 	session.Values["role"] = role
 	session.Values["user_email"] = userInfo.Email
 	session.Values["user_name"] = userInfo.Name
 	session.Save(c.Request, c.Writer)
 
-	// Redirect to the specified or default URI
+	// Redirect to the specified URI
 	c.Redirect(http.StatusFound, redirectUri)
 }
 
