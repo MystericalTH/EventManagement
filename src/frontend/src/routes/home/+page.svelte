@@ -64,13 +64,6 @@
     {#if upcomingActivities.length > 0}
         <div class="flex flex-row space-x-4 overflow-x-auto">
             {#each upcomingActivities as activity}
-                <!-- <li class="activity-item border border-gray-300 p-4 mb-4 rounded">
-                    <h3 class="text-xl font-semibold">{activity.title}</h3>
-                    <p class="text-gray-700 mb-2">{activity.description}</p>
-                    <button on:click={() => viewActivity(activity)} class="btn btn-secondary bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700">
-                        View Details
-                    </button>
-                </li> -->
                 <Card data={activity} onclick={cardOnclick} />
             {/each}
         </div>
