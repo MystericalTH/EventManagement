@@ -5,7 +5,7 @@
 	let { data }: { data: { activities: Activity[] } } = $props();
 
 	let selectedActivity: Activity | null = $state(null);
-	let feedback: Feedback[] = $state([]);
+	let feedback: Feedback[] = [];
 	let pagination: Pagination<Feedback> = $state(createPagination<Feedback>([], 10));
 
 	$effect(() => {
@@ -20,14 +20,15 @@
 			if (response.ok) {
 				const result = await response.json();
 				feedback = result.feedbacks;
-				feedback = [...result.feedbacks];
-				// pagination = createPagination(feedback, 10);
+				pagination = createPagination(feedback, 10);
 			} else if (response.status === 404) {
 				console.error('Activity not found');
 				feedback = [];
+				pagination = createPagination([], 10);
 			} else {
 				console.error('Failed to fetch feedback');
 				feedback = [];
+				pagination = createPagination([], 10);
 			}
 		} catch (error) {
 			console.error('Error fetching feedback:', error);
@@ -95,11 +96,11 @@
 									>{row.fname + ' ' + row.lname}</td
 								>
 								<td class="h-12 w-48 overflow-scroll whitespace-nowrap px-3 py-3 text-xs"
-									>{row.feedbackdatetime}</td
+									>{row.feedbackmessage}</td
 								>
 								<td
 									class="h-12 min-w-48 max-w-64 overflow-scroll whitespace-nowrap px-3 py-3 text-xs"
-									>{row.feedbackmessage}</td
+									>{new Date(row.feedbackdatetime).toLocaleString()}</td
 								>
 							</tr>
 						{/key}
