@@ -34,7 +34,7 @@ func (q *Queries) InsertAdminDevChat(ctx context.Context, arg InsertAdminDevChat
 }
 
 const listAdminDevChat = `-- name: ListAdminDevChat :many
-SELECT developerID, message, sender, timesent FROM chatDevAd 
+SELECT message, sender, timesent FROM chatDevAd 
 WHERE adminID = ? AND developerID = ?
 `
 
@@ -44,10 +44,9 @@ type ListAdminDevChatParams struct {
 }
 
 type ListAdminDevChatRow struct {
-	Developerid int32     `json:"developerid"`
-	Message     string    `json:"message"`
-	Sender      string    `json:"sender"`
-	Timesent    time.Time `json:"timesent"`
+	Message  string    `json:"message"`
+	Sender   string    `json:"sender"`
+	Timesent time.Time `json:"timesent"`
 }
 
 func (q *Queries) ListAdminDevChat(ctx context.Context, arg ListAdminDevChatParams) ([]ListAdminDevChatRow, error) {
@@ -59,12 +58,7 @@ func (q *Queries) ListAdminDevChat(ctx context.Context, arg ListAdminDevChatPara
 	items := []ListAdminDevChatRow{}
 	for rows.Next() {
 		var i ListAdminDevChatRow
-		if err := rows.Scan(
-			&i.Developerid,
-			&i.Message,
-			&i.Sender,
-			&i.Timesent,
-		); err != nil {
+		if err := rows.Scan(&i.Message, &i.Sender, &i.Timesent); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
