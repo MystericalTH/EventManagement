@@ -38,6 +38,12 @@
 	const handleProposalSubmit = async (event: Event) => {
 		event.preventDefault();
 
+		if (activityRole.length === 0) {
+			message = 'Please add at least one activity role';
+			showOverlay = true;
+			return;
+		}
+
 		const formData = {
 			title,
 			startDate,
@@ -280,7 +286,7 @@
 	</div>
 </div>
 
-<Overlay {showOverlay} height='[200px]' width='[300px]'>
+<Overlay {showOverlay} height="[200px]" width="[300px]">
 	<div class="flex h-full flex-col">
 		<div class="flex flex-none justify-end">
 			<ActionButton
