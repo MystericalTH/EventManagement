@@ -7,8 +7,9 @@ import (
 	"sinno-server/pkg/services"
 	"strconv"
 
-	"github.com/gin-gonic/gin"
 	"sinno-server/pkg/utils/typing"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Create a new chat entry
@@ -115,7 +116,7 @@ func ListAdminDevChats(c *gin.Context, queries *db.Queries) {
 		developerIDStr := c.Param("id")
 		developerID, err := strconv.ParseInt(developerIDStr, 10, 32)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error parsing admin ID"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error parsing developer ID"})
 			return
 		}
 		params.Developerid = int32(developerID)
@@ -126,7 +127,7 @@ func ListAdminDevChats(c *gin.Context, queries *db.Queries) {
 
 	chats, err := services.ListAdminDevChatService(queries, params)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get feedback entries", "details": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get chat entries", "details": err.Error()})
 		return
 	}
 
