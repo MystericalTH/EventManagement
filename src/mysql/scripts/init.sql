@@ -1,6 +1,6 @@
 CREATE DATABASE IF NOT EXISTS ClubManagement;
 USE ClubManagement;
-GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'server'@'%';
 
 -- Table structure for Admin
 CREATE TABLE Admin (
