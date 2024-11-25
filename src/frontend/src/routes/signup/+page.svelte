@@ -56,7 +56,7 @@
 				overlayMessage = 'Request sent!';
 			} else {
 				console.error('Form submission failed');
-				overlayMessage = 'Request failed. Please try again later.';
+				overlayMessage = 'Already signed up!';
 			}
 			showOverlay = true;
 		} catch (error) {
