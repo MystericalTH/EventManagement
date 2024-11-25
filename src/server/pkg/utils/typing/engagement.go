@@ -7,19 +7,19 @@ import (
 )
 
 type Engagement struct {
-	ActivityID        int     `json:"activityid"`
+	ActivityID        int     `json:"id"`
 	Title             string  `json:"title"`
-	StartDate         string  `json:"startdate"`
-	EndDate           string  `json:"enddate"`
-	StartTime         *string `json:"starttime,omitempty"`
-	EndTime           *string `json:"endtime,omitempty"`
-	MaxParticipant    int     `json:"maxparticipant"`
+	StartDate         string  `json:"startDate"`
+	EndDate           string  `json:"endDate"`
+	StartTime         *string `json:"startTime,omitempty"`
+	EndTime           *string `json:"endTime,omitempty"`
+	MaxParticipant    int     `json:"maxParticipant"`
 	Format            string  `json:"format"`
 	Description       string  `json:"description"`
-	ProposeDateTime   string  `json:"proposedatetime"`
-	AcceptAdmin       *string `json:"acceptadmin,omitempty"`
-	AcceptDateTime    *string `json:"acceptdatetime,omitempty"`
-	ApplicationStatus *string `json:"applicationstatus,omitempty"`
+	ProposeDateTime   string  `json:"proposeDatetime"`
+	AcceptAdmin       *string `json:"acceptAdmin,omitempty"`
+	AcceptDateTime    *string `json:"acceptDatetime,omitempty"`
+	ApplicationStatus *string `json:"applicationStatus,omitempty"`
 	Advisor           *string `json:"advisor,omitempty"`
 	Role              string  `json:"role"`
 	Expectation       string  `json:"expectation"`
