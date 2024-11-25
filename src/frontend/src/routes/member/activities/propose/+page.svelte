@@ -37,6 +37,12 @@
 	let message: string = $state('');
 	const handleProposalSubmit = async (event: Event) => {
 		event.preventDefault();
+		
+		if (activityRole.length === 0) {
+			message = 'Please add at least one activity role';
+			showOverlay = true;
+			return;
+		}
 
 		if (activityRole.length === 0) {
 			message = 'Please add at least one activity role';
