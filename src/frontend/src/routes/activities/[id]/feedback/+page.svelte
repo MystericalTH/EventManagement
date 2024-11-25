@@ -38,7 +38,7 @@
 
 			statusCode = response.status;
 			let resJson = await response.json();
-			if (response.ok) {
+			if (response.ok || statusCode === 201) {
 				message = resJson.message;
 				console.log('Form submitted successfully');
 			} else {
@@ -75,16 +75,16 @@
 		<div class="flex flex-none justify-end">
 			<ActionButton
 				imgsrc={cross}
-				action={statusCode == 200 ? closeOverlayAndExit : closeOverlay}
+				action={statusCode == 200 || statusCode === 201 ? closeOverlayAndExit : closeOverlay}
 				width="20px"
 				alt="Close"
 			/>
 		</div>
 		<div class="flex flex-col items-center justify-center text-center">
 			<img
-				src={statusCode == 200 ? checkCircle.click : caution}
+				src={statusCode == 200 || statusCode === 201 ? checkCircle.click : caution}
 				width="64px"
-				alt={statusCode == 200 ? 'successful' : 'caution'}
+				alt={statusCode == 200 || statusCode === 201 ? 'successful' : 'caution'}
 			/>
 			<span class="mt-4 text-base">{message}</span>
 		</div>
