@@ -280,7 +280,7 @@
 	</div>
 </div>
 
-<Overlay {showOverlay}>
+<Overlay {showOverlay} height='[200px]' width='[300px]'>
 	<div class="flex h-full flex-col">
 		<div class="flex flex-none justify-end">
 			<ActionButton
@@ -296,7 +296,7 @@
 				width="64px"
 				alt={statusCode == 200 ? 'successful' : 'caution'}
 			/>
-			<span class="mt-4 text-base">{message}</span>
+			<span class="mt-4 text-xl">{message}</span>
 		</div>
 	</div></Overlay
 >
