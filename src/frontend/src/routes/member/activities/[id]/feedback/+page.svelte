@@ -1,4 +1,4 @@
-<script lang="ts">	
+<script lang="ts">
 	import type { PageData } from './$types';
 	let { data }: { data: PageData } = $props();
 	import Overlay from '$lib/components/Overlay.svelte';
@@ -7,10 +7,7 @@
 	import { checkCircle } from '$lib/assets/action-button-icons';
 	import caution from '$lib/assets/caution.png';
 
-	let activity = data.activity;
-
-	let expectation = $state('');
-	let selectedRole = $state('');
+	let feedback = $state('');
 	let statusCode: number = $state(-1);
 	let message: string = $state('');
 
@@ -23,16 +20,15 @@
 		window.location.href = '/home';
 	};
 
-	const handleRegisterSubmit = async (event: Event) => {
+	const handleFeedbackSubmit = async (event: Event) => {
 		event.preventDefault();
 
 		const formData = {
-			role: selectedRole,
-			expectation
+			feedbackmessage: feedback
 		};
 
 		try {
-			const response = await fetch(`/api/activities/${activity.id}/registration`, {
+			const response = await fetch(`/api/activities/${data.activity.id}/feedback`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -56,34 +52,20 @@
 	};
 </script>
 
-<h1 class="my-10 text-2xl font-semibold">{activity.title}</h1>
+<h1 class="my-10 text-2xl font-semibold">{data.activity.title}</h1>
 
-<form onsubmit={handleRegisterSubmit} class="mx-auto flex w-72 flex-col">
-	<label for="role" class="mb-2 font-bold">Select Role:</label>
-	<select
-		id="role"
-		bind:value={selectedRole}
-		required
-		class="mb-4 rounded border border-gray-300 p-2 text-lg"
-	>
-		<option value="" disabled selected>Select a role</option>
-		{#each activity.activityRoles as role}
-			<option value={role}>{role}</option>
-		{/each}
-	</select>
-	<label for="expectation" class="mb-2 mt-14 block font-bold"
-		>What do you expect from this activity?</label
-	>
+<form onsubmit={handleFeedbackSubmit} class="mx-auto flex w-72 flex-col">
+	<label for="feedback" class="mb-2 mt-14 block font-bold">Feedback</label>
 	<textarea
-		id="expectation"
-		name="expectation"
-		bind:value={expectation}
+		id="feedback"
+		name="feedback"
+		bind:value={feedback}
 		required
 		class="mb-14 h-60 rounded border border-gray-300 p-2 text-lg"
 	></textarea>
 	<button
 		type="submit"
-		class="mt-4 w-40 cursor-pointer rounded bg-blue-500 p-2 text-lg text-white hover:bg-blue-700"
+		class="mt-4 cursor-pointer rounded bg-blue-500 p-2 text-lg text-white hover:bg-blue-700"
 		>Submit</button
 	>
 </form>

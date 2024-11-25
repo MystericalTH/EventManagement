@@ -22,6 +22,7 @@
 
 	const upcomingActivities = data.activities.filter((activity) => {
 		const startDate = new Date(activity.startDate);
+		console.log(startDate);
 		return startDate > currentDate;
 	});
 

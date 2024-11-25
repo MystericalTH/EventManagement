@@ -12,8 +12,7 @@ import (
 
 const acceptMember = `-- name: AcceptMember :exec
 UPDATE MEMBER
-SET 
-    acceptDateTime = CONVERT_TZ(NOW(), 'UTC', '+07:00'),
+SET acceptDateTime = CONVERT_TZ(NOW(), 'UTC', '+07:00'),
     acceptAdmin = ? -- Include the admin responsible for the approval
 WHERE memberID = ?
 `
@@ -23,7 +22,6 @@ type AcceptMemberParams struct {
 	Memberid    int32         `json:"memberid"`
 }
 
-// Approve a member by updating the acceptDateTime and acceptAdmin fields
 func (q *Queries) AcceptMember(ctx context.Context, arg AcceptMemberParams) error {
 	_, err := q.db.ExecContext(ctx, acceptMember, arg.Acceptadmin, arg.Memberid)
 	return err
@@ -34,47 +32,32 @@ DELETE FROM MEMBER
 WHERE memberID = ?
 `
 
-// Delete a member from the database
 func (q *Queries) DeleteMember(ctx context.Context, memberid int32) error {
 	_, err := q.db.ExecContext(ctx, deleteMember, memberid)
 	return err
 }
 
 const insertMember = `-- name: InsertMember :exec
-INSERT INTO MEMBER (
-    fName, 
-    lName, 
-    email, 
-    phone, 
-    githubUrl, 
-    interest, 
-    reason
-) VALUES (
-    AES_ENCRYPT(?, SHA1('68299640939')), -- Encrypt fName
-    AES_ENCRYPT(?, SHA1('68299640939')), -- Encrypt lName
-    ?, 
-    AES_ENCRYPT(?, SHA1('68299640939')), -- Encrypt phone
-    ?, ?, ?
-)
+INSERT INTO MEMBER (fName, lName, email, phone, githubUrl, interest, reason) 
+VALUES (?, ?, ?, ?, ?, ?, ?)
 `
 
 type InsertMemberParams struct {
-	AESENCRYPT   string `json:"AES_ENCRYPT"`
-	AESENCRYPT_2 string `json:"AES_ENCRYPT_2"`
-	Email        string `json:"email"`
-	AESENCRYPT_3 string `json:"AES_ENCRYPT_3"`
-	Githuburl    string `json:"githuburl"`
-	Interest     string `json:"interest"`
-	Reason       string `json:"reason"`
+	Fname     string `json:"fname"`
+	Lname     string `json:"lname"`
+	Email     string `json:"email"`
+	Phone     string `json:"phone"`
+	Githuburl string `json:"githuburl"`
+	Interest  string `json:"interest"`
+	Reason    string `json:"reason"`
 }
 
-// Insert a new member with encrypted fields
 func (q *Queries) InsertMember(ctx context.Context, arg InsertMemberParams) error {
 	_, err := q.db.ExecContext(ctx, insertMember,
-		arg.AESENCRYPT,
-		arg.AESENCRYPT_2,
+		arg.Fname,
+		arg.Lname,
 		arg.Email,
-		arg.AESENCRYPT_3,
+		arg.Phone,
 		arg.Githuburl,
 		arg.Interest,
 		arg.Reason,
@@ -83,15 +66,7 @@ func (q *Queries) InsertMember(ctx context.Context, arg InsertMemberParams) erro
 }
 
 const listAcceptedMembers = `-- name: ListAcceptedMembers :many
-SELECT 
-    memberID, 
-    AES_DECRYPT(fName,SHA1('68299640939')) AS fName, 
-    AES_DECRYPT(lName,SHA1('68299640939')) AS lName, 
-    email, 
-    AES_DECRYPT(phone,SHA1('68299640939')) AS phone, 
-    githubUrl, 
-    interest, 
-    reason 
+SELECT memberID, fName, lName, email, phone, githubUrl, interest, reason 
 FROM MEMBER
 WHERE acceptDateTime IS NOT NULL
 `
@@ -107,7 +82,6 @@ type ListAcceptedMembersRow struct {
 	Reason    string `json:"reason"`
 }
 
-// Query to list accepted members, with decrypted fields
 func (q *Queries) ListAcceptedMembers(ctx context.Context) ([]ListAcceptedMembersRow, error) {
 	rows, err := q.db.QueryContext(ctx, listAcceptedMembers)
 	if err != nil {
@@ -141,15 +115,7 @@ func (q *Queries) ListAcceptedMembers(ctx context.Context) ([]ListAcceptedMember
 }
 
 const listMember = `-- name: ListMember :one
-SELECT 
-    memberID, 
-    AES_DECRYPT(fName, SHA1('68299640939')) AS fName, 
-    AES_DECRYPT(lName, SHA1('68299640939')) AS lName, 
-    email, 
-    AES_DECRYPT(phone, SHA1('68299640939')) AS phone, 
-    githubUrl, 
-    interest, 
-    reason 
+SELECT memberID, fName, lName, email, phone, githubUrl, interest, reason 
 FROM MEMBER
 WHERE memberID = ?
 `
@@ -165,7 +131,6 @@ type ListMemberRow struct {
 	Reason    string `json:"reason"`
 }
 
-// Query to retrieve a specific member by ID, with decrypted fields
 func (q *Queries) ListMember(ctx context.Context, memberid int32) (ListMemberRow, error) {
 	row := q.db.QueryRowContext(ctx, listMember, memberid)
 	var i ListMemberRow
@@ -183,15 +148,7 @@ func (q *Queries) ListMember(ctx context.Context, memberid int32) (ListMemberRow
 }
 
 const listMemberByEmail = `-- name: ListMemberByEmail :one
-SELECT 
-    memberID, 
-    AES_DECRYPT(fName, SHA1('68299640939')) AS fName, 
-    AES_DECRYPT(lName, SHA1('68299640939')) AS lName, 
-    email, 
-    AES_DECRYPT(phone, SHA1('68299640939')) AS phone, 
-    githubUrl, 
-    interest, 
-    reason 
+SELECT memberID, fName, lName, email, phone, githubUrl, interest, reason 
 FROM MEMBER
 WHERE email = ?
 `
@@ -207,7 +164,6 @@ type ListMemberByEmailRow struct {
 	Reason    string `json:"reason"`
 }
 
-// Query to retrieve a specific member by email, with decrypted fields
 func (q *Queries) ListMemberByEmail(ctx context.Context, email string) (ListMemberByEmailRow, error) {
 	row := q.db.QueryRowContext(ctx, listMemberByEmail, email)
 	var i ListMemberByEmailRow
@@ -225,15 +181,7 @@ func (q *Queries) ListMemberByEmail(ctx context.Context, email string) (ListMemb
 }
 
 const listRequestingMembers = `-- name: ListRequestingMembers :many
-SELECT 
-    memberID, 
-    AES_DECRYPT(fName, SHA1('68299640939')) AS fName, 
-    AES_DECRYPT(lName, SHA1('68299640939')) AS lName, 
-    email, 
-    AES_DECRYPT(phone, SHA1('68299640939')) AS phone, 
-    githubUrl, 
-    interest, 
-    reason 
+SELECT memberID, fName, lName, email, phone, githubUrl, interest, reason 
 FROM MEMBER
 WHERE acceptDateTime IS NULL
 `
@@ -249,7 +197,6 @@ type ListRequestingMembersRow struct {
 	Reason    string `json:"reason"`
 }
 
-// Query to list members requesting approval, with decrypted fields
 func (q *Queries) ListRequestingMembers(ctx context.Context) ([]ListRequestingMembersRow, error) {
 	rows, err := q.db.QueryContext(ctx, listRequestingMembers)
 	if err != nil {
