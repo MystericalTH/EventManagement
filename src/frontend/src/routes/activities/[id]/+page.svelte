@@ -19,7 +19,11 @@
 	{#if data.activity}
 		<div class="w-5/6 items-center text-center">
 			<ActivityContent data={data.activity} />
-			{#if data.isEventPast && data.isRegistered}
+			{#if !data.isAuthorized}
+				<button class="rounded bg-gray-300 px-4 py-2 text-white" disabled
+					>Log in as Our Member to Register</button
+				>
+			{:else if data.isEventPast && data.isRegistered}
 				{#if data.hasSubmittedFeedback}
 					<button class="rounded bg-gray-300 px-4 py-2 text-white" disabled
 						>Feedback Submitted</button
