@@ -1,15 +1,27 @@
-<script lang="ts">
-	// import type { Activity } from '$lib/types';
-	// let { data }: { data: { activity: Activity } } = $props();
-	
+<script lang="ts">	
 	import type { PageData } from './$types';
 	let { data }: { data: PageData } = $props();
-	console.log(data);
+	import Overlay from '$lib/components/Overlay.svelte';
+	import ActionButton from '$lib/components/ActionButton.svelte';
+	import { cross } from '$lib/assets/action-button-icons';
+	import { checkCircle } from '$lib/assets/action-button-icons';
+	import caution from '$lib/assets/caution.png';
 
 	let activity = data.activity;
 
 	let expectation = $state('');
 	let selectedRole = $state('');
+	let statusCode: number = $state(-1);
+	let message: string = $state('');
+
+	let showOverlay = $state(false);
+	const closeOverlay = () => {
+		showOverlay = false;
+	};
+	const closeOverlayAndExit = () => {
+		closeOverlay();
+		window.location.href = '/home';
+	};
 
 	const handleRegisterSubmit = async (event: Event) => {
 		event.preventDefault();
@@ -28,11 +40,16 @@
 				body: JSON.stringify(formData)
 			});
 
-			if (response.ok) {
+			statusCode = response.status;
+			let resJson = await response.json();
+			if (response.ok || statusCode === 201) {
+				message = resJson.message;
 				console.log('Form submitted successfully');
 			} else {
+				message = resJson.error;
 				console.error('Form submission failed');
 			}
+			showOverlay = true;
 		} catch (error) {
 			console.error('Error submitting form:', error);
 		}
@@ -70,3 +87,24 @@
 		>Submit</button
 	>
 </form>
+
+<Overlay {showOverlay}>
+	<div class="flex h-full flex-col">
+		<div class="flex flex-none justify-end">
+			<ActionButton
+				imgsrc={cross}
+				action={statusCode == 200 || statusCode === 201 ? closeOverlayAndExit : closeOverlay}
+				width="20px"
+				alt="Close"
+			/>
+		</div>
+		<div class="flex flex-col items-center justify-center text-center">
+			<img
+				src={statusCode == 200 || statusCode === 201 ? checkCircle.click : caution}
+				width="64px"
+				alt={statusCode == 200 || statusCode === 201 ? 'successful' : 'caution'}
+			/>
+			<span class="mt-4 text-base">{message}</span>
+		</div>
+	</div></Overlay
+>
