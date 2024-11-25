@@ -1,14 +1,11 @@
--- Set the encryption key (replace 'your_secure_key' with your actual key)
-SET @encryption_key = 'your_secure_key';
-
 -- Query to list members requesting approval, with decrypted fields
 -- name: ListRequestingMembers :many
 SELECT 
     memberID, 
-    AES_DECRYPT(fName, @encryption_key) AS fName, 
-    AES_DECRYPT(lName, @encryption_key) AS lName, 
+    AES_DECRYPT(fName, SHA1('68299640939')) AS fName, 
+    AES_DECRYPT(lName, SHA1('68299640939')) AS lName, 
     email, 
-    AES_DECRYPT(phone, @encryption_key) AS phone, 
+    AES_DECRYPT(phone, SHA1('68299640939')) AS phone, 
     githubUrl, 
     interest, 
     reason 
@@ -19,10 +16,10 @@ WHERE acceptDateTime IS NULL;
 -- name: ListAcceptedMembers :many
 SELECT 
     memberID, 
-    AES_DECRYPT(fName, @encryption_key) AS fName, 
-    AES_DECRYPT(lName, @encryption_key) AS lName, 
+    AES_DECRYPT(fName,SHA1('68299640939')) AS fName, 
+    AES_DECRYPT(lName,SHA1('68299640939')) AS lName, 
     email, 
-    AES_DECRYPT(phone, @encryption_key) AS phone, 
+    AES_DECRYPT(phone,SHA1('68299640939')) AS phone, 
     githubUrl, 
     interest, 
     reason 
@@ -33,10 +30,10 @@ WHERE acceptDateTime IS NOT NULL;
 -- name: ListMember :one
 SELECT 
     memberID, 
-    AES_DECRYPT(fName, @encryption_key) AS fName, 
-    AES_DECRYPT(lName, @encryption_key) AS lName, 
+    AES_DECRYPT(fName, SHA1('68299640939')) AS fName, 
+    AES_DECRYPT(lName, SHA1('68299640939')) AS lName, 
     email, 
-    AES_DECRYPT(phone, @encryption_key) AS phone, 
+    AES_DECRYPT(phone, SHA1('68299640939')) AS phone, 
     githubUrl, 
     interest, 
     reason 
@@ -47,10 +44,10 @@ WHERE memberID = ?;
 -- name: ListMemberByEmail :one
 SELECT 
     memberID, 
-    AES_DECRYPT(fName, @encryption_key) AS fName, 
-    AES_DECRYPT(lName, @encryption_key) AS lName, 
+    AES_DECRYPT(fName, SHA1('68299640939')) AS fName, 
+    AES_DECRYPT(lName, SHA1('68299640939')) AS lName, 
     email, 
-    AES_DECRYPT(phone, @encryption_key) AS phone, 
+    AES_DECRYPT(phone, SHA1('68299640939')) AS phone, 
     githubUrl, 
     interest, 
     reason 
@@ -68,10 +65,10 @@ INSERT INTO MEMBER (
     interest, 
     reason
 ) VALUES (
-    AES_ENCRYPT(?, @encryption_key), -- Encrypt fName
-    AES_ENCRYPT(?, @encryption_key), -- Encrypt lName
+    AES_ENCRYPT(?, SHA1('68299640939')), -- Encrypt fName
+    AES_ENCRYPT(?, SHA1('68299640939')), -- Encrypt lName
     ?, 
-    AES_ENCRYPT(?, @encryption_key), -- Encrypt phone
+    AES_ENCRYPT(?, SHA1('68299640939')), -- Encrypt phone
     ?, ?, ?
 );
 

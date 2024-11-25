@@ -50,10 +50,10 @@ INSERT INTO MEMBER (
     interest, 
     reason
 ) VALUES (
-    AES_ENCRYPT(?, @encryption_key), -- Encrypt fName
-    AES_ENCRYPT(?, @encryption_key), -- Encrypt lName
+    AES_ENCRYPT(?, SHA1('68299640939')), -- Encrypt fName
+    AES_ENCRYPT(?, SHA1('68299640939')), -- Encrypt lName
     ?, 
-    AES_ENCRYPT(?, @encryption_key), -- Encrypt phone
+    AES_ENCRYPT(?, SHA1('68299640939')), -- Encrypt phone
     ?, ?, ?
 )
 `
@@ -85,10 +85,10 @@ func (q *Queries) InsertMember(ctx context.Context, arg InsertMemberParams) erro
 const listAcceptedMembers = `-- name: ListAcceptedMembers :many
 SELECT 
     memberID, 
-    AES_DECRYPT(fName, @encryption_key) AS fName, 
-    AES_DECRYPT(lName, @encryption_key) AS lName, 
+    AES_DECRYPT(fName,SHA1('68299640939')) AS fName, 
+    AES_DECRYPT(lName,SHA1('68299640939')) AS lName, 
     email, 
-    AES_DECRYPT(phone, @encryption_key) AS phone, 
+    AES_DECRYPT(phone,SHA1('68299640939')) AS phone, 
     githubUrl, 
     interest, 
     reason 
@@ -143,10 +143,10 @@ func (q *Queries) ListAcceptedMembers(ctx context.Context) ([]ListAcceptedMember
 const listMember = `-- name: ListMember :one
 SELECT 
     memberID, 
-    AES_DECRYPT(fName, @encryption_key) AS fName, 
-    AES_DECRYPT(lName, @encryption_key) AS lName, 
+    AES_DECRYPT(fName, SHA1('68299640939')) AS fName, 
+    AES_DECRYPT(lName, SHA1('68299640939')) AS lName, 
     email, 
-    AES_DECRYPT(phone, @encryption_key) AS phone, 
+    AES_DECRYPT(phone, SHA1('68299640939')) AS phone, 
     githubUrl, 
     interest, 
     reason 
@@ -185,10 +185,10 @@ func (q *Queries) ListMember(ctx context.Context, memberid int32) (ListMemberRow
 const listMemberByEmail = `-- name: ListMemberByEmail :one
 SELECT 
     memberID, 
-    AES_DECRYPT(fName, @encryption_key) AS fName, 
-    AES_DECRYPT(lName, @encryption_key) AS lName, 
+    AES_DECRYPT(fName, SHA1('68299640939')) AS fName, 
+    AES_DECRYPT(lName, SHA1('68299640939')) AS lName, 
     email, 
-    AES_DECRYPT(phone, @encryption_key) AS phone, 
+    AES_DECRYPT(phone, SHA1('68299640939')) AS phone, 
     githubUrl, 
     interest, 
     reason 
@@ -227,10 +227,10 @@ func (q *Queries) ListMemberByEmail(ctx context.Context, email string) (ListMemb
 const listRequestingMembers = `-- name: ListRequestingMembers :many
 SELECT 
     memberID, 
-    AES_DECRYPT(fName, @encryption_key) AS fName, 
-    AES_DECRYPT(lName, @encryption_key) AS lName, 
+    AES_DECRYPT(fName, SHA1('68299640939')) AS fName, 
+    AES_DECRYPT(lName, SHA1('68299640939')) AS lName, 
     email, 
-    AES_DECRYPT(phone, @encryption_key) AS phone, 
+    AES_DECRYPT(phone, SHA1('68299640939')) AS phone, 
     githubUrl, 
     interest, 
     reason 
