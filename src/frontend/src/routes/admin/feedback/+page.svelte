@@ -5,7 +5,7 @@
 	let { data }: { data: { activities: Activity[] } } = $props();
 
 	let selectedActivity: Activity | null = $state(null);
-	let feedback: Feedback[] = $state([]);
+	let feedback: Feedback[] = [];
 	let pagination: Pagination<Feedback> = $state(createPagination<Feedback>([], 10));
 
 	$effect(() => {
@@ -18,22 +18,26 @@
 		try {
 			const response = await fetch(`/api/activities/${activityId}/feedback`);
 			if (response.ok) {
-				feedback = await response.json();
+				const result = await response.json();
+				feedback = result.feedbacks;
 				pagination = createPagination(feedback, 10);
 			} else if (response.status === 404) {
 				console.error('Activity not found');
 				feedback = [];
+				pagination = createPagination([], 10);
 			} else {
 				console.error('Failed to fetch feedback');
 				feedback = [];
+				pagination = createPagination([], 10);
 			}
 		} catch (error) {
 			console.error('Error fetching feedback:', error);
 			feedback = [];
 		}
+		console.log(feedback);
 	}
 </script>
-<div class="p-4">
+
 <h1 class="mb-4 text-2xl">Feedback</h1>
 <!-- Dropdown to select an activity -->
 <div class="mb-4 flex flex-row">
@@ -84,15 +88,6 @@
 						</th>
 					</tr>
 				</thead>
-				<!-- <tbody class="divide-y divide-gray-200">
-                {#each feedback as item}
-                  <tr>
-                    <td class="h-12 w-36 whitespace-nowrap px-3 py-3 text-xs">{item.memberID || 'Anonymous'}</td>
-                    <td class="h-12 w-64 overflow-scroll whitespace-nowrap px-3 py-3 text-xs">{item.feedbackMessage}</td>
-                    <td class="h-12 w-48 px-3 py-3 text-xs">{new Date(item.feedbackDateTime).toLocaleDateString()}</td>
-                  </tr>
-                {/each}
-              </tbody> -->
 				<tbody class="divide-y divide-gray-200">
 					{#each pagination.displayPage() as row}
 						{#key row.feedbackid}
@@ -101,11 +96,11 @@
 									>{row.fname + ' ' + row.lname}</td
 								>
 								<td class="h-12 w-48 overflow-scroll whitespace-nowrap px-3 py-3 text-xs"
-									>{row.feedbackdatetime}</td
+									>{row.feedbackmessage}</td
 								>
 								<td
 									class="h-12 min-w-48 max-w-64 overflow-scroll whitespace-nowrap px-3 py-3 text-xs"
-									>{row.feedbackmessage}</td
+									>{new Date(row.feedbackdatetime).toLocaleString()}</td
 								>
 							</tr>
 						{/key}
