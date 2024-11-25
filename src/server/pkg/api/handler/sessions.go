@@ -106,6 +106,8 @@ func AuthCallback(c *gin.Context, queries *db.Queries) {
 	role := stateparts[1]
 	redirectUri := stateparts[2]
 
+	fmt.Println("Role: ", role)
+
 	// Role-based checks for specific cases
 	switch role {
 	case "member":
@@ -123,8 +125,13 @@ func AuthCallback(c *gin.Context, queries *db.Queries) {
 			c.String(http.StatusUnauthorized, "User not found for role: developer")
 			return
 		}
+	case "default":
+		{
+
+		}
 	default:
-		// If role is not one of the above, proceed without a check
+		c.String(http.StatusUnauthorized, "Unauthorized")
+		return
 	}
 
 	// Save user info in session
