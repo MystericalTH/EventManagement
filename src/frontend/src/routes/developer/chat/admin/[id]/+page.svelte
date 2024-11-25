@@ -30,7 +30,7 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ developerid: channelid, message })
+			body: JSON.stringify({ adminid: channelid, message })
 		})
 			.then((res) => res.json())
 			.catch((err) => console.error(err));
