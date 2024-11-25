@@ -2,6 +2,8 @@ CREATE DATABASE IF NOT EXISTS ClubManagement;
 USE ClubManagement;
 GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%';
 
+SET @encryption_key = '68299640939';
+
 -- Table structure for Admin
 CREATE TABLE Admin (
   adminID int(11) NOT NULL AUTO_INCREMENT,
