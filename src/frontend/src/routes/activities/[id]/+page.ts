@@ -12,7 +12,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 
 	// Fetch the registration status of the current user
 	const registrationResponse = await fetch(`/api/activities/${id}/registration/status`);
-	if (registrationResponse.status == 401) isAuthorized = false;
+	if (registrationResponse.status == 401 || registrationResponse.status == 403)
+		isAuthorized = false;
 	if (isAuthorized && !registrationResponse.ok)
 		throw new Error('Failed to fetch registration status');
 	const registrationData = await registrationResponse.json();

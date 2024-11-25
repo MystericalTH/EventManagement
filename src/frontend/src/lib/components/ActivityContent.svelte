@@ -29,8 +29,8 @@
 				<li>
 					<span class="inline-flex items-center text-center align-middle"
 						><img
-							src={data.format.toLowerCase() == 'project' ? project : workshop}
-							alt={data.format.toLowerCase() == 'project' ? 'project' : 'workshop'}
+							src={data.format == 'Project' ? project : workshop}
+							alt={data.format}
 							width="20px"
 							class="mr-[15px]"
 						/>{data.format}</span

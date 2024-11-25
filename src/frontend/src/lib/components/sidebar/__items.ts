@@ -52,4 +52,8 @@ export const memberItems: SidebarItem[] = [
 	}
 ];
 
-export const developerItems: SidebarItem[] = [{ text: 'Chat with Admin', href: '/dev/chat/admin' }];
+export const developerItems: SidebarItem[] = [
+	{ text: 'Dev Documentation', href: '/developer/dev-docs' },
+	{ text: 'Logging Dashboard', href: '/developer/logging' },
+	{ text: 'Chat with Admin', href: '/developer/chat/admin' }
+];

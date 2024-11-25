@@ -44,6 +44,12 @@
 			return;
 		}
 
+		if (activityRole.length === 0) {
+			message = 'Please add at least one activity role';
+			showOverlay = true;
+			return;
+		}
+
 		const formData = {
 			title,
 			startDate,
@@ -116,11 +122,11 @@
 								class="w-56 rounded border border-gray-300 p-2 text-base"
 							>
 								<option value="" disabled selected>Select format</option>
-								<option value="project">Project</option>
-								<option value="workshop">Workshop</option>
+								<option value="Project">Project</option>
+								<option value="Workshop">Workshop</option>
 							</select>
 						</div>
-						{#if format === 'project'}
+						{#if format === 'Project'}
 							<div class=" content-center text-right">
 								<label for="startDate" class="font-bold">Start Date</label>
 							</div>
@@ -158,7 +164,7 @@
 									class="w-56 rounded border border-gray-300 p-2 text-base"
 								/>
 							</div>
-						{:else if format === 'workshop'}
+						{:else if format === 'Workshop'}
 							<div class=" content-center text-right">
 								<label for="startDate" class="font-bold">Start Date</label>
 							</div>
@@ -286,7 +292,7 @@
 	</div>
 </div>
 
-<Overlay {showOverlay}>
+<Overlay {showOverlay} height="[200px]" width="[300px]">
 	<div class="flex h-full flex-col">
 		<div class="flex flex-none justify-end">
 			<ActionButton
@@ -302,7 +308,7 @@
 				width="64px"
 				alt={statusCode == 200 ? 'successful' : 'caution'}
 			/>
-			<span class="mt-4 text-base">{message}</span>
+			<span class="mt-4 text-xl">{message}</span>
 		</div>
 	</div></Overlay
 >

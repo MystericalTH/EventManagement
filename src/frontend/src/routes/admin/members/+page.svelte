@@ -58,12 +58,6 @@
 						<td>
 							<div class="flex justify-center space-x-2">
 								<ActionButton
-									imgsrc={edit}
-									action={() => {}}
-									alt={`Edit member ${row.memberid}`}
-									width={'20px'}
-								></ActionButton>
-								<ActionButton
 									imgsrc={trash}
 									action={() => removeMember(row.memberid, pagination)}
 									alt={`Remove member ${row.memberid}`}
