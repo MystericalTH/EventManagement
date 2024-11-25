@@ -43,7 +43,7 @@ func (q *Queries) GetMemberIDByEmail(ctx context.Context, email string) (int32, 
 }
 
 const getMemberIDByEmailWaitingAccept = `-- name: GetMemberIDByEmailWaitingAccept :one
-SELECT memberID FROM Member WHERE email = ?  AND acceptAdmin is NOT NULL and acceptdatatime is not null
+SELECT memberID FROM Member WHERE email = ?  AND acceptAdmin is NOT NULL and acceptdatetime is not null
 `
 
 func (q *Queries) GetMemberIDByEmailWaitingAccept(ctx context.Context, email string) (int32, error) {
