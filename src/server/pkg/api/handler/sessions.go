@@ -111,10 +111,25 @@ func AuthCallback(c *gin.Context, queries *db.Queries) {
 	// Role-based checks for specific cases
 	switch role {
 	case "member":
-		if _, err := queries.GetMemberIDByEmail(context.Background(), userInfo.Email); err != nil {
+		// Case 1: Check if the user exists in the Members table
+		memberID, err := queries.GetMemberIDByEmail(context.Background(), userInfo.Email)
+		if err != nil {
+			// If Case 1 fails, return an unauthorized response
 			c.String(http.StatusUnauthorized, "User not found for role: member, Please go to signup page")
 			return
 		}
+
+		// Case 2: Check if the user exists in Members but is waiting for acceptance
+		_, err = queries.GetMemberIDByEmailWaitingAccept(context.Background(), userInfo.Email)
+		if err != nil {
+			// If Case 2 fails, return an unauthorized response
+			c.String(http.StatusUnauthorized, "Please wait until admin accept your request")
+			return
+		}
+
+		// If both cases succeed, continue processing
+		fmt.Printf("Member validated with ID: %d\n", memberID)
+
 	case "admin":
 		if _, err := queries.GetAdminIDByEmail(context.Background(), userInfo.Email); err != nil {
 			c.String(http.StatusUnauthorized, "User not found for role: admin")
