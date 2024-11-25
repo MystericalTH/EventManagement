@@ -52,4 +52,4 @@ export const memberItems: SidebarItem[] = [
 	}
 ];
 
-export const developerItems: SidebarItem[] = [{ text: 'Chat with Admin', href: '/dev/chat/admin' }];
+export const developerItems: SidebarItem[] = [{ text: 'Chat with Admin', href: '/developer/chat/admin' }];
