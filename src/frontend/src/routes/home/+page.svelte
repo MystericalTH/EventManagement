@@ -56,6 +56,11 @@
 		interested in learning new skills, collaborating on projects, or meeting like-minded
 		individuals, there's something here for everyone.
 	</p>
+	<p class="mb-6 px-4 text-justify text-lg leading-relaxed">
+		If you have any inquiry or issue, please contact admin via email <span class="text-indigo-400"
+			><a href="mailto:siit.innoclub@gmail.com">siit.innoclub@gmail.com</a></span
+		>.
+	</p>
 	<button
 		on:click={() => goto('/activities')}
 		class="btn btn-primary rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"

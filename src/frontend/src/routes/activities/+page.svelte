@@ -33,6 +33,11 @@
 
 <div class="overflow-y-scroll">
 	<h1 class="mb-6 text-3xl font-bold">Activities</h1>
+	<p class="mb-4">
+		If you want to edit your proposal, please contact admin via <span class="text-indigo-400"
+			><a href="mailto:siit.innoclub@gmail.com">siit.innoclub@gmail.com</a></span
+		>.
+	</p>
 	<h2 class="mb-2 text-xl">Upcoming</h2>
 	<ActivitySlider activities={upcomingActivities} cardOnclick={gotoActivity} />
 	<h2 class="mb-2 text-xl">Ongoing</h2>
