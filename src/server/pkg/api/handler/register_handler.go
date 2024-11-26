@@ -3,6 +3,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 	"sinno-server/pkg/db"
 	"sinno-server/pkg/services"
@@ -154,57 +155,71 @@ func GetSubmittedMembers(c *gin.Context, queries *db.Queries) {
 	// Retrieve the session
 	session, err := SessionStore.Get(c.Request, SessionName)
 	if err != nil {
+		log.Printf("Error retrieving session: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve session"})
 		return
 	}
 
 	// Get user information and role from session
 	userInfo, userOk := session.Values["user"].(UserInfo)
-	_, roleOk := session.Values["role"].(string)
+	role, roleOk := session.Values["role"].(string)
 	if !userOk || !roleOk {
+		log.Println("Unauthorized access attempt: User not authenticated")
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
 		return
 	}
 
 	email := userInfo.Email
 
-	// Get member ID from the service
-	memberID, err := services.GetMemberIDByEmailService(queries, email)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID"})
-		return
-	}
+	log.Printf("User email retrieved from session: %s", email)
 
 	// Get activity ID from URL params
 	activityIDStr := c.Param("id")
 	activityID, err := strconv.Atoi(activityIDStr)
 	if err != nil {
+		log.Printf("Invalid activity ID: %s", activityIDStr)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid activity ID"})
 		return
 	}
+	log.Printf("Activity ID retrieved: %d", activityID)
 
-	// Check if the member is the proposer of the activity
-	isProposer, err := services.CheckProposerService(queries, int32(activityID), memberID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to verify proposer status"})
-		return
-	}
-	if !isProposer {
+	// Get member ID from the service
+	if role == "member" {
+		memberID, err := services.GetMemberIDByEmailService(queries, email)
+		if err != nil {
+			log.Printf("Error fetching member ID for email %s: %v", email, err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get member ID"})
+			return
+		}
+		log.Printf("Member ID retrieved: %d", memberID)
+		_, err = services.CheckProposerService(queries, int32(activityID), memberID)
+		if err != nil {
+			log.Printf("User %s is not the proposer for activity ID %d. Checking admin access.", email, activityID)
+
+		}
+	} else if role == "admin" {
 		_, err := services.GetAdminIDByEmailService(queries, email)
 		if err != nil {
+			log.Printf("User %s is not an admin. Forbidden access.", email)
 			c.JSON(http.StatusForbidden, gin.H{"error": "You are not authorized to view this activity's registration"})
 			return
 		}
+		log.Printf("User %s authorized as an admin.", email)
 	}
+
+	// Check if the member is the proposer of the activity
 
 	// Fetch registered members for the activity
 	members, err := services.GetSubmittedMembersService(queries, int32(activityID))
 	if err != nil {
+		log.Printf("Error fetching registered members for activity ID %d: %v", activityID, err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch registered members"})
 		return
 	}
+	log.Printf("Fetched %d registered members for activity ID %d", len(members), activityID)
 
 	// Return the registered members
+	log.Printf("Returning registered members for activity ID %d", activityID)
 	c.JSON(http.StatusOK, members)
 }
 
