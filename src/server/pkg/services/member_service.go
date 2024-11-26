@@ -19,19 +19,19 @@ func GetAllMembersService(queries *db.Queries) ([]db.ListAcceptedMembersRow, err
 
 	for i, member := range members {
 		// Decrypt first name
-		decryptedFName, err := secure.DecryptFromString(member.Fname, os.Getenv("ECRYPT_KEY"))
+		decryptedFName, err := secure.DecryptFromString(member.Fname, os.Getenv("ENCRYPT_KEY"))
 		if err != nil {
 			return nil, fmt.Errorf("failed to decrypt first name for member ID %d: %v", member.Memberid, err)
 		}
 
 		// Decrypt last name
-		decryptedLName, err := secure.DecryptFromString(member.Lname, os.Getenv("ECRYPT_KEY"))
+		decryptedLName, err := secure.DecryptFromString(member.Lname, os.Getenv("ENCRYPT_KEY"))
 		if err != nil {
 			return nil, fmt.Errorf("failed to decrypt last name for member ID %d: %v", member.Memberid, err)
 		}
 
 		// Decrypt phone
-		decryptedPhone, err := secure.DecryptFromString(member.Phone, os.Getenv("ECRYPT_KEY"))
+		decryptedPhone, err := secure.DecryptFromString(member.Phone, os.Getenv("ENCRYPT_KEY"))
 		if err != nil {
 			return nil, fmt.Errorf("failed to decrypt phone for member ID %d: %v", member.Memberid, err)
 		}
@@ -72,15 +72,15 @@ func CreateMemberService(queries *db.Queries, member db.InsertMemberParams) erro
 	log.Printf("Starting CreateMemberService for member: %+v", member)
 
 	// Encrypt fields
-	encryptedFName, err := secure.EncryptToString(member.Fname, os.Getenv("ECRYPT_KEY"))
+	encryptedFName, err := secure.EncryptToString(member.Fname, os.Getenv("ENCRYPT_KEY"))
 	if err != nil {
 		return fmt.Errorf("failed to encrypt first name: %v", err)
 	}
-	encryptedLName, err := secure.EncryptToString(member.Lname, os.Getenv("ECRYPT_KEY"))
+	encryptedLName, err := secure.EncryptToString(member.Lname, os.Getenv("ENCRYPT_KEY"))
 	if err != nil {
 		return fmt.Errorf("failed to encrypt last name: %v", err)
 	}
-	encryptedPhone, err := secure.EncryptToString(member.Phone, os.Getenv("ECRYPT_KEY"))
+	encryptedPhone, err := secure.EncryptToString(member.Phone, os.Getenv("ENCRYPT_KEY"))
 	if err != nil {
 		return fmt.Errorf("failed to encrypt phone: %v", err)
 	}
@@ -118,15 +118,15 @@ func GetAllMemberRequestsService(queries *db.Queries) ([]db.ListRequestingMember
 
 	for i, member := range members {
 		// Decrypt fields
-		decryptedFName, err := secure.DecryptFromString(member.Fname, os.Getenv("ECRYPT_KEY"))
+		decryptedFName, err := secure.DecryptFromString(member.Fname, os.Getenv("ENCRYPT_KEY"))
 		if err != nil {
 			return nil, fmt.Errorf("failed to decrypt first name for member ID %d: %v", member.Memberid, err)
 		}
-		decryptedLName, err := secure.DecryptFromString(member.Lname, os.Getenv("ECRYPT_KEY"))
+		decryptedLName, err := secure.DecryptFromString(member.Lname, os.Getenv("ENCRYPT_KEY"))
 		if err != nil {
 			return nil, fmt.Errorf("failed to decrypt last name for member ID %d: %v", member.Memberid, err)
 		}
-		decryptedPhone, err := secure.DecryptFromString(member.Phone, os.Getenv("ECRYPT_KEY"))
+		decryptedPhone, err := secure.DecryptFromString(member.Phone, os.Getenv("ENCRYPT_KEY"))
 		if err != nil {
 			return nil, fmt.Errorf("failed to decrypt phone for member ID %d: %v", member.Memberid, err)
 		}
@@ -148,17 +148,17 @@ func DeleteMemberService(queries *db.Queries, memberID int32) error {
 
 // Helper function to decrypt member fields
 func decryptMemberFields(member db.ListMemberRow) (db.ListMemberRow, error) {
-	decryptedFName, err := secure.DecryptFromString(member.Fname, os.Getenv("ECRYPT_KEY"))
+	decryptedFName, err := secure.DecryptFromString(member.Fname, os.Getenv("ENCRYPT_KEY"))
 	if err != nil {
 		return member, fmt.Errorf("failed to decrypt first name: %v", err)
 	}
 
-	decryptedLName, err := secure.DecryptFromString(member.Lname, os.Getenv("ECRYPT_KEY"))
+	decryptedLName, err := secure.DecryptFromString(member.Lname, os.Getenv("ENCRYPT_KEY"))
 	if err != nil {
 		return member, fmt.Errorf("failed to decrypt last name: %v", err)
 	}
 
-	decryptedPhone, err := secure.DecryptFromString(member.Phone, os.Getenv("ECRYPT_KEY"))
+	decryptedPhone, err := secure.DecryptFromString(member.Phone, os.Getenv("ENCRYPT_KEY"))
 	if err != nil {
 		return member, fmt.Errorf("failed to decrypt phone: %v", err)
 	}

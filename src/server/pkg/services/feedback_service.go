@@ -26,14 +26,14 @@ func GetFeedbacksByActivityService(queries *db.Queries, activityID int32) ([]db.
 	// Iterate through the result set to decrypt any sensitive fields (like member names)
 	for i, feedback := range feedbacks {
 		// Decrypt first name of the member who provided the feedback
-		decryptedFName, err := secure.DecryptFromString(feedback.Fname, os.Getenv("ECRYPT_KEY"))
+		decryptedFName, err := secure.DecryptFromString(feedback.Fname, os.Getenv("ENCRYPT_KEY"))
 		if err != nil {
 
 			return nil, fmt.Errorf("failed to decrypt first name for member ID")
 		}
 
 		// Decrypt last name of the member who provided the feedback
-		decryptedLName, err := secure.DecryptFromString(feedback.Lname, os.Getenv("ECRYPT_KEY"))
+		decryptedLName, err := secure.DecryptFromString(feedback.Lname, os.Getenv("ENCRYPT_KEY"))
 		if err != nil {
 			log.Printf("Error decrypting last name for member ID")
 			return nil, fmt.Errorf("failed to decrypt last name for member ID")
