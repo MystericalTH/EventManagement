@@ -51,21 +51,21 @@ func GetSubmittedMembersService(queries *db.Queries, activityID int32) ([]db.Lis
 	// Iterate through the result set to decrypt sensitive fields
 	for i, member := range members {
 		// Decrypt first name
-		decryptedFName, err := secure.DecryptFromString(member.Fname, os.Getenv("ECRYPT_KEY"))
+		decryptedFName, err := secure.DecryptFromString(member.Fname, os.Getenv("ENCRYPT_KEY"))
 		if err != nil {
 			log.Printf("Error decrypting first name for member ID %d: %v", member.Memberid, err)
 			return nil, fmt.Errorf("failed to decrypt first name for member ID %d: %v", member.Memberid, err)
 		}
 
 		// Decrypt last name
-		decryptedLName, err := secure.DecryptFromString(member.Lname, os.Getenv("ECRYPT_KEY"))
+		decryptedLName, err := secure.DecryptFromString(member.Lname, os.Getenv("ENCRYPT_KEY"))
 		if err != nil {
 			log.Printf("Error decrypting last name for member ID %d: %v", member.Memberid, err)
 			return nil, fmt.Errorf("failed to decrypt last name for member ID %d: %v", member.Memberid, err)
 		}
 
 		// Decrypt phone
-		decryptedPhone, err := secure.DecryptFromString(member.Phone, os.Getenv("ECRYPT_KEY"))
+		decryptedPhone, err := secure.DecryptFromString(member.Phone, os.Getenv("ENCRYPT_KEY"))
 		if err != nil {
 			log.Printf("Error decrypting phone number for member ID %d: %v", member.Memberid, err)
 			return nil, fmt.Errorf("failed to decrypt phone number for member ID %d: %v", member.Memberid, err)
